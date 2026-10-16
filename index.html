@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Niffler's Hoard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Layout: one burrow column (max 1000px); screens swap in place; play = Niffler beside a big question card. Single deliberate dark "underground" look. */
+:root{
+  --soil:#1b1423; --soil-2:#241b2f; --tunnel:#2e2340; --tunnel-2:#3b2e50; --root:#5a4874;
+  --gold:#f7c74b; --gold-deep:#d9951b; --ink:#f8f1e4; --ink-dim:#c6b9d0;
+  --good:#66d9a3; --oops:#ff9481; --gem1:#7fd6ff; --gem2:#ff94c9;
+  --cube-top:#ffd56b; --cube-l:#e0a43a; --cube-r:#b97b22;
+  --display:'Lilita One','Arial Rounded MT Bold',ui-rounded,system-ui,sans-serif;
+  --body:'Nunito',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{margin:0;background:var(--soil);color:var(--ink);font-family:var(--body);font-weight:700;font-size:18px;line-height:1.45;
+  background-image:radial-gradient(1200px 500px at 50% -10%, rgba(247,199,75,.10), transparent 60%),
+  radial-gradient(3px 3px at 12% 30%, rgba(255,255,255,.07) 50%, transparent 51%),
+  radial-gradient(2px 2px at 78% 62%, rgba(255,255,255,.06) 50%, transparent 51%),
+  radial-gradient(3px 3px at 40% 85%, rgba(255,255,255,.05) 50%, transparent 51%);
+  background-attachment:fixed;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+sup{font-size:.6em;line-height:0;position:relative;top:-.15em;vertical-align:super}
+.app{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 40px}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.05}
+h2{font-size:clamp(1.6rem,3.6vw,2.2rem)}
+h3{font-size:1.35rem}
+p{margin:0}
+.dim{color:var(--ink-dim)}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:6px 14px}
+.brand{font-family:var(--display);font-size:1.5rem;color:var(--gold);padding:6px 0}
+.bar nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.navbtn{padding:10px 16px;border-radius:999px;background:var(--tunnel);border:2px solid var(--root);min-height:48px}
+.navbtn[aria-current="true"]{background:var(--tunnel-2);border-color:var(--gold)}
+.purse{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:var(--tunnel-2);border:2px solid var(--gold-deep);font-family:var(--display);font-size:1.3rem;font-variant-numeric:tabular-nums;min-height:48px}
+.coin-ico{width:24px;height:24px;border-radius:50%;background:var(--gold);box-shadow:inset 0 0 0 3px var(--gold-deep);flex:none}
+.purse.bump{animation:bump .45s}
+@keyframes bump{40%{transform:scale(1.18)}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:12px 22px;border-radius:18px;background:var(--tunnel-2);border:2px solid var(--root);font-weight:900;font-size:1.05rem}
+.btn:active{transform:translateY(2px)}
+.btn.gold{background:var(--gold);color:#2b1d07;border-color:var(--gold-deep);box-shadow:0 4px 0 var(--gold-deep)}
+.btn.gold:active{box-shadow:0 1px 0 var(--gold-deep)}
+.btn.deep{background:#5b3fa0;border-color:#8a6fe0;box-shadow:0 4px 0 #3a2870}
+.btn[disabled]{opacity:.45;cursor:default}
+
+/* Niffler */
+.niff{position:relative;width:100%;max-width:240px;aspect-ratio:200/230;cursor:pointer;user-select:none}
+.niff svg{width:100%;height:100%;display:block;overflow:visible}
+.niff.hop{animation:hop .6s cubic-bezier(.3,1.6,.5,1)}
+.niff.tilt{animation:tilt .7s}
+.niff.wiggle{animation:wiggle .6s}
+.niff.swipe{animation:swipe 1.4s ease-in-out}
+@keyframes hop{30%{transform:translateY(-22%) scale(1.04,.96)}60%{transform:translateY(0) scale(1.06,.94)}}
+@keyframes tilt{30%{transform:rotate(-9deg)}70%{transform:rotate(6deg)}}
+@keyframes wiggle{20%{transform:rotate(6deg)}40%{transform:rotate(-6deg)}60%{transform:rotate(4deg)}80%{transform:rotate(-3deg)}}
+@keyframes swipe{0%{transform:none}35%{transform:translateX(160%) rotate(12deg);opacity:0}55%{transform:translateX(-160%);opacity:0}100%{transform:none;opacity:1}}
+.bubble{position:relative;background:var(--ink);color:#2a1d36;border-radius:20px;padding:12px 16px;font-weight:800;font-size:1rem;max-width:300px;min-height:3em}
+.bubble::after{content:"";position:absolute;left:36px;bottom:-12px;border:12px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble sup{color:#6a3fc0}
+
+/* home */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:24px;align-items:center;padding:20px 24px;border-radius:28px;background:linear-gradient(160deg,var(--tunnel-2),var(--tunnel));border:2px solid var(--root);margin-bottom:28px}
+.hero .left{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hero .niff{justify-self:center}
+.kicker{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:900}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.topic{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:18px;border-radius:22px;background:var(--tunnel);border:2px solid var(--root);min-height:150px}
+.topic .glyph{font-family:var(--display);font-size:2.2rem;color:var(--gold);line-height:1;margin-bottom:6px}
+.topic.open{border-color:var(--gold-deep);background:linear-gradient(170deg,#4a3566,var(--tunnel))}
+.topic.locked{opacity:.6;cursor:default}
+.topic.locked .glyph{color:var(--ink-dim)}
+.tag{display:inline-block;font-size:.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--soil-2);color:var(--ink-dim);margin-top:auto}
+.topic.open .tag{background:var(--gold);color:#2b1d07}
+
+/* topic screen */
+.topic-head{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.formula{font-family:var(--display);font-size:1.4rem;color:var(--gold)}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.game{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:24px;background:var(--tunnel);border:2px solid var(--root)}
+.game .glyph{font-family:var(--display);font-size:2.4rem;color:var(--gold);line-height:1}
+.game .row{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
+.game .row .btn{flex:1 1 120px}
+.prog{font-size:.9rem;color:var(--ink-dim);display:flex;gap:12px;flex-wrap:wrap}
+.prog b{color:var(--good)}
+.extras{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:16px}
+.extra{display:flex;align-items:center;gap:14px;text-align:left;padding:18px 20px;border-radius:24px;background:var(--soil-2);border:2px dashed var(--root);min-height:84px}
+.extra .glyph{font-family:var(--display);font-size:1.8rem;color:var(--gem1)}
+
+/* play */
+.play-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.dots{display:flex;gap:8px;margin-left:auto}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--soil-2);border:2px solid var(--root)}
+.dot.done{background:var(--gold);border-color:var(--gold-deep)}
+.dot.now{border-color:var(--gold);transform:scale(1.25)}
+.lvl{font-size:.8rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:var(--tunnel-2)}
+.lvl.adv{background:#5b3fa0}
+.play-grid{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:start}
+.play-niff{display:flex;flex-direction:column;align-items:center;gap:16px;position:sticky;top:12px}
+.play-niff .bubble{order:-1;font-size:.95rem}
+.play-niff .niff{max-width:170px}
+.qcard{padding:24px;border-radius:28px;background:var(--tunnel);border:2px solid var(--root);display:flex;flex-direction:column;gap:18px;min-width:0}
+.qtitle{font-size:.8rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.prompt{font-size:1.3rem;line-height:1.5;font-weight:800}
+.big{display:inline-block;font-family:var(--display);font-weight:400;font-size:2.1rem;letter-spacing:.02em;line-height:1.5;margin-top:4px}
+.claim{font-family:var(--display);font-weight:400;font-size:2rem;color:var(--gold);padding:10px 18px;margin:8px 0;border-radius:18px;background:var(--soil-2);display:inline-block}
+.slot{display:inline-block;min-width:1.3em;padding:0 .15em;text-align:center;color:var(--gold);border-bottom:4px dashed var(--gold);line-height:1.1}
+.slot.filled{border-bottom-style:solid}
+.fig{display:block;width:100%;height:auto;margin:0 auto}
+.coin{fill:var(--gold);stroke:var(--gold-deep);stroke-width:2}
+.coin-in{fill:none;stroke:var(--gold-deep);stroke-width:1.5;opacity:.7}
+.gem{stroke:rgba(255,255,255,.55);stroke-width:1.5}
+.cube-top{fill:var(--cube-top);stroke:#7a4f12;stroke-width:1.2}
+.cube-l{fill:var(--cube-l);stroke:#7a4f12;stroke-width:1.2}
+.cube-r{fill:var(--cube-r);stroke:#7a4f12;stroke-width:1.2}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.opt{min-height:72px;padding:14px;border-radius:18px;background:var(--tunnel-2);border:3px solid var(--root);font-family:var(--display);font-size:1.45rem;font-weight:400;line-height:1.3}
+.opt.small{font-family:var(--body);font-weight:800;font-size:1.05rem}
+.opt.right{border-color:var(--good);background:#235a45}
+.opt.wrong{border-color:var(--oops);opacity:.55}
+.display{min-height:64px;border-radius:16px;background:var(--soil-2);border:3px solid var(--root);font-family:var(--display);font-size:2rem;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:420px;width:100%;margin:0 auto}
+.key{min-height:64px;border-radius:16px;background:var(--tunnel-2);border:2px solid var(--root);font-family:var(--display);font-size:1.7rem;box-shadow:0 3px 0 var(--soil)}
+.key:active{transform:translateY(2px);box-shadow:none}
+.key.check{grid-column:1/-1;background:var(--gold);color:#2b1d07;border-color:var(--gold-deep);box-shadow:0 4px 0 var(--gold-deep);font-size:1.4rem}
+.pad.off .key{opacity:.4;pointer-events:none}
+.feedback{font-size:1.1rem;font-weight:800;min-height:1.5em}
+.feedback .good{color:var(--good);font-family:var(--display);font-weight:400;font-size:1.5rem}
+.feedback .oops{color:var(--oops)}
+.explain{margin-top:8px;padding:12px 16px;border-radius:14px;background:var(--soil-2);font-weight:700;color:var(--ink)}
+.mischief{margin-top:10px;padding:12px 16px;border-radius:14px;background:#4d2f14;border:2px dashed var(--gold);color:var(--gold)}
+.qactions{display:flex;gap:12px;flex-wrap:wrap}
+.hints{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;color:var(--gem1);font-weight:800}
+.hints:empty{display:none}
+
+/* end */
+.end{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:center;padding:24px;border-radius:28px;background:linear-gradient(160deg,var(--tunnel-2),var(--tunnel));border:2px solid var(--gold-deep)}
+.end .stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{padding:12px 16px;border-radius:16px;background:var(--soil-2);min-width:120px}
+.stat b{display:block;font-family:var(--display);font-weight:400;font-size:1.8rem;color:var(--gold);font-variant-numeric:tabular-nums}
+.found{display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:20px;background:var(--soil-2);border:2px solid var(--root)}
+.found .shiny{width:72px;height:72px;flex:none}
+.wonder{padding:16px 18px;border-radius:20px;background:#163246;border:2px solid var(--gem1)}
+.wonder .kicker{color:var(--gem1)}
+.end-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+/* hoard */
+.hoard-top{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start;margin-bottom:24px}
+.hoard-niff{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:28px;background:radial-gradient(circle at 50% 70%,#4a3566,var(--tunnel));border:2px solid var(--root)}
+.section-title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:22px 0 12px}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.item{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:14px;border-radius:18px;background:var(--tunnel);border:2px solid var(--root);min-height:110px}
+.item.on{border-color:var(--good)}
+.item .cost{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;margin-top:auto;font-weight:900}
+.item .cost .coin-ico{width:18px;height:18px}
+.item .swatch{width:34px;height:34px;border-radius:50%;border:3px solid var(--soil)}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px}
+.cell{aspect-ratio:1;border-radius:16px;background:var(--soil-2);border:2px solid var(--root);display:flex;align-items:center;justify-content:center;padding:8px}
+.cell .shiny{width:100%;height:100%}
+.cell.empty{border-style:dashed;opacity:.5}
+.cell.empty::after{content:"?";font-family:var(--display);font-size:1.4rem;color:var(--root)}
+.shiny.rare{filter:drop-shadow(0 0 6px rgba(255,240,170,.85))}
+.wonders{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.wonders .wonder.locked{background:var(--soil-2);border-color:var(--root);border-style:dashed;color:var(--ink-dim)}
+
+/* notes + grown-ups */
+.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.note{padding:16px 18px;border-radius:20px;background:var(--tunnel);border:2px solid var(--root);display:flex;flex-direction:column;gap:6px}
+.note .ex{font-family:var(--display);font-size:1.4rem;color:var(--gold)}
+.form{display:grid;gap:14px;max-width:560px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field input[type=text]{font:inherit;padding:12px 14px;border-radius:14px;border:2px solid var(--root);background:var(--soil-2);color:var(--ink);min-height:52px}
+.toggle{display:flex;align-items:center;gap:12px;min-height:52px}
+.toggle input{width:28px;height:28px;accent-color:var(--gold)}
+.tablewrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;min-width:520px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--root)}
+th{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+footer{margin-top:40px;display:flex;justify-content:center}
+.linkbtn{color:var(--ink-dim);text-decoration:underline;padding:12px}
+
+.flycoin{position:fixed;width:26px;height:26px;border-radius:50%;background:var(--gold);box-shadow:inset 0 0 0 3px var(--gold-deep);pointer-events:none;z-index:50}
+.rain{position:fixed;top:-30px;width:22px;height:22px;border-radius:50%;background:var(--gold);box-shadow:inset 0 0 0 3px var(--gold-deep);pointer-events:none;z-index:40;animation:fall 2.2s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+
+@media (max-width:720px){
+  .hero,.end,.hoard-top{grid-template-columns:1fr}
+  .hero .niff{max-width:170px;grid-row:1}
+  .play-grid{grid-template-columns:1fr}
+  .play-niff{position:static;flex-direction:row;align-items:center}
+  .play-niff .bubble{order:2;flex:1}
+  .play-niff .niff{max-width:96px}
+  .end .niff{max-width:150px;justify-self:center}
+}
+@media (max-width:460px){
+  .opts{grid-template-columns:1fr}
+  .big{font-size:1.7rem}
+  .claim{font-size:1.6rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="bar">
+    <button class="brand" data-go="home">Niffler's Hoard</button>
+    <nav>
+      <button class="navbtn" data-go="home" id="nav-home">Burrows</button>
+      <button class="navbtn" data-go="hoard" id="nav-hoard">Hoard Room</button>
+    </nav>
+    <div class="purse" id="purse" aria-label="coins"><span class="coin-ico"></span><b id="coinCount">0</b></div>
+  </header>
+
+  <main>
+    <section id="scr-home"></section>
+    <section id="scr-topic" hidden></section>
+    <section id="scr-play" hidden>
+      <div class="play-top">
+        <button class="btn" id="leaveBtn">&larr; Exponent Tunnel</button>
+        <span class="lvl" id="lvlTag">Basic</span>
+        <div class="dots" id="dots"></div>
+      </div>
+      <div class="play-grid">
+        <aside class="play-niff">
+          <div class="bubble" id="playBubble"></div>
+          <div class="niff" id="playNiff"></div>
+        </aside>
+        <div class="qcard">
+          <div class="qtitle" id="qTitle"></div>
+          <div class="prompt" id="qPrompt"></div>
+          <div id="qFig"></div>
+          <div id="qAnswer"></div>
+          <div class="feedback" id="qFeedback" aria-live="polite"></div>
+          <ol class="hints" id="hintList"></ol>
+          <div class="qactions">
+            <button class="btn" id="hintBtn">Hint</button>
+            <button class="btn gold" id="nextBtn" hidden>Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="scr-end" hidden></section>
+    <section id="scr-hoard" hidden></section>
+    <section id="scr-notes" hidden></section>
+    <section id="scr-grown" hidden></section>
+  </main>
+
+  <footer><button class="linkbtn" data-go="grown">Grown-up settings</button></footer>
+</div>
+
+<script>
+(() => {
+'use strict';
+/* ---------- state ---------- */
+const KEY = 'nifflersHoard.v1';
+const DEFAULT = {coins:0, shinies:[], owned:[], wear:{}, fur:'lilac', furs:['lilac'], name:'Niffler', player:'friend',
+  stats:{}, wonders:[], settings:{sound:true, speak:false, hints:true}, tickleDay:'', tickles:0};
+const clone = o => JSON.parse(JSON.stringify(o));
+function load(){
+  try { const r = JSON.parse(localStorage.getItem(KEY));
+    if (r && typeof r === 'object') { const s = Object.assign(clone(DEFAULT), r); s.settings = Object.assign({}, DEFAULT.settings, r.settings || {}); return s; }
+  } catch(e) {}
+  return clone(DEFAULT);
+}
+let S = load();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const ri = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const P = (a,b) => `${a}<sup>${b}</sup>`;
+const fmt = n => Number(n).toLocaleString('en-US',{maximumFractionDigits:6});
+const SLOT = '<span class="slot"></span>';
+const times = (a,n) => Array(n).fill(a).join(' × ');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const plural = (n,w) => `${n} ${w}${n===1?'':'s'}`;
+
+const pad = (key,prompt,answer,hints,explain,fig='') => ({type:'pad',key,prompt,answer,hints,explain,fig});
+const mcq = (key,prompt,options,hints,explain,fig='',small=false) => ({type:'mcq',key,prompt,options:options.map(String),hints,explain,fig,small});
+// claim: options[0] is always the correct choice
+function claim(key,text,truth,fix,wrongs,explain){
+  const lab = w => (w && typeof w==='object') ? w.raw : `Wrong, it should be ${w}`;
+  const opts = truth ? ['Niffler is right!', ...wrongs.slice(0,2).map(lab)]
+                     : [lab(fix), 'Niffler is right!', ...wrongs.slice(0,1).map(lab)];
+  return mcq(key, `Niffler puffs out its chest and says:<br><span class="claim">${text}</span><br>Is Niffler right?`, opts,
+    ['Work it out yourself first, then compare.', 'Write the powers out as multiplication.', 'Niffler likes to rush. Check every step.'], explain, '', true);
+}
+
+/* ---------- figures ---------- */
+function coinsFig(n){
+  const per=8, r=11, g=27, rows=Math.ceil(n/per), w=Math.min(n,per)*g+6, h=rows*g+6;
+  let s=''; for (let i=0;i<n;i++){ const x=3+r+(i%per)*g, y=3+r+Math.floor(i/per)*g;
+    s+=`<circle cx="${x}" cy="${y}" r="${r}" class="coin"/><circle cx="${x}" cy="${y}" r="${r-4}" class="coin-in"/>`; }
+  return `<svg class="fig" viewBox="0 0 ${w} ${h}" style="max-width:${Math.round(w*1.3)}px" role="img" aria-label="${n} coins">${s}</svg>`;
+}
+function gemGrid(n,layered=false){
+  const g=36, w=n*g+6; let s='';
+  for (let r=0;r<n;r++) for (let c=0;c<n;c++){ const x=3+c*g+g/2, y=3+r*g+g/2, layer=Math.max(r,c);
+    const fill = layered ? (layer%2 ? 'var(--gem2)' : 'var(--gem1)') : 'var(--gem1)';
+    s+=`<path d="M${x} ${y-13}L${x+12} ${y}L${x} ${y+13}L${x-12} ${y}Z" fill="${fill}" class="gem"/>`; }
+  return `<svg class="fig" viewBox="0 0 ${w} ${w}" style="max-width:${Math.min(Math.round(w*1.15),330)}px" role="img" aria-label="${n} by ${n} square of gems">${s}</svg>`;
+}
+function isoCube(n){
+  const u=Math.min(30,120/n), c=.866, pt=(x,y,z)=>[(x-y)*u*c,(x+y)*u*.5-z*u]; let s='';
+  const q=(pts,cls)=>{ s+=`<polygon points="${pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ')}" class="${cls}"/>`; };
+  for (let i=0;i<n;i++) for (let j=0;j<n;j++){
+    q([pt(i,j,n),pt(i+1,j,n),pt(i+1,j+1,n),pt(i,j+1,n)],'cube-top');
+    q([pt(n,i,j),pt(n,i+1,j),pt(n,i+1,j+1),pt(n,i,j+1)],'cube-r');
+    q([pt(i,n,j),pt(i+1,n,j),pt(i+1,n,j+1),pt(i,n,j+1)],'cube-l');
+  }
+  const W=n*u*c, H=n*u;
+  return `<svg class="fig" viewBox="${(-W-4).toFixed(1)} ${(-H-4).toFixed(1)} ${(2*W+8).toFixed(1)} ${(2*H+8).toFixed(1)}" style="max-width:260px" role="img" aria-label="cube of blocks">${s}</svg>`;
+}
+
+/* ---------- question generators: Exponent Tunnel ---------- */
+const G = {};
+G.double = { basic:[
+  () => { const n=ri(2,5), v=2**n; return pad('d1'+n, `Niffler finds 1 coin. Every night the pile <b>doubles</b>. How many coins after <b>${plural(n,'night')}</b>?`, v,
+    ['Night 1: 1 × 2 = 2 coins.', 'Keep multiplying by 2: 2, 4, 8, 16 …', `That is 2 multiplied ${n} times, written ${P(2,n)}.`],
+    `${P(2,n)} = ${times(2,n)} = ${v} coins.`, coinsFig(v)); },
+  () => { const s=pick([3,5,10]), n=ri(2,3), v=s*2**n; return pad('d2'+s+n, `Niffler starts with <b>${s} coins</b>. The pile doubles every night. How many coins after <b>${n} nights</b>?`, v,
+    [`After night 1: ${s} × 2 = ${s*2}.`, 'Each night, multiply by 2 again.', `${s} × ${P(2,n)} = ${s} × ${2**n}.`],
+    `${s} × ${P(2,n)} = ${s} × ${2**n} = ${v} coins.`); },
+  () => { const n=ri(3,6); return pad('d3'+n, `Write it the short way:<br><span class="big">${times(2,n)} = 2<sup>${SLOT}</sup></span>`, n,
+    ['Count how many 2s are multiplied.', 'The exponent is the count of 2s.', `Point at each 2 and count: 1, 2, 3 …`],
+    `${n} twos multiplied together is ${P(2,n)} = ${2**n}.`); },
+  () => { const T=pick([20,50,100,200,500]); let n=0; while (2**n<=T) n++;
+    return pad('d4'+T, `Niffler starts with 1 coin and the pile doubles every night. After how many nights does Niffler have <b>more than ${T}</b> coins?`, n,
+    ['List the piles: 2, 4, 8, 16, 32, 64, 128, 256, 512 …', 'Night 1 = 2, night 2 = 4, night 3 = 8 …', `Find the first pile bigger than ${T}.`],
+    `After ${n} nights the pile is ${P(2,n)} = ${2**n}, the first pile bigger than ${T}. One night earlier it was only ${2**(n-1)}.`); },
+], adv:[
+  () => { const n=ri(3,5), v=3**n; return pad('a1'+n, `A magic pouch <b>triples</b> its coins every night, starting with 1 coin. How many after <b>${n} nights</b>?`, v,
+    ['Night 1: 1 × 3 = 3.', 'Keep multiplying by 3: 3, 9, 27 …', `That is ${P(3,n)}.`], `${P(3,n)} = ${times(3,n)} = ${fmt(v)} coins.`); },
+  () => { const n=ri(7,10), v=2**n; return pad('a2'+n, `Niffler folds a sheet of paper in half <b>${n} times</b>. How many layers thick is it?`, v,
+    ['Each fold doubles the layers: 2, 4, 8 …', `So the answer is ${P(2,n)}.`, `${P(2,5)} = 32. Keep doubling from 32.`],
+    `${P(2,n)} = ${fmt(v)} layers. Folded 42 times, the paper would reach past the Moon!`); },
+  () => { const [a,b]=pick([[2,5],[2,6],[3,4],[2,4],[3,5],[2,3],[4,5]]); const x=a**b, y=b**a;
+    const opts=[`${P(a,b)} is bigger`,`${P(b,a)} is bigger`,'They are equal']; const c = x>y?0:x<y?1:2;
+    return mcq('a3'+a+b, `Which treasure is bigger: <span class="big">${P(a,b)}</span> or <span class="big">${P(b,a)}</span>?`, [c,...[0,1,2].filter(i=>i!==c)].map(i=>opts[i]),
+      [`Work out ${P(a,b)} first.`, `${P(a,b)} = ${fmt(x)}.`, `${P(b,a)} = ${fmt(y)}.`],
+      `${P(a,b)} = ${fmt(x)} and ${P(b,a)} = ${fmt(y)}. ${c===2 ? `A rare tie! ${P(2,4)} and ${P(4,2)} are the only pair of different whole numbers that do this.` : 'Swapping the base and exponent changes the answer.'}`, '', true); },
+  () => { const n=ri(11,40), d=[6,2,4,8][n%4]; return pad('a4'+n, `What is the <b>last digit</b> of <span class="big">${P(2,n)}</span>?<br>No need to work out the whole number!`, d,
+    ['Write the first few: 2, 4, 8, 16, 32, 64, 128, 256.', 'The last digits repeat: 2, 4, 8, 6, 2, 4, 8, 6 …', `The pattern repeats every 4. ${n} ÷ 4 leaves remainder ${n%4}. (Remainder 1 → 2, 2 → 4, 3 → 8, 0 → 6.)`],
+    `Last digits of powers of 2 go round 2, 4, 8, 6. ${n} ÷ 4 has remainder ${n%4}, so the last digit is ${d}.`); },
+  () => { const n=ri(6,10), v=2**n; return pad('a5'+n, `Niffler started with 1 coin. The pile doubled every night and now has <b>${fmt(v)}</b> coins. How many nights passed?`, n,
+    ['Go backwards: halve the pile until you reach 1.', 'Count how many times you halved.', `It is the exponent in 2<sup>?</sup> = ${fmt(v)}.`], `${P(2,n)} = ${fmt(v)}, so ${n} nights passed.`); },
+]};
+
+G.code = { basic:[
+  () => { const a=ri(2,6), b=a<=3?ri(2,4):ri(2,3), v=a**b; return pad('c1'+a+b, `<span class="big">${P(a,b)} = ${SLOT}</span>`, v,
+    [`The little ${b} says how many ${a}s to multiply.`, `${P(a,b)} = ${times(a,b)}.`, 'Multiply step by step from the left.'], `${P(a,b)} = ${times(a,b)} = ${v}.`); },
+  () => { let a=ri(2,9), n=ri(3,5); if (a===n) a++; return mcq('c2'+a+n, `Niffler stacked coins like this:<br><span class="big">${times(a,n)}</span><br>Which is the short way to write it?`,
+    [P(a,n), P(n,a), a*n, `${a} + ${n}`], ['Which number is being multiplied?', 'How many times does it appear?', 'The repeated number is the base. The count sits up high as the exponent.'],
+    `${a} appears ${n} times, so it is ${P(a,n)}.`); },
+  () => { let a=ri(3,9), b=ri(2,5); if (a===b) a++; const ask=pick(['base','exponent']);
+    return mcq('c3'+a+b+ask, `In <span class="big">${P(a,b)}</span>, which number is the <b>${ask}</b>?`, ask==='base'?[a,b,a**b,a*b]:[b,a,a**b,a*b],
+      ['The base is the big number on the ground.', 'The exponent is the small number up high.', 'The exponent tells how many times to use the base.'],
+      `In ${P(a,b)}, ${a} is the base and ${b} is the exponent. It means ${times(a,b)}.`); },
+  () => { const a=ri(3,9); return mcq('c4'+a, `Niffler says squaring is easy. What is <span class="big">${P(a,2)}</span>?`, [a*a, 2*a, a+2, Number(`${a}2`)],
+    ['Squared means the exponent is 2.', `${P(a,2)} = ${a} × ${a}, not ${a} × 2.`, `Picture a square of gems with ${a} on each side.`],
+    `${P(a,2)} = ${a} × ${a} = ${a*a}. The trap is ${a} × 2 = ${2*a}.`); },
+], adv:[
+  () => { const a=ri(3,99), e=pick([0,1]); return pad('k1'+a+e, `<span class="big">${P(a,e)} = ${SLOT}</span>`, e===0?1:a,
+    e===0 ? [`Look at a pattern: ${P(2,3)} = 8, ${P(2,2)} = 4, ${P(2,1)} = 2.`, `Each step down divides by 2. So ${P(2,0)} = 2 ÷ 2.`, 'This works for any base except 0.']
+          : ['The exponent says how many times to use the base.', 'Using the base once is just the base.', `${P(a,1)} is one ${a}.`],
+    e===0 ? `${P(a,0)} = 1. Going down one exponent divides by the base, and ${a} ÷ ${a} = 1.` : `${P(a,1)} = ${a}: just one ${a}.`); },
+  () => { const b=pick([2,3,5,10]), n=ri(2,{2:10,3:6,5:5,10:6}[b]), v=b**n; return pad('k2'+b+n, `<span class="big">${b}<sup>${SLOT}</sup> = ${fmt(v)}</span>`, n,
+    [`Start multiplying: ${b}, ${fmt(b*b)}, ${fmt(b**3)} …`, `Count how many ${b}s you multiplied.`, `Keep going until you reach ${fmt(v)}.`], `${P(b,n)} = ${fmt(v)}.`); },
+  () => { const n=pick([2,3]), b = n===2 ? ri(9,15) : ri(2,6), v=b**n; return pad('k3'+b+n, `What is the missing base?<br><span class="big">${SLOT}<sup>${n}</sup> = ${fmt(v)}</span>`, b,
+    [n===2 ? 'Which number times itself makes it?' : 'Which number, used three times, makes it?', 'Make a guess and check it.', n===2 ? '10 × 10 = 100. Is the answer bigger or smaller than 10?' : `${P(2,3)} = 8, ${P(3,3)} = 27, ${P(4,3)} = 64 …`],
+    `${P(b,n)} = ${times(b,n)} = ${fmt(v)}.`); },
+  () => { const pool=[]; for (let a=2;a<=6;a++) for (let b=2;b<=5;b++){ const v=a**b; if (v<=1500) pool.push([a,b,v]); }
+    let set; do { set=shuffle(pool).slice(0,4); } while (new Set(set.map(s=>s[2])).size<4);
+    const big=Math.random()<.5, sorted=set.slice().sort((x,y)=>big?y[2]-x[2]:x[2]-y[2]);
+    return mcq('k4'+sorted.map(s=>s[0]+''+s[1]).join(''), `Niffler only wants the <b>${big?'biggest':'smallest'}</b> treasure. Which one?`, sorted.map(s=>P(s[0],s[1])),
+      ['Work out each one.', 'Write the value under each power.', `Now pick the ${big?'biggest':'smallest'} number.`], sorted.map(s=>`${P(s[0],s[1])} = ${fmt(s[2])}`).join(', ')+'.'); },
+  () => { const one=Math.random()<.5, n=ri(5,100); return pad('k5'+one+n, `<span class="big">${P(one?1:0,n)} = ${SLOT}</span>`, one?1:0,
+    [`Write out the first few: ${one?'1 × 1 × 1':'0 × 0 × 0'} …`, 'Does the answer ever change?', 'More copies keep giving the same answer.'],
+    one ? '1 times itself any number of times is still 1.' : `0 times anything is 0, so ${P(0,n)} = 0.`); },
+]};
+
+G.zero = { basic:[
+  () => { const n=ri(1,6), v=10**n; return pad('z1'+n, `<span class="big">${P(10,n)} = ${SLOT}</span>`, v,
+    ['Multiply 10 by itself.', `${P(10,n)} = ${times(10,n)}.`, `It is a 1 followed by ${plural(n,'zero')}.`], `${P(10,n)} = ${fmt(v)}: a 1 with ${plural(n,'zero')}.`); },
+  () => { const n=ri(4,9); return pad('z2'+n, `Niffler digs up <span class="big">${P(10,n)}</span>. How many zeros does this number have?`, n,
+    [`Try smaller ones: ${P(10,2)} = 100 has 2 zeros.`, `${P(10,3)} = 1,000 has 3 zeros.`, 'The exponent counts the zeros.'], `${P(10,n)} = ${fmt(10**n)}, which has ${n} zeros.`); },
+  () => { const n=ri(2,7); return pad('z3'+n, `<span class="big">${fmt(10**n)} = 10<sup>${SLOT}</sup></span>`, n,
+    ['Count the zeros.', 'Each zero is one more 10 multiplied in.', 'The exponent equals the number of zeros.'], `${fmt(10**n)} has ${n} zeros, so it is ${P(10,n)}.`); },
+  () => { const k=ri(2,9), n=ri(1,3); return pad('z4'+k+n, `<span class="big">${k} × ${P(10,n)} = ${SLOT}</span>`, k*10**n,
+    [`${P(10,n)} = ${fmt(10**n)}.`, `Multiplying by ${fmt(10**n)} adds ${plural(n,'zero')} to a whole number.`, `${k} becomes ${k} with ${plural(n,'zero')} after it.`], `${k} × ${fmt(10**n)} = ${fmt(k*10**n)}.`); },
+  () => { let m; do { m=ri(11,99); } while (m%10===0); const x=m/10, n=ri(1,2), v=m*10**n/10;
+    return pad('z5'+m+n, `<span class="big">${x} × ${P(10,n)} = ${SLOT}</span>`, v,
+    [`${P(10,n)} = ${fmt(10**n)}.`, `Multiplying by ${fmt(10**n)} moves every digit ${plural(n,'place')} to the left.`, `Slide the decimal point ${plural(n,'place')} to the right.`],
+    `${x} × ${fmt(10**n)} = ${fmt(v)}. The decimal point slides ${plural(n,'place')} right.`); },
+], adv:[
+  () => { let m; do { m=ri(101,999); } while (m%10===0); const x=m/100, n=ri(1,3), v=m*10**n/100;
+    return pad('y1'+m+n, `<span class="big">${x} × ${P(10,n)} = ${SLOT}</span>`, v,
+    [`${P(10,n)} = ${fmt(10**n)}.`, `Slide the decimal point ${plural(n,'place')} right.`, 'Fill any empty places with zeros.'], `${x} × ${fmt(10**n)} = ${fmt(v)}.`); },
+  () => { let a; do { a=ri(12,999); } while (a%10===0); const n=ri(1,2), v=a/10**n;
+    return pad('y2'+a+n, `<span class="big">${a} ÷ ${P(10,n)} = ${SLOT}</span>`, v,
+    [`${P(10,n)} = ${fmt(10**n)}.`, `Dividing by ${fmt(10**n)} slides the decimal point ${plural(n,'place')} left.`, `${a} is the same as ${a}.0. Now move the point.`], `${a} ÷ ${fmt(10**n)} = ${fmt(v)}.`); },
+  () => { const a=ri(2,6), b=ri(2,6); return pad('y3'+a+b, `<span class="big">${P(10,a)} × ${P(10,b)} = 10<sup>${SLOT}</sup></span>`, a+b,
+    [`${P(10,a)} has ${a} zeros and ${P(10,b)} has ${b} zeros.`, 'When you multiply them, the zeros pile up together.', 'Add the exponents.'],
+    `${fmt(10**a)} × ${fmt(10**b)} = ${fmt(10**(a+b))} = ${P(10,a+b)}.`); },
+  () => { const d=ri(2,9), n=ri(4,8); return pad('y4'+d+n, `Scientists write big numbers the short way.<br><span class="big">${fmt(d*10**n)} = ${d} × 10<sup>${SLOT}</sup></span>`, n,
+    [`Count the zeros after the ${d}.`, `${d} × 10 = ${d*10}, ${d} × 100 = ${d*100} …`, 'Each zero is one power of 10.'],
+    `${fmt(d*10**n)} = ${d} × ${P(10,n)}. This is called scientific notation.`); },
+  () => { const f=pick([['The Moon is about 384,000 km away.','3.84',5],['The Sun is about 150,000,000 km away.','1.5',8],['About 8,000,000,000 people live on Earth.','8',9],['A blue whale can weigh about 150,000 kg.','1.5',5],['Light travels about 300,000 km every second.','3',5]]);
+    return pad('y5'+f[2]+f[1], `${f[0]}<br><span class="big">That is ${f[1]} × 10<sup>${SLOT}</sup></span>`, f[2],
+    ['Multiplying by 10 slides the decimal point one place right.', `Start at ${f[1]} and count how many places the point must slide.`, 'Count the digits after the first digit of the big number.'],
+    `${f[1]} × ${P(10,f[2])}: the point slides ${f[2]} places.`); },
+  () => pad('y6', `Niffler's emptiest vault:<br><span class="big">${P(10,0)} = ${SLOT}</span>`, 1,
+    [`${P(10,2)} = 100, ${P(10,1)} = 10 …`, 'Each step down divides by 10.', '10 ÷ 10 = ?'], `${P(10,0)} = 1. Each step down divides by 10, and 10 ÷ 10 = 1.`),
+]};
+
+G.gems = { basic:[
+  () => { const n=ri(2,7); return pad('g1'+n, `Niffler laid out gems in a square. How many gems are there?<br>This is ${P(n,2)}, "${n} squared".`, n*n,
+    [`Count one row: ${n} gems.`, `There are ${n} rows.`, `${n} × ${n}.`], `${P(n,2)} = ${n} × ${n} = ${n*n} gems.`, gemGrid(n)); },
+  () => { const n=ri(2,4); return pad('g2'+n, `How many little gold blocks make this cube? It is ${n} blocks long, ${n} wide and ${n} tall.`, n**3,
+    [`One layer is ${n} × ${n} = ${n*n} blocks.`, `There are ${n} layers.`, `That is ${P(n,3)}, "${n} cubed".`], `${P(n,3)} = ${times(n,3)} = ${n**3} blocks.`, isoCube(n)); },
+  () => { const s=ri(4,10), sq=s*s, ds=new Set(); while (ds.size<3){ const d=sq+pick([-3,-2,-1,1,2,3,4,5]); if (d>1 && !Number.isInteger(Math.sqrt(d))) ds.add(d); }
+    return mcq('g3'+s, 'Which number of gems can make a perfect square?', [sq,...ds],
+      ['A square number is a whole number times itself.', 'Try 4 × 4 = 16, 5 × 5 = 25, 6 × 6 = 36 …', 'Which choice is on that list?'], `${sq} = ${s} × ${s} = ${P(s,2)}.`); },
+  () => { const n=ri(5,12); return pad('g4'+n, `A square of gems has <b>${n*n}</b> gems. How many gems are along each side?`, n,
+    ['Which number times itself makes it?', '10 × 10 = 100. Bigger or smaller?', 'Guess, then check.'], `${n} × ${n} = ${n*n}, so each side has ${n}. This is called the square root.`); },
+], adv:[
+  () => { const n=ri(4,7), odds=Array.from({length:n},(_,i)=>2*i+1); return pad('h1'+n, `Add the first ${n} odd numbers:<br><span class="big">${odds.join(' + ')} = ${SLOT}</span>`, n*n,
+    ['Look at the picture: each new L-shape of colour is the next odd number.', 'The L-shapes build a square.', `The square is ${n} by ${n}.`],
+    `${odds.join(' + ')} = ${n*n} = ${P(n,2)}. The first n odd numbers always add up to n squared.`, gemGrid(n,true)); },
+  () => { const n=ri(5,20); return pad('h2'+n, `Niffler has a ${n} × ${n} square of gems. How many <b>more</b> gems does it need to make a ${n+1} × ${n+1} square?`, 2*n+1,
+    [`${P(n+1,2)} − ${P(n,2)}.`, `${P(n+1,2)} = ${(n+1)**2} and ${P(n,2)} = ${n*n}.`, 'Or picture it: add a new row, a new column and one corner gem.'],
+    `${(n+1)**2} − ${n*n} = ${2*n+1}. That is ${n} + ${n} + 1: a row, a column and a corner.`); },
+  () => { const n=pick([5,6,10]); return pad('h3'+n, `<span class="big">${P(n,3)} = ${SLOT}</span>`, n**3,
+    [`First find ${n} × ${n} = ${n*n}.`, `Then multiply by ${n} again.`, `${n*n} × ${n}.`], `${P(n,3)} = ${times(n,3)} = ${fmt(n**3)}.`); },
+  () => { const ds=shuffle([16,27,36,100,125,81,8,49]).slice(0,3); return mcq('h4'+ds.join(''), 'Which number is <b>both</b> a square number and a cube number?', [64,...ds],
+    ['Square numbers: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 …', 'Cube numbers: 1, 8, 27, 64, 125 …', 'Which choice is on both lists?'], `64 = ${P(8,2)} and 64 = ${P(4,3)}. The next number like this is 729!`); },
+  () => { const n=ri(11,20); return pad('h5'+n, `A square vault floor is covered by <b>${n*n}</b> square tiles. How many tiles long is each side?`, n,
+    ['Find a number that times itself makes it.', '15 × 15 = 225. Bigger or smaller?', 'The last digit gives a clue.'], `${n} × ${n} = ${n*n}, so each side is ${n} tiles.`); },
+  () => { let N; do { N=ri(20,150); } while (Number.isInteger(Math.sqrt(N))); const k=Math.floor(Math.sqrt(N));
+    return mcq('h6'+N, `<b>${N}</b> is not a square number. Which two square numbers is it between?`, [[k,k+1],[k-1,k],[k+1,k+2],[k-2,k-1]].map(([a,b])=>`${P(a,2)} and ${P(b,2)}`),
+      ['List squares: 16, 25, 36, 49, 64, 81, 100, 121, 144.', `Find the biggest square below ${N}.`, 'Then the next square above it.'],
+      `${P(k,2)} = ${k*k} and ${P(k+1,2)} = ${(k+1)**2}, so ${N} sits between them.`); },
+]};
+
+G.rules = { basic:[
+  () => { const a=pick([2,3,5,10]), m=ri(1,4), n=ri(1,4); return pad('r1'+a+m+n, `<span class="big">${P(a,m)} × ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m+n,
+    [`Write it out: (${times(a,m)}) × (${times(a,n)}).`, `Count all the ${a}s.`, `${m} ${a}s and ${n} more.`],
+    `(${times(a,m)}) × (${times(a,n)}) has ${m+n} ${a}s, so it is ${P(a,m+n)}. Secret rule: multiplying powers of the same base adds the exponents.`); },
+  () => { const a=pick([2,3,5]), m=ri(4,6), n=ri(1,m-1); return pad('r2'+a+m+n, `<span class="big">${P(a,m)} ÷ ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m-n,
+    [`Write it as a fraction: ${m} ${a}s on top, ${n} on the bottom.`, `Each ${a} on the bottom cancels one on top.`, `${m} − ${n}.`],
+    `${n} of the ${a}s cancel, leaving ${m-n}: ${P(a,m-n)}. Secret rule: dividing powers of the same base subtracts the exponents.`); },
+  () => { const m=ri(1,4), n=ri(1,3); return pad('r3'+m+n, `<span class="big">${P(2,m)} × ${P(2,n)} = ${SLOT}</span>`, 2**(m+n),
+    [`${P(2,m)} = ${2**m} and ${P(2,n)} = ${2**n}.`, 'Multiply them.', `Or use the rule: it is ${P(2,m+n)}.`], `${2**m} × ${2**n} = ${2**(m+n)} = ${P(2,m+n)}.`); },
+  () => { const e=ri(2,3), k=ri(3,4); return pad('r4'+e+k, `Here <i>a</i> is a mystery number.<br><span class="big">${Array(k).fill(P('a',e)).join(' × ')} = a<sup>${SLOT}</sup></span>`, e*k,
+    [`Each ${P('a',e)} is ${times('a',e)}.`, `There are ${k} groups of ${e}.`, `${k} × ${e}.`], `${k} groups of ${e} make ${e*k} copies of a, so the answer is ${P('a',e*k)}.`); },
+], adv:[
+  () => { const a=ri(2,9), m=ri(8,25), n=ri(8,25); return pad('s1'+a+m+n, `<span class="big">${P(a,m)} × ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m+n,
+    ['Too big to write out! Use the secret rule.', 'Same base, multiplying: add the exponents.', `${m} + ${n}.`], `${P(a,m)} × ${P(a,n)} = ${P(a,m+n)}.`); },
+  () => { const a=pick([2,3,5,10]), m=ri(2,5), n=ri(2,4); return pad('s2'+a+m+n, `<span class="big">(${P(a,m)})<sup>${n}</sup> = ${a}<sup>${SLOT}</sup></span>`, m*n,
+    [`(${P(a,m)})<sup>${n}</sup> means ${n} copies of ${P(a,m)} multiplied.`, `Each copy has ${m} ${a}s.`, `${n} × ${m}.`],
+    `${n} copies of ${m} ${a}s is ${m*n} ${a}s: ${P(a,m*n)}. A power of a power multiplies the exponents.`); },
+  () => { const a=ri(2,9), m=ri(20,40), n=ri(5,19); return pad('s3'+a+m+n, `<span class="big">${P(a,m)} ÷ ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m-n,
+    ['Same base, dividing: subtract the exponents.', `${n} of the ${a}s on top get cancelled.`, `${m} − ${n}.`], `${P(a,m)} ÷ ${P(a,n)} = ${P(a,m-n)}.`); },
+  () => { const n=ri(2,6); return pad('s4'+n, `<span class="big">${P(2,n)} × ${P(5,n)} = 10<sup>${SLOT}</sup></span>`, n,
+    ['Write out the 2s and the 5s.', 'Pair each 2 with a 5: 2 × 5 = 10.', 'How many pairs are there?'], `There are ${n} pairs of (2 × 5), so the answer is ${P(10,n)} = ${fmt(10**n)}.`); },
+  () => { const [b,s,k]=pick([[4,2,2],[8,2,3],[9,3,2],[27,3,3],[16,2,4]]), n=ri(2,4); return pad('s5'+b+n, `<span class="big">${P(b,n)} = ${s}<sup>${SLOT}</sup></span>`, k*n,
+    [`${b} = ${P(s,k)}.`, `So ${P(b,n)} = (${P(s,k)})<sup>${n}</sup>.`, `${k} × ${n}.`], `${b} = ${P(s,k)}, so ${P(b,n)} = ${P(s,k*n)}.`); },
+  () => { const x=ri(3,9); return pad('s6'+x, `Both mystery exponents are the <b>same</b> number.<br><span class="big">2<sup>${SLOT}</sup> × 2<sup>${SLOT}</sup> = ${P(2,2*x)}</span>`, x,
+    ['Multiplying adds the exponents.', `So the number plus itself is ${2*x}.`, `Half of ${2*x}.`], `${P(2,x)} × ${P(2,x)} = ${P(2,x+x)} = ${P(2,2*x)}.`); },
+]};
+
+G.catch = { basic:[
+  () => { const a=ri(2,5), b=ri(3,4); return claim('t1'+a+b, `${P(a,b)} = ${a*b}`, false, a**b, [a+b], `${P(a,b)} = ${times(a,b)} = ${a**b}. Niffler did ${a} × ${b} instead.`); },
+  () => { const a=ri(3,9); return claim('t2'+a, `${P(a,2)} = ${2*a}`, false, a*a, [a+2], `${P(a,2)} = ${a} × ${a} = ${a*a}, not ${a} × 2.`); },
+  () => { const a=ri(2,6), b=ri(2,3); return claim('t3'+a+b, `${P(a,b)} = ${a**b}`, true, null, [a*b, a**b+a], `Niffler got it right this time! ${P(a,b)} = ${times(a,b)} = ${a**b}.`); },
+  () => { const n=ri(3,8), t=Math.random()<.5; return t
+    ? claim('t4'+n+'t', `${P(10,n)} has ${n} zeros`, true, null, [`${n+1} zeros`, `${n-1} zeros`], `Right! ${P(10,n)} = ${fmt(10**n)}, which has ${n} zeros.`)
+    : claim('t4'+n+'f', `${P(10,n)} has ${n+1} zeros`, false, `${n} zeros`, [`${n-1} zeros`], `${P(10,n)} = ${fmt(10**n)}, which has ${n} zeros.`); },
+  () => claim('t5', `${P(3,2)} = ${P(2,3)}`, false, {raw:`Wrong: ${P(3,2)} is 9 and ${P(2,3)} is 8`}, [{raw:'Wrong: they are both 6'}], `${P(3,2)} = 3 × 3 = 9 but ${P(2,3)} = 2 × 2 × 2 = 8. Close, but not the same!`),
+], adv:[
+  () => { const a=pick([2,3,5]); let m=ri(2,5), n=ri(3,6); return claim('u1'+a+m+n, `${P(a,m)} × ${P(a,n)} = ${P(a,m*n)}`, false, P(a,m+n), [P(a*a,m+n)], `Multiplying powers of the same base adds the exponents: ${m} + ${n} = ${m+n}, so it is ${P(a,m+n)}.`); },
+  () => claim('u2', `${P(10,0)} = 0`, false, '1', ['10'], `${P(10,0)} = 1. Going down from ${P(10,1)} = 10 divides by 10, and 10 ÷ 10 = 1.`),
+  () => { const a=pick([2,3,10]), m=ri(2,4), n=ri(3,5); return claim('u3'+a+m+n, `(${P(a,m)})<sup>${n}</sup> = ${P(a,m+n)}`, false, P(a,m*n), [P(a*n,m)], `(${P(a,m)})<sup>${n}</sup> is ${n} groups of ${m} ${a}s, which is ${m*n} ${a}s: ${P(a,m*n)}.`); },
+  () => { const n=ri(3,9); return Math.random()<.5
+    ? claim('u4'+n+'t', `${P(2,n)} + ${P(2,n)} = ${P(2,n+1)}`, true, null, [P(2,2*n), P(4,n)], `Right! Two copies of ${P(2,n)} is 2 × ${P(2,n)}, which is one more 2: ${P(2,n+1)}.`)
+    : claim('u4'+n+'f', `${P(2,n)} + ${P(2,n)} = ${P(2,2*n)}`, false, P(2,n+1), [P(4,2*n)], `Adding is not multiplying! ${P(2,n)} + ${P(2,n)} = 2 × ${P(2,n)} = ${P(2,n+1)}.`); },
+  () => claim('u5', `${P(2,10)} is bigger than ${P(10,3)}`, true, null, [{raw:'Wrong: they are equal'}, {raw:`Wrong: ${P(10,3)} is bigger`}], `Right! ${P(2,10)} = 1,024 and ${P(10,3)} = 1,000. Just barely!`),
+  () => { const n=ri(2,5); return claim('u6'+n, `${P(2,n)} × ${P(5,n)} = ${P(10,n)}`, true, null, [P(10,2*n), P(7,n)], `Right! Each 2 pairs with a 5 to make 10, so it is ${P(10,n)} = ${fmt(10**n)}.`); },
+  () => { let n; do { n=ri(12,30); } while (n%4===1); const d=[6,2,4,8][n%4]; const other=[2,4,8,6].filter(x=>x!==d&&x!==2);
+    return claim('u7'+n, `The last digit of ${P(2,n)} is 2`, false, d, [pick(other)], `Last digits of powers of 2 repeat 2, 4, 8, 6. ${n} ÷ 4 has remainder ${n%4}, so the last digit is ${d}.`); },
+]};
+
+const GAMES = [
+  {id:'double', name:'Pouch Doubling', glyph:'2<sup>n</sup>', blurb:"Niffler's coins double every night. How fast can a pile grow?"},
+  {id:'code',   name:'Power Code',     glyph:'a<sup>b</sup>', blurb:'Crack the short way to write a number multiplied by itself.'},
+  {id:'zero',   name:'Zero Mine',      glyph:'10<sup>6</sup>', blurb:'Powers of ten: dig up the zeros and slide the decimal point.'},
+  {id:'gems',   name:'Square & Cube Gems', glyph:'n<sup>2</sup> n<sup>3</sup>', blurb:'Count gems in squares and gold blocks in cubes.'},
+  {id:'rules',  name:'Rule Vault',     glyph:'+ −', blurb:'Discover the secret shortcuts for multiplying and dividing powers.'},
+  {id:'catch',  name:'Catch the Niffler', glyph:'?!', blurb:'Niffler is showing off. Is it right, or did it fib?'},
+];
+const WONDERS = {
+  double:`Fold a sheet of paper in half 42 times and it would be thicker than the distance to the Moon. That is ${P(2,42)} layers.`,
+  code:`A googol is ${P(10,100)}: a 1 with 100 zeros. There are fewer atoms in the whole universe!`,
+  zero:`The Earth weighs about 6 × ${P(10,24)} kg. Without exponents you would write a 6 with 24 zeros.`,
+  gems:'Add the odd numbers in order: 1, 1 + 3, 1 + 3 + 5 … You always get a square number. Always!',
+  rules:`Exponents can be negative too. ${P(2,'−1')} means one half, and ${P(10,'−2')} means one hundredth.`,
+  catch:`${P(2,4)} = ${P(4,2)} = 16. It is the only time two different whole numbers swap base and exponent and still match.`,
+};
+const NOTES = [
+  ['Base', P(5,3), 'The big number. It is the number being multiplied.'],
+  ['Exponent', P(5,3), 'The small raised number. It counts how many times to use the base.'],
+  ['Power', `${P(2,5)} = 32`, 'A number written with an exponent, or its value. "2 to the power of 5."'],
+  ['Squared', `${P(7,2)} = 49`, 'Exponent 2. It makes a square: 7 rows of 7.'],
+  ['Cubed', `${P(3,3)} = 27`, 'Exponent 3. It makes a cube: 3 long, 3 wide, 3 tall.'],
+  ['Powers of ten', `${P(10,4)} = 10,000`, 'The exponent counts the zeros.'],
+  ['Scientific notation', `3 × ${P(10,8)}`, 'A short way to write huge numbers: a small number times a power of ten.'],
+  ['Zero exponent', `${P(9,0)} = 1`, 'Any number except 0 to the power 0 is 1.'],
+  ['Multiplying rule', `${P(2,3)} × ${P(2,4)} = ${P(2,7)}`, 'Same base: add the exponents.'],
+  ['Dividing rule', `${P(3,6)} ÷ ${P(3,2)} = ${P(3,4)}`, 'Same base: subtract the exponents.'],
+  ['Power of a power', `(${P(5,2)})<sup>3</sup> = ${P(5,6)}`, 'Multiply the exponents.'],
+  ['Square root', '√49 = 7', 'The number that makes a square: 7 × 7 = 49.'],
+];
+const TOPICS = [
+  {id:'exp', name:'Exponents', sub:'Powers, squares, cubes and powers of ten', glyph:'2<sup>n</sup>', open:true},
+  {id:'frac', name:'Fractions', sub:'Halves of halves and Egyptian fractions', glyph:'½'},
+  {id:'dec', name:'Decimals & Place Value', sub:'Thousandths and secret number bases', glyph:'0.01'},
+  {id:'prime', name:'Primes & Factors', sub:'Divisibility tricks and codes', glyph:'7'},
+  {id:'pat', name:'Patterns & Sequences', sub:'Fibonacci, triangles and handshakes', glyph:'1 1 2 3'},
+  {id:'shape', name:'Shapes & Volume', sub:'Cube nets, coordinates and tilings', glyph:'△'},
+  {id:'prob', name:'Chance & Counting', sub:'Probability and how many ways', glyph:'⚄'},
+];
+
+/* ---------- Niffler (original design) ---------- */
+const FURS = {
+  lilac:{n:'Lilac', main:'#a99bd5', dark:'#7a6bb2', belly:'#e8e1f7', cost:0},
+  honey:{n:'Honey', main:'#e4ae62', dark:'#b47e39', belly:'#f8e5c4', cost:25},
+  mint:{n:'Mint', main:'#82d1b5', dark:'#4f9f86', belly:'#daf4ea', cost:45},
+  sky:{n:'Sky', main:'#86b7ec', dark:'#5786c0', belly:'#ddecfc', cost:70},
+  rose:{n:'Rose', main:'#ec97b7', dark:'#be6487', belly:'#fce1eb', cost:90},
+  cocoa:{n:'Cocoa', main:'#a57a62', dark:'#74513e', belly:'#ecd8c9', cost:120},
+};
+const ITEMS = [
+  {id:'bow', name:'Bow tie', slot:'neck', cost:15},
+  {id:'helmet', name:"Miner's helmet", slot:'head', cost:20},
+  {id:'goggles', name:'Dig goggles', slot:'face', cost:35},
+  {id:'scarf', name:'Cosy scarf', slot:'neck', cost:50},
+  {id:'cape', name:'Starry cape', slot:'back', cost:75},
+  {id:'crown', name:'Gold crown', slot:'head', cost:120},
+];
+function niffSVG(furId, wear){
+  const f = FURS[furId] || FURS.lilac, w = wear || {};
+  const ear = x => `<circle cx="${x}" cy="44" r="26" fill="${f.main}"/><circle cx="${x}" cy="44" r="15" fill="#f5b8cb"/>`;
+  return `<svg viewBox="0 0 200 230" aria-hidden="true">
+  ${w.back==='cape' ? `<path d="M58 120 Q100 106 142 120 L172 216 Q100 230 28 216 Z" fill="#4b3a8f"/><circle cx="56" cy="192" r="3" fill="#ffe27a"/><circle cx="146" cy="176" r="2.5" fill="#ffe27a"/><circle cx="152" cy="206" r="3" fill="#ffe27a"/><circle cx="44" cy="164" r="2" fill="#ffe27a"/>` : ''}
+  <path d="M150 192 Q194 188 188 152 Q184 130 168 138" fill="none" stroke="${f.dark}" stroke-width="13" stroke-linecap="round"/>
+  <circle cx="168" cy="137" r="10" fill="${f.belly}"/>
+  ${ear(48)}${ear(152)}
+  <ellipse cx="74" cy="212" rx="19" ry="10" fill="${f.dark}"/><ellipse cx="126" cy="212" rx="19" ry="10" fill="${f.dark}"/>
+  <ellipse cx="100" cy="152" rx="64" ry="64" fill="${f.main}"/>
+  <circle cx="100" cy="86" r="54" fill="${f.main}"/>
+  <ellipse cx="100" cy="162" rx="42" ry="42" fill="${f.belly}"/>
+  <circle cx="100" cy="170" r="11" fill="#f7c74b" stroke="#d9951b" stroke-width="2.5"/>
+  <path d="M66 170 Q100 190 134 170 L134 192 Q100 208 66 192Z" fill="${f.belly}"/>
+  <path d="M66 170 Q100 190 134 170" fill="none" stroke="${f.dark}" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="60" cy="150" rx="12" ry="10" fill="${f.dark}"/><ellipse cx="140" cy="150" rx="12" ry="10" fill="${f.dark}"/>
+  <ellipse cx="66" cy="104" rx="9" ry="5.5" fill="#f49ab4" opacity=".65"/><ellipse cx="134" cy="104" rx="9" ry="5.5" fill="#f49ab4" opacity=".65"/>
+  <g><circle cx="80" cy="86" r="10.5" fill="#251a30"/><circle cx="120" cy="86" r="10.5" fill="#251a30"/><circle cx="83.5" cy="82" r="3.8" fill="#fff"/><circle cx="123.5" cy="82" r="3.8" fill="#fff"/></g>
+  <ellipse cx="100" cy="102" rx="9" ry="6.5" fill="#f27aa1"/>
+  <path d="M91 112 Q100 120 109 112" fill="none" stroke="#251a30" stroke-width="2.8" stroke-linecap="round"/>
+  ${w.face==='goggles' ? `<rect x="54" y="54" width="92" height="8" rx="4" fill="#5b4632"/><circle cx="80" cy="58" r="12" fill="#a6e6ff" stroke="#c98a2e" stroke-width="4"/><circle cx="120" cy="58" r="12" fill="#a6e6ff" stroke="#c98a2e" stroke-width="4"/>` : ''}
+  ${w.head==='helmet' ? `<path d="M58 60 Q58 24 100 22 Q142 24 142 60 Z" fill="#f2b72f"/><rect x="52" y="56" width="96" height="10" rx="5" fill="#d9951b"/><circle cx="100" cy="38" r="10" fill="#fff6c2" stroke="#d9951b" stroke-width="3"/>` : ''}
+  ${w.head==='crown' ? `<path d="M70 42 L74 14 L87 30 L100 8 L113 30 L126 14 L130 42 Z" fill="#f7c74b" stroke="#d9951b" stroke-width="3" stroke-linejoin="round"/><circle cx="100" cy="31" r="4.5" fill="#e2475b"/><circle cx="80" cy="35" r="3" fill="#3d7be0"/><circle cx="120" cy="35" r="3" fill="#2fb67a"/>` : ''}
+  ${w.neck==='scarf' ? `<path d="M52 128 Q100 150 148 128 L148 142 Q100 164 52 142Z" fill="#e2475b"/><path d="M126 146 L138 182 L122 184 L114 150Z" fill="#c23246"/>` : ''}
+  ${w.neck==='bow' ? `<path d="M100 138 L80 127 L80 149 Z M100 138 L120 127 L120 149 Z" fill="#3d7be0"/><circle cx="100" cy="138" r="5.5" fill="#2a5bb0"/>` : ''}
+  </svg>`;
+}
+
+/* ---------- shinies ---------- */
+const SH_SHAPES = ['gem','coin','key','ring','crystal','star'];
+const SH_NAMES = {gem:'Gem',coin:'Coin',key:'Key',ring:'Ring',crystal:'Crystal',star:'Star'};
+const SH_COLORS = [['Ruby','#e2475b'],['Sapphire','#3d7be0'],['Emerald','#2fb67a'],['Amber','#f0a830'],['Amethyst','#9a63e0'],['Moonstone','#d3dcec']];
+const ALL_SHINIES = []; for (const r of [0,1]) for (const s of SH_SHAPES) for (let c=0;c<SH_COLORS.length;c++) ALL_SHINIES.push(`${s}-${c}-${r}`);
+function shinyName(id){ const [s,c,r]=id.split('-'); return `${r==='1'?'Glowing ':''}${SH_COLORS[+c][0]} ${SH_NAMES[s]}`; }
+function shinySVG(id){
+  const [s,ci,r]=id.split('-'), c=SH_COLORS[+ci][1]; let b='';
+  if (s==='gem') b=`<path d="M18 36 L50 14 L82 36 L50 88 Z" fill="${c}"/><path d="M18 36 H82 M50 14 L38 36 L50 88 L62 36 Z" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>`;
+  if (s==='coin') b=`<circle cx="50" cy="50" r="33" fill="${c}"/><circle cx="50" cy="50" r="25" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/><text x="50" y="61" text-anchor="middle" font-size="30" font-weight="900" fill="#fff" fill-opacity=".85" font-family="Nunito, sans-serif">n²</text>`;
+  if (s==='key') b=`<circle cx="30" cy="50" r="16" fill="none" stroke="${c}" stroke-width="9"/><rect x="44" y="45" width="44" height="10" rx="3" fill="${c}"/><rect x="74" y="55" width="7" height="13" fill="${c}"/><rect x="61" y="55" width="6" height="9" fill="${c}"/>`;
+  if (s==='ring') b=`<circle cx="50" cy="60" r="24" fill="none" stroke="#f7c74b" stroke-width="8"/><path d="M37 32 L50 16 L63 32 L50 44Z" fill="${c}"/>`;
+  if (s==='crystal') b=`<path d="M50 8 L70 36 L63 90 L37 90 L30 36 Z" fill="${c}"/><path d="M50 8 V90 M30 36 H70" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>`;
+  if (s==='star') b=`<path d="M50 9 L61 38 L91 40 L67 59 L76 89 L50 72 L24 89 L33 59 L9 40 L39 38Z" fill="${c}"/>`;
+  const sp = r==='1' ? `<path d="M86 8 l3 9 9 3 -9 3 -3 9 -3 -9 -9 -3 9 -3z" fill="#fff6c2"/><path d="M14 70 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#fff6c2"/>` : '';
+  return `<svg viewBox="0 0 100 100" class="shiny${r==='1'?' rare':''}" role="img" aria-label="${shinyName(id)}">${b}${sp}</svg>`;
+}
+
+/* ---------- words ---------- */
+const CHEERS = ['Power-ful!', "You're exponentially awesome!", 'Squared away!', 'Ten to the power of WOW!', 'You cubed it!', 'Shiny answer!',
+  'Niffler wants to steal that answer, it is so shiny!', 'Pouch-perfect!', 'That doubled my happiness!', 'Gold star, times ten!', 'Digging deep!', 'Right on the base!'];
+const THINK = ['Ooh, a shiny one. Your turn!', 'Hmm, I sniff a pattern…', 'I would just grab the answer. You should think it through.', 'Take your time. Gold waits.', 'This one sparkles!', "Psst… hints are free."];
+const OOPS = ['Not quite. Have another go!', 'Close! Try again.', 'Hmm, my nose says no. Try again.'];
+const HOME_LINES = ['Ooh, shiny! Is that a 2<sup>5</sup>?', 'I counted my coins: 2<sup>10</sup> of them. Probably.', 'Squares are my favourite shape. Cubes are crunchier.',
+  'Did you know 10<sup>0</sup> = 1? Even nothing has a power!', 'Tickles make coins fall out. Hee hee!', 'My pouch holds about 10<sup>100</sup> things. Maybe.',
+  'I dug a tunnel 2<sup>3</sup> metres deep today!', 'Psst. Catch the Niffler is my favourite game. I never fib. Much.'];
+
+/* ---------- sound + speech ---------- */
+let AC = null;
+function tone(f,d,t=0,type='triangle',vol=.14){
+  if (!S.settings.sound) return;
+  try { AC = AC || new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(), g=AC.createGain(), at=AC.currentTime+t;
+    o.type=type; o.frequency.value=f; g.gain.setValueAtTime(vol,at); g.gain.exponentialRampToValueAtTime(.001,at+d); o.connect(g).connect(AC.destination); o.start(at); o.stop(at+d+.02);
+  } catch(e) {}
+}
+const sDing = () => { tone(988,.14); tone(1319,.3,.08); };
+const sOops = () => tone(196,.25,0,'sine',.1);
+const sFan = () => { [523,659,784,1047].forEach((f,i)=>tone(f,.3,i*.11)); };
+const sCoin = () => tone(1568,.12,0,'square',.05);
+function speak(html){
+  if (!S.settings.speak || !window.speechSynthesis) return;
+  try { const t = html.replace(/<span class="slot"><\/span>/g,' what ').replace(/<sup>(.*?)<\/sup>/g,' to the power of $1 ').replace(/<[^>]+>/g,' ')
+      .replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/−/g,' minus ').replace(/√/g,' square root of ');
+    speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=.95; speechSynthesis.speak(u);
+  } catch(e) {}
+}
+
+/* ---------- navigation ---------- */
+const SCREENS = ['home','topic','play','end','hoard','notes','grown'];
+function show(name){
+  SCREENS.forEach(s => { $('#scr-'+s).hidden = s!==name; });
+  $('#nav-home').setAttribute('aria-current', String(['home','topic','notes'].includes(name)));
+  $('#nav-hoard').setAttribute('aria-current', String(name==='hoard'));
+  window.scrollTo({top:0});
+}
+function coinsUI(){ $('#coinCount').textContent = fmt(S.coins); }
+function bumpPurse(){ const p=$('#purse'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
+function anim(el, cls){ if (!el) return; el.classList.remove('hop','tilt','wiggle','swipe'); void el.offsetWidth; el.classList.add(cls); }
+function flyCoins(fromEl, n){
+  const purse=$('#purse').getBoundingClientRect(), r=fromEl.getBoundingClientRect();
+  for (let i=0;i<Math.min(n,8);i++){ const c=document.createElement('div'); c.className='flycoin';
+    const x0=r.left+r.width/2-13, y0=r.top+r.height/3; c.style.left=x0+'px'; c.style.top=y0+'px'; document.body.appendChild(c);
+    const dx=purse.left+purse.width/2-13-x0, dy=purse.top+purse.height/2-13-y0;
+    if (c.animate) { c.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx*.5}px,${dy*.5-80}px) scale(1.2)`},{transform:`translate(${dx}px,${dy}px) scale(.6)`}],{duration:700+i*90,easing:'ease-in-out'}).onfinish=()=>{ c.remove(); if(i===0){ sCoin(); bumpPurse(); } }; }
+    else setTimeout(()=>c.remove(),600);
+  }
+}
+function coinRain(){
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (let i=0;i<26;i++){ const d=document.createElement('div'); d.className='rain'; d.style.left=Math.random()*100+'vw'; d.style.animationDelay=(Math.random()*.8)+'s'; document.body.appendChild(d); setTimeout(()=>d.remove(),3200); }
+}
+
+/* ---------- home ---------- */
+function renderHome(){
+  const played = GAMES.filter(g => S.stats[g.id]).length;
+  $('#scr-home').innerHTML = `
+  <div class="hero">
+    <div class="left">
+      <span class="kicker">The Burrows</span>
+      <h1>Hi ${esc(S.player)}! Where shall ${esc(S.name)} dig today?</h1>
+      <div class="bubble" id="homeBubble">${pick(HOME_LINES)}</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn gold" data-topic="exp">Dig into Exponents</button><button class="btn" data-go="hoard">Visit the Hoard Room</button></div>
+    </div>
+    <div class="niff" id="homeNiff" role="button" aria-label="Tickle ${esc(S.name)}" tabindex="0">${niffSVG(S.fur,S.wear)}</div>
+  </div>
+  <div class="section-title"><h2>Pick a tunnel</h2><span class="dim">Each tunnel is one math topic.</span></div>
+  <div class="topics">${TOPICS.map(t => t.open
+    ? `<button class="topic open" data-topic="${t.id}"><span class="glyph">${t.glyph}</span><h3>${t.name}</h3><span class="dim">${t.sub}</span><span class="tag">${played} of ${GAMES.length} games tried</span></button>`
+    : `<div class="topic locked"><span class="glyph">${t.glyph}</span><h3>${t.name}</h3><span class="dim">${t.sub}</span><span class="tag">Still digging</span></div>`).join('')}
+  </div>`;
+}
+function tickle(){
+  const el=$('#homeNiff'); anim(el, Math.random()<.5?'hop':'wiggle'); $('#homeBubble').innerHTML=pick(HOME_LINES);
+  const today=new Date().toDateString(); if (S.tickleDay!==today){ S.tickleDay=today; S.tickles=0; }
+  if (S.tickles<5 && Math.random()<.4){ S.tickles++; S.coins+=1; save(); coinsUI(); flyCoins(el,1); $('#homeBubble').innerHTML='Hee hee! A coin fell out of my pouch. Keep it!'; }
+}
+
+/* ---------- topic ---------- */
+function stat(gid,lvl){ return (S.stats[gid] && S.stats[gid][lvl]) || {rounds:0, best:0}; }
+function renderTopic(){
+  $('#scr-topic').innerHTML = `
+  <div class="topic-head">
+    <span class="kicker">Tunnel 1</span>
+    <h1>The Exponent Tunnel</h1>
+    <p class="dim">An exponent says how many times to multiply a number by itself.</p>
+    <p class="formula">${P(2,5)} = 2 × 2 × 2 × 2 × 2 = 32</p>
+  </div>
+  <div class="games">${GAMES.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv');
+    return `<div class="game"><span class="glyph">${g.glyph}</span><h3>${g.name}</h3><p class="dim">${g.blurb}</p>
+      <div class="prog"><span>Basic: ${b.rounds ? `<b>${b.rounds} played</b>, best ${b.best}/6` : 'not yet'}</span><span>Advanced: ${a.rounds ? `<b>${a.rounds} played</b>, best ${a.best}/6` : 'not yet'}</span></div>
+      <div class="row"><button class="btn gold" data-play="${g.id}" data-level="basic">Basic</button><button class="btn deep" data-play="${g.id}" data-level="adv">Advanced</button></div></div>`; }).join('')}
+  </div>
+  <div class="extras">
+    <button class="extra" data-go="notes"><span class="glyph">a<sup>b</sup></span><span><h3>Treasure Notes</h3><span class="dim">Every exponent word, with an example</span></span></button>
+    <button class="extra" data-go="hoard"><span class="glyph">★</span><span><h3>Wonder Cards</h3><span class="dim">${S.wonders.length} of ${GAMES.length} found. Finish an Advanced round to earn one.</span></span></button>
+  </div>`;
+}
+function renderNotes(){
+  $('#scr-notes').innerHTML = `<div class="topic-head"><span class="kicker">Exponent Tunnel</span><h1>Treasure Notes</h1><p class="dim">Niffler's notebook of exponent words.</p></div>
+  <div class="notes">${NOTES.map(n=>`<div class="note"><h3>${n[0]}</h3><span class="ex">${n[1]}</span><span>${n[2]}</span></div>`).join('')}</div>
+  <div style="margin-top:20px"><button class="btn" data-topic="exp">&larr; Back to the tunnel</button></div>`;
+}
+
+/* ---------- play ---------- */
+let R = null;
+function startRound(gid, level){
+  const kinds = shuffle(G[gid][level]), qs=[], keys=new Set(); let i=0, tries=0;
+  while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
+  R = {gid, level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
+  const g = GAMES.find(x=>x.id===gid);
+  $('#qTitle').textContent = g.name;
+  const tag=$('#lvlTag'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className = 'lvl'+(level==='adv'?' adv':'');
+  $('#playNiff').innerHTML = niffSVG(S.fur,S.wear);
+  show('play'); renderQ();
+}
+function renderDots(){ $('#dots').innerHTML = R.qs.map((_,k)=>`<span class="dot${k<R.i?' done':''}${k===R.i?' now':''}"></span>`).join(''); }
+function renderQ(){
+  const q=R.qs[R.i]; Object.assign(R,{att:0,hints:0,done:false,input:''});
+  $('#qPrompt').innerHTML=q.prompt; $('#qFig').innerHTML=q.fig||''; $('#qFeedback').innerHTML=''; $('#hintList').innerHTML='';
+  $('#nextBtn').hidden=true; $('#hintBtn').hidden=!S.settings.hints; $('#hintBtn').disabled=false;
+  $('#playBubble').innerHTML = R.i===0 ? `Let's dig! ${R.level==='adv'?'Advanced treasure is extra shiny.':'Six shinies to find.'}` : pick(THINK);
+  renderDots();
+  if (q.type==='mcq'){
+    R.order = shuffle(q.options.map((_,k)=>k));
+    $('#qAnswer').innerHTML = `<div class="opts">${R.order.map(k=>`<button class="opt${q.small?' small':''}" data-opt="${k}">${q.options[k]}</button>`).join('')}</div>`;
+  } else {
+    const slot = q.prompt.includes('class="slot"');
+    $('#qAnswer').innerHTML = `${slot?'':'<div class="display" id="disp" aria-live="polite">?</div>'}<div class="pad" id="pad">${['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(k=>`<button class="key" data-key="${k}" aria-label="${k==='⌫'?'delete':k}">${k}</button>`).join('')}<button class="key check" data-key="ok">Check</button></div>`;
+    updInput();
+  }
+  speak(q.prompt);
+}
+function updInput(){
+  const v = R.input || '?';
+  $$('#qPrompt .slot').forEach(s=>{ s.textContent=v; s.classList.toggle('filled',!!R.input); });
+  const d=$('#disp'); if (d) d.textContent=v;
+}
+function padKey(k){
+  if (!R || R.done) return; const q=R.qs[R.i]; if (q.type!=='pad') return;
+  if (k==='ok') return checkPad();
+  if (k==='⌫') R.input=R.input.slice(0,-1);
+  else if (k==='.') { if (!R.input.includes('.') && R.input.length<12) R.input = (R.input||'0')+'.'; }
+  else if (R.input.length<12) R.input = (R.input==='0'?'':R.input)+k;
+  updInput();
+}
+function checkPad(){
+  const q=R.qs[R.i]; if (R.input==='' || R.input==='.') return;
+  const v=parseFloat(R.input); if (Math.abs(v-q.answer)<1e-9) correct(); else wrong();
+}
+function chooseOpt(btn){
+  if (!R || R.done || btn.disabled) return; const k=+btn.dataset.opt;
+  if (k===0){ btn.classList.add('right'); correct(); } else { btn.classList.add('wrong'); btn.disabled=true; wrong(); }
+}
+function correct(){
+  const q=R.qs[R.i]; R.done=true;
+  const clean = R.att===0 && R.hints===0, adv = R.level==='adv';
+  let c = clean ? (adv?5:3) : (adv?2:1); if (clean) R.first++;
+  const niff=$('#playNiff'); let extra='';
+  if (R.i===R.mischief){
+    extra = `<div class="mischief">Niffler swiped your ${plural(c,'coin')} and dashed into a tunnel… then came back with ${c*2}! Sneaky.</div>`;
+    c*=2; anim(niff,'swipe'); $('#playBubble').innerHTML='Hee hee! Did you see that? I brought friends.';
+  } else { anim(niff,'hop'); $('#playBubble').innerHTML = pick(CHEERS); }
+  S.coins+=c; R.earned+=c; save();
+  setTimeout(()=>{ coinsUI(); flyCoins(niff,c); }, R.i===R.mischief?1300:150);
+  sDing();
+  const cheer=pick(CHEERS);
+  $('#qFeedback').innerHTML = `<span class="good">${cheer}</span> <span>+${plural(c,'coin')}</span><div class="explain">${q.explain}</div>${extra}`;
+  speak(cheer);
+  finishQ(q);
+}
+function wrong(){
+  const q=R.qs[R.i]; R.att++; sOops(); anim($('#playNiff'),'tilt');
+  if (q.type==='pad'){ R.input=''; updInput(); }
+  if (R.att>=3){
+    R.done=true;
+    const ans = q.type==='mcq' ? q.options[0] : fmt(q.answer);
+    $('#qFeedback').innerHTML = `<span>That one was tricky. The answer is <b>${ans}</b>.</span><div class="explain">${q.explain}</div>`;
+    $('#playBubble').innerHTML = "Tricky tunnels are the best ones. Let's keep digging!";
+    if (q.type==='mcq') $$('.opt').forEach(b=>{ if (+b.dataset.opt===0) b.classList.add('right'); });
+    finishQ(q, true);
+    return;
+  }
+  $('#qFeedback').innerHTML = `<span class="oops">${pick(OOPS)}</span>`;
+  $('#playBubble').innerHTML = R.att===2 ? 'Here, have a hint. On the house!' : 'Hmm, my nose says no. Try again!';
+  if (R.att===2 && S.settings.hints && R.hints < q.hints.length) showHint();
+}
+function finishQ(q, reveal){
+  if (q.type==='pad'){ const p=$('#pad'); if (p) p.classList.add('off'); if (reveal){ R.input=String(q.answer); updInput(); } }
+  else $$('.opt').forEach(b=>b.disabled=true);
+  $('#hintBtn').hidden=true; $('#nextBtn').hidden=false; $('#nextBtn').textContent = R.i===R.qs.length-1 ? 'Finish round →' : 'Next →';
+  R.i++; renderDots(); R.i--;
+}
+function showHint(){
+  const q=R.qs[R.i]; if (R.done || R.hints>=q.hints.length) return;
+  R.hints++; const li=document.createElement('li'); li.innerHTML=q.hints[R.hints-1]; $('#hintList').appendChild(li);
+  if (R.hints>=q.hints.length) $('#hintBtn').disabled=true;
+  speak(q.hints[R.hints-1]);
+}
+function next(){ R.i++; if (R.i>=R.qs.length) endRound(); else renderQ(); }
+
+/* ---------- end of round ---------- */
+function endRound(){
+  const {gid, level, first, earned} = R;
+  S.stats[gid] = S.stats[gid] || {};
+  const st = S.stats[gid][level] || {rounds:0, best:0, firstTotal:0};
+  st.rounds++; st.best=Math.max(st.best,first); st.firstTotal=(st.firstTotal||0)+first; S.stats[gid][level]=st;
+  const rare = level==='adv' ? '1' : '0';
+  const left = ALL_SHINIES.filter(id => id.endsWith('-'+rare) && !S.shinies.includes(id));
+  let shiny=null, bonus=0;
+  if (left.length){ shiny=pick(left); S.shinies.push(shiny); } else { bonus=10; S.coins+=bonus; }
+  let wonder=null;
+  if (level==='adv' && !S.wonders.includes(gid)){ S.wonders.push(gid); wonder=WONDERS[gid]; }
+  save(); coinsUI(); sFan(); coinRain();
+  const g=GAMES.find(x=>x.id===gid), other = level==='adv'?'basic':'adv';
+  $('#scr-end').innerHTML = `
+  <div class="end">
+    <div class="niff hop" id="endNiff">${niffSVG(S.fur,S.wear)}</div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <span class="kicker">${g.name} · ${level==='adv'?'Advanced':'Basic'}</span>
+      <h1>${first>=5?'Treasure master!':first>=3?'What a haul!':'Round complete!'}</h1>
+      <div class="stats"><div class="stat"><b>${first}/6</b>right first try</div><div class="stat"><b>+${earned+bonus}</b>coins</div></div>
+      ${shiny ? `<div class="found">${shinySVG(shiny)}<div><span class="kicker">New shiny for the hoard</span><h3>${shinyName(shiny)}</h3><span class="dim">${S.shinies.length} of ${ALL_SHINIES.length} found</span></div></div>`
+              : `<div class="found"><div><span class="kicker">Hoard full!</span><h3>Niffler found 10 bonus coins instead</h3></div></div>`}
+      ${wonder ? `<div class="wonder"><span class="kicker">New Wonder Card</span><p>${wonder}</p></div>` : ''}
+      <div class="end-actions">
+        <button class="btn gold" data-play="${gid}" data-level="${level}">Play again</button>
+        <button class="btn ${other==='adv'?'deep':''}" data-play="${gid}" data-level="${other}">Try ${other==='adv'?'Advanced':'Basic'}</button>
+        <button class="btn" data-topic="exp">Back to the tunnel</button>
+      </div>
+    </div>
+  </div>`;
+  show('end');
+  speak(`Round complete! ${first} out of 6 right first try.`);
+}
+
+/* ---------- hoard ---------- */
+function renderHoard(){
+  $('#scr-hoard').innerHTML = `
+  <div class="hoard-top">
+    <div class="hoard-niff"><div class="niff" id="hoardNiff">${niffSVG(S.fur,S.wear)}</div><h3>${esc(S.name)}</h3></div>
+    <div style="min-width:0">
+      <span class="kicker">The Hoard Room</span>
+      <h1>Dress up ${esc(S.name)}</h1>
+      <p class="dim" style="margin-top:8px">Spend coins on outfits. Tap something you own to put it on or take it off. Coins are never lost.</p>
+      <div class="section-title"><h3>Outfits</h3></div>
+      <div class="shop">${ITEMS.map(it => { const own=S.owned.includes(it.id), on=S.wear[it.slot]===it.id;
+        return `<button class="item${on?' on':''}" data-item="${it.id}"><b>${it.name}</b><span class="dim">${on?'Wearing':own?'Tap to wear':''}</span>${own?'':`<span class="cost"><span class="coin-ico"></span>${it.cost}</span>`}</button>`; }).join('')}</div>
+      <div class="section-title"><h3>Fur colour</h3></div>
+      <div class="shop">${Object.entries(FURS).map(([id,f]) => { const own=S.furs.includes(id), on=S.fur===id;
+        return `<button class="item${on?' on':''}" data-fur="${id}"><span class="swatch" style="background:${f.main}"></span><b>${f.n}</b>${own?`<span class="dim">${on?'Wearing':'Tap to wear'}</span>`:`<span class="cost"><span class="coin-ico"></span>${f.cost}</span>`}</button>`; }).join('')}</div>
+      <p class="feedback" id="shopMsg" aria-live="polite"></p>
+    </div>
+  </div>
+  <div class="section-title"><h2>Shiny collection</h2><span class="dim">${S.shinies.length} of ${ALL_SHINIES.length} found. Basic rounds find shinies; Advanced rounds find glowing ones.</span></div>
+  <div class="shelf">${ALL_SHINIES.map(id => S.shinies.includes(id) ? `<div class="cell" title="${shinyName(id)}">${shinySVG(id)}</div>` : '<div class="cell empty"></div>').join('')}</div>
+  <div class="section-title"><h2>Wonder Cards</h2><span class="dim">Finish an Advanced round in each game to collect them all.</span></div>
+  <div class="wonders">${GAMES.map(g => S.wonders.includes(g.id)
+    ? `<div class="wonder"><span class="kicker">${g.name}</span><p>${WONDERS[g.id]}</p></div>`
+    : `<div class="wonder locked"><span class="kicker">${g.name}</span><p>Finish an Advanced round to reveal this card.</p></div>`).join('')}</div>`;
+}
+function buyItem(id){
+  const it=ITEMS.find(x=>x.id===id); const msg=$('#shopMsg');
+  if (!S.owned.includes(id)){
+    if (S.coins<it.cost){ msg.innerHTML=`<span class="oops">You need ${it.cost-S.coins} more coins for the ${it.name}.</span>`; return; }
+    S.coins-=it.cost; S.owned.push(id); S.wear[it.slot]=id; sFan();
+  } else S.wear[it.slot] = S.wear[it.slot]===id ? null : id;
+  save(); coinsUI(); renderHoard(); anim($('#hoardNiff'),'hop');
+}
+function buyFur(id){
+  const f=FURS[id];
+  if (!S.furs.includes(id)){
+    if (S.coins<f.cost){ $('#shopMsg').innerHTML=`<span class="oops">You need ${f.cost-S.coins} more coins for ${f.n} fur.</span>`; return; }
+    S.coins-=f.cost; S.furs.push(id); sFan();
+  }
+  S.fur=id; save(); coinsUI(); renderHoard(); anim($('#hoardNiff'),'wiggle');
+}
+
+/* ---------- grown-ups ---------- */
+let resetArmed=false;
+function renderGrown(){
+  const rows = GAMES.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv');
+    const pct = s => s.rounds ? Math.round(100*(s.firstTotal||0)/(6*s.rounds))+'%' : '–';
+    return `<tr><td>${g.name}</td><td>${b.rounds}</td><td>${pct(b)}</td><td>${a.rounds}</td><td>${pct(a)}</td></tr>`; }).join('');
+  $('#scr-grown').innerHTML = `
+  <div class="topic-head"><span class="kicker">For grown-ups</span><h1>Settings and progress</h1><p class="dim">Progress is saved in this browser on this device only.</p></div>
+  <div class="form">
+    <div class="field"><label for="setPlayer">Player name</label><input type="text" id="setPlayer" value="${esc(S.player)}" maxlength="20"></div>
+    <div class="field"><label for="setName">Creature's name</label><input type="text" id="setName" value="${esc(S.name)}" maxlength="20"></div>
+    <label class="toggle"><input type="checkbox" id="setSound" ${S.settings.sound?'checked':''}> Sound effects</label>
+    <label class="toggle"><input type="checkbox" id="setSpeak" ${S.settings.speak?'checked':''}> Read questions and cheers out loud</label>
+    <label class="toggle"><input type="checkbox" id="setHints" ${S.settings.hints?'checked':''}> Show the Hint button</label>
+  </div>
+  <div class="section-title"><h2>Exponent Tunnel progress</h2></div>
+  <div class="tablewrap"><table><thead><tr><th>Game</th><th>Basic rounds</th><th>Basic first-try</th><th>Advanced rounds</th><th>Advanced first-try</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="dim" style="margin-top:12px">Coins: ${fmt(S.coins)} · Shinies: ${S.shinies.length} of ${ALL_SHINIES.length} · Wonder Cards: ${S.wonders.length} of ${GAMES.length}</p>
+  <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center"><button class="btn" id="resetBtn">Reset all progress</button><span class="dim" id="resetMsg"></span></div>`;
+  resetArmed=false;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button, [data-go], #homeNiff'); if (!t) return;
+  if (t.id==='homeNiff') return tickle();
+  if (t.dataset.go){ const g=t.dataset.go; ({home:renderHome,hoard:renderHoard,notes:renderNotes,grown:renderGrown}[g]||(()=>{}))(); return show(g); }
+  if (t.dataset.topic){ renderTopic(); return show('topic'); }
+  if (t.dataset.play) return startRound(t.dataset.play, t.dataset.level);
+  if (t.dataset.opt!==undefined) return chooseOpt(t);
+  if (t.dataset.key) return padKey(t.dataset.key);
+  if (t.dataset.item) return buyItem(t.dataset.item);
+  if (t.dataset.fur) return buyFur(t.dataset.fur);
+  if (t.id==='hintBtn') return showHint();
+  if (t.id==='nextBtn') return next();
+  if (t.id==='leaveBtn'){ renderTopic(); return show('topic'); }
+  if (t.id==='resetBtn'){
+    if (!resetArmed){ resetArmed=true; t.textContent='Tap again to erase everything'; $('#resetMsg').textContent='This cannot be undone.'; return; }
+    const keep={player:S.player,name:S.name,settings:S.settings}; S=Object.assign(clone(DEFAULT),keep); save(); coinsUI(); renderGrown(); $('#resetMsg').textContent='Progress erased.';
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input')) return;
+  if (e.target.id==='homeNiff' && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); return tickle(); }
+  if ($('#scr-play').hidden || !R) return;
+  if (/^[0-9]$/.test(e.key)) padKey(e.key);
+  else if (e.key==='.') padKey('.');
+  else if (e.key==='Backspace') padKey('⌫');
+  else if (e.key==='Enter'){ if (R.done) next(); else padKey('ok'); }
+});
+document.addEventListener('change', e => {
+  const id=e.target.id;
+  if (id==='setSound') S.settings.sound=e.target.checked;
+  if (id==='setSpeak') S.settings.speak=e.target.checked;
+  if (id==='setHints') S.settings.hints=e.target.checked;
+  save();
+});
+document.addEventListener('input', e => {
+  if (e.target.id==='setPlayer') S.player=e.target.value.trim()||'friend';
+  if (e.target.id==='setName') S.name=e.target.value.trim()||'Niffler';
+  save();
+});
+
+coinsUI(); renderHome(); show('home');
+window.__NH = {G, GAMES};
+})();
+</script>
+</body>
+</html>
