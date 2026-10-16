@@ -198,6 +198,29 @@ footer{margin-top:40px;display:flex;justify-content:center}
 .rain{position:fixed;top:-30px;width:22px;height:22px;border-radius:50%;background:var(--gold);box-shadow:inset 0 0 0 3px var(--gold-deep);pointer-events:none;z-index:40;animation:fall 2.2s ease-in forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 
+/* balloon pop */
+.bal-prompt{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 22px;border-radius:24px;background:var(--tunnel);border:2px solid var(--root);margin-bottom:12px}
+.bal-prompt .ask{font-family:var(--display);font-size:clamp(1.7rem,4.5vw,2.5rem);line-height:1.15}
+.bal-prompt .sub{display:block;font-family:var(--body);font-size:1rem;color:var(--ink-dim);font-weight:800;margin-top:2px}
+.bal-prompt .bubble{margin-left:auto;font-size:.95rem;max-width:280px;min-height:0}
+.bal-prompt .bubble::after{display:none}
+.stage{position:relative;height:min(64vh,620px);min-height:420px;border-radius:28px;overflow:hidden;border:2px solid var(--root);background:linear-gradient(180deg,#2d4373 0%,#3c3062 58%,#2a1f38 100%);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.stage::before{content:"";position:absolute;inset:0;background:radial-gradient(2px 2px at 20% 18%,rgba(255,255,255,.5) 50%,transparent 51%),radial-gradient(2px 2px at 64% 9%,rgba(255,255,255,.4) 50%,transparent 51%),radial-gradient(2px 2px at 86% 30%,rgba(255,255,255,.45) 50%,transparent 51%),radial-gradient(2px 2px at 40% 36%,rgba(255,255,255,.3) 50%,transparent 51%);pointer-events:none}
+.ground{position:absolute;left:0;right:0;bottom:0;height:44px;background:#3a2a1e;border-top:4px solid #5c4231;z-index:2;pointer-events:none}
+.balloon{position:absolute;left:0;top:0;width:112px;height:152px;cursor:pointer;will-change:transform;z-index:1}
+.balloon svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.balloon .lbl{position:absolute;left:4px;right:4px;top:36px;text-align:center;font-family:var(--display);font-size:1.8rem;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.28);pointer-events:none;line-height:1;white-space:nowrap}
+.balloon .lbl.sm{font-size:1.35rem;top:42px}
+.balloon.glow svg{filter:drop-shadow(0 0 10px #fff6c2) drop-shadow(0 0 4px #fff6c2)}
+.spark{position:absolute;width:14px;height:14px;border-radius:50%;pointer-events:none;z-index:4}
+.popword{position:absolute;font-family:var(--display);font-size:2.2rem;color:var(--gold);pointer-events:none;z-index:4;text-shadow:0 3px 0 rgba(0,0,0,.3)}
+.stage-niff{position:absolute;left:10px;bottom:14px;width:92px;z-index:0;pointer-events:none}
+.stage-niff .niff{max-width:92px;cursor:default}
+.bal-feedback{min-height:2.6em;margin-top:12px;font-weight:800;font-size:1.1rem}
+.bal-feedback .good{color:var(--good);font-family:var(--display);font-weight:400;font-size:1.5rem}
+.bal-feedback .oops{color:var(--oops)}
+.game.featured{border-color:var(--gem1);background:linear-gradient(170deg,#28456a,var(--tunnel))}
+.game.featured .glyph{color:var(--gem1)}
 @media (max-width:720px){
   .hero,.end,.hoard-top{grid-template-columns:1fr}
   .hero .niff{max-width:170px;grid-row:1}
@@ -256,6 +279,22 @@ footer{margin-top:40px;display:flex;justify-content:center}
           </div>
         </div>
       </div>
+    </section>
+    <section id="scr-balloon" hidden>
+      <div class="play-top">
+        <button class="btn" id="balLeave">&larr; Exponent Tunnel</button>
+        <span class="lvl" id="balLvl">Basic</span>
+        <div class="dots" id="balDots"></div>
+      </div>
+      <div class="bal-prompt">
+        <div><div class="ask" id="balAsk"></div><span class="sub" id="balSub"></span></div>
+        <div class="bubble" id="balBubble"></div>
+      </div>
+      <div class="stage" id="stage">
+        <div class="stage-niff"><div class="niff" id="balNiff"></div></div>
+        <div class="ground"></div>
+      </div>
+      <div class="bal-feedback" id="balFeedback" aria-live="polite"></div>
     </section>
     <section id="scr-end" hidden></section>
     <section id="scr-hoard" hidden></section>
@@ -345,14 +384,14 @@ G.double = { basic:[
   () => { const n=ri(3,6); return pad('d3'+n, `Write it the short way:<br><span class="big">${times(2,n)} = 2<sup>${SLOT}</sup></span>`, n,
     ['Count how many 2s are multiplied.', 'The exponent is the count of 2s.', `Point at each 2 and count: 1, 2, 3 …`],
     `${n} twos multiplied together is ${P(2,n)} = ${2**n}.`); },
-  () => { const T=pick([20,50,100,200,500]); let n=0; while (2**n<=T) n++;
+  () => { const T=pick([20,50,100]); let n=0; while (2**n<=T) n++;
     return pad('d4'+T, `Niffler starts with 1 coin and the pile doubles every night. After how many nights does Niffler have <b>more than ${T}</b> coins?`, n,
     ['List the piles: 2, 4, 8, 16, 32, 64, 128, 256, 512 …', 'Night 1 = 2, night 2 = 4, night 3 = 8 …', `Find the first pile bigger than ${T}.`],
     `After ${n} nights the pile is ${P(2,n)} = ${2**n}, the first pile bigger than ${T}. One night earlier it was only ${2**(n-1)}.`); },
 ], adv:[
-  () => { const n=ri(3,5), v=3**n; return pad('a1'+n, `A magic pouch <b>triples</b> its coins every night, starting with 1 coin. How many after <b>${n} nights</b>?`, v,
+  () => { const n=ri(2,4), v=3**n; return pad('a1'+n, `A magic pouch <b>triples</b> its coins every night, starting with 1 coin. How many after <b>${n} nights</b>?`, v,
     ['Night 1: 1 × 3 = 3.', 'Keep multiplying by 3: 3, 9, 27 …', `That is ${P(3,n)}.`], `${P(3,n)} = ${times(3,n)} = ${fmt(v)} coins.`); },
-  () => { const n=ri(7,10), v=2**n; return pad('a2'+n, `Niffler folds a sheet of paper in half <b>${n} times</b>. How many layers thick is it?`, v,
+  () => { const n=ri(5,8), v=2**n; return pad('a2'+n, `Niffler folds a sheet of paper in half <b>${n} times</b>. How many layers thick is it?`, v,
     ['Each fold doubles the layers: 2, 4, 8 …', `So the answer is ${P(2,n)}.`, `${P(2,5)} = 32. Keep doubling from 32.`],
     `${P(2,n)} = ${fmt(v)} layers. Folded 42 times, the paper would reach past the Moon!`); },
   () => { const [a,b]=pick([[2,5],[2,6],[3,4],[2,4],[3,5],[2,3],[4,5]]); const x=a**b, y=b**a;
@@ -360,15 +399,15 @@ G.double = { basic:[
     return mcq('a3'+a+b, `Which treasure is bigger: <span class="big">${P(a,b)}</span> or <span class="big">${P(b,a)}</span>?`, [c,...[0,1,2].filter(i=>i!==c)].map(i=>opts[i]),
       [`Work out ${P(a,b)} first.`, `${P(a,b)} = ${fmt(x)}.`, `${P(b,a)} = ${fmt(y)}.`],
       `${P(a,b)} = ${fmt(x)} and ${P(b,a)} = ${fmt(y)}. ${c===2 ? `A rare tie! ${P(2,4)} and ${P(4,2)} are the only pair of different whole numbers that do this.` : 'Swapping the base and exponent changes the answer.'}`, '', true); },
-  () => { const n=ri(11,40), d=[6,2,4,8][n%4]; return pad('a4'+n, `What is the <b>last digit</b> of <span class="big">${P(2,n)}</span>?<br>No need to work out the whole number!`, d,
+  () => { const n=ri(9,20), d=[6,2,4,8][n%4]; return pad('a4'+n, `What is the <b>last digit</b> of <span class="big">${P(2,n)}</span>?<br>No need to work out the whole number!`, d,
     ['Write the first few: 2, 4, 8, 16, 32, 64, 128, 256.', 'The last digits repeat: 2, 4, 8, 6, 2, 4, 8, 6 …', `The pattern repeats every 4. ${n} ÷ 4 leaves remainder ${n%4}. (Remainder 1 → 2, 2 → 4, 3 → 8, 0 → 6.)`],
     `Last digits of powers of 2 go round 2, 4, 8, 6. ${n} ÷ 4 has remainder ${n%4}, so the last digit is ${d}.`); },
-  () => { const n=ri(6,10), v=2**n; return pad('a5'+n, `Niffler started with 1 coin. The pile doubled every night and now has <b>${fmt(v)}</b> coins. How many nights passed?`, n,
+  () => { const n=ri(4,7), v=2**n; return pad('a5'+n, `Niffler started with 1 coin. The pile doubled every night and now has <b>${fmt(v)}</b> coins. How many nights passed?`, n,
     ['Go backwards: halve the pile until you reach 1.', 'Count how many times you halved.', `It is the exponent in 2<sup>?</sup> = ${fmt(v)}.`], `${P(2,n)} = ${fmt(v)}, so ${n} nights passed.`); },
 ]};
 
 G.code = { basic:[
-  () => { const a=ri(2,6), b=a<=3?ri(2,4):ri(2,3), v=a**b; return pad('c1'+a+b, `<span class="big">${P(a,b)} = ${SLOT}</span>`, v,
+  () => { const a=ri(2,5), b=a<=3?ri(2,4):ri(2,3), v=a**b; return pad('c1'+a+b, `<span class="big">${P(a,b)} = ${SLOT}</span>`, v,
     [`The little ${b} says how many ${a}s to multiply.`, `${P(a,b)} = ${times(a,b)}.`, 'Multiply step by step from the left.'], `${P(a,b)} = ${times(a,b)} = ${v}.`); },
   () => { let a=ri(2,9), n=ri(3,5); if (a===n) a++; return mcq('c2'+a+n, `Niffler stacked coins like this:<br><span class="big">${times(a,n)}</span><br>Which is the short way to write it?`,
     [P(a,n), P(n,a), a*n, `${a} + ${n}`], ['Which number is being multiplied?', 'How many times does it appear?', 'The repeated number is the base. The count sits up high as the exponent.'],
@@ -381,16 +420,16 @@ G.code = { basic:[
     ['Squared means the exponent is 2.', `${P(a,2)} = ${a} × ${a}, not ${a} × 2.`, `Picture a square of gems with ${a} on each side.`],
     `${P(a,2)} = ${a} × ${a} = ${a*a}. The trap is ${a} × 2 = ${2*a}.`); },
 ], adv:[
-  () => { const a=ri(3,99), e=pick([0,1]); return pad('k1'+a+e, `<span class="big">${P(a,e)} = ${SLOT}</span>`, e===0?1:a,
+  () => { const a=ri(3,20), e=pick([0,1]); return pad('k1'+a+e, `<span class="big">${P(a,e)} = ${SLOT}</span>`, e===0?1:a,
     e===0 ? [`Look at a pattern: ${P(2,3)} = 8, ${P(2,2)} = 4, ${P(2,1)} = 2.`, `Each step down divides by 2. So ${P(2,0)} = 2 ÷ 2.`, 'This works for any base except 0.']
           : ['The exponent says how many times to use the base.', 'Using the base once is just the base.', `${P(a,1)} is one ${a}.`],
     e===0 ? `${P(a,0)} = 1. Going down one exponent divides by the base, and ${a} ÷ ${a} = 1.` : `${P(a,1)} = ${a}: just one ${a}.`); },
-  () => { const b=pick([2,3,5,10]), n=ri(2,{2:10,3:6,5:5,10:6}[b]), v=b**n; return pad('k2'+b+n, `<span class="big">${b}<sup>${SLOT}</sup> = ${fmt(v)}</span>`, n,
+  () => { const b=pick([2,3,5,10]), n=ri(2,{2:6,3:4,5:3,10:5}[b]), v=b**n; return pad('k2'+b+n, `<span class="big">${b}<sup>${SLOT}</sup> = ${fmt(v)}</span>`, n,
     [`Start multiplying: ${b}, ${fmt(b*b)}, ${fmt(b**3)} …`, `Count how many ${b}s you multiplied.`, `Keep going until you reach ${fmt(v)}.`], `${P(b,n)} = ${fmt(v)}.`); },
-  () => { const n=pick([2,3]), b = n===2 ? ri(9,15) : ri(2,6), v=b**n; return pad('k3'+b+n, `What is the missing base?<br><span class="big">${SLOT}<sup>${n}</sup> = ${fmt(v)}</span>`, b,
+  () => { const n=pick([2,3]), b = n===2 ? ri(5,12) : ri(2,5), v=b**n; return pad('k3'+b+n, `What is the missing base?<br><span class="big">${SLOT}<sup>${n}</sup> = ${fmt(v)}</span>`, b,
     [n===2 ? 'Which number times itself makes it?' : 'Which number, used three times, makes it?', 'Make a guess and check it.', n===2 ? '10 × 10 = 100. Is the answer bigger or smaller than 10?' : `${P(2,3)} = 8, ${P(3,3)} = 27, ${P(4,3)} = 64 …`],
     `${P(b,n)} = ${times(b,n)} = ${fmt(v)}.`); },
-  () => { const pool=[]; for (let a=2;a<=6;a++) for (let b=2;b<=5;b++){ const v=a**b; if (v<=1500) pool.push([a,b,v]); }
+  () => { const pool=[]; for (let a=2;a<=6;a++) for (let b=2;b<=5;b++){ const v=a**b; if (v<=300) pool.push([a,b,v]); }
     let set; do { set=shuffle(pool).slice(0,4); } while (new Set(set.map(s=>s[2])).size<4);
     const big=Math.random()<.5, sorted=set.slice().sort((x,y)=>big?y[2]-x[2]:x[2]-y[2]);
     return mcq('k4'+sorted.map(s=>s[0]+''+s[1]).join(''), `Niffler only wants the <b>${big?'biggest':'smallest'}</b> treasure. Which one?`, sorted.map(s=>P(s[0],s[1])),
@@ -414,16 +453,16 @@ G.zero = { basic:[
     [`${P(10,n)} = ${fmt(10**n)}.`, `Multiplying by ${fmt(10**n)} moves every digit ${plural(n,'place')} to the left.`, `Slide the decimal point ${plural(n,'place')} to the right.`],
     `${x} × ${fmt(10**n)} = ${fmt(v)}. The decimal point slides ${plural(n,'place')} right.`); },
 ], adv:[
-  () => { let m; do { m=ri(101,999); } while (m%10===0); const x=m/100, n=ri(1,3), v=m*10**n/100;
+  () => { let m; do { m=ri(101,999); } while (m%10===0); const x=m/100, n=ri(1,2), v=m*10**n/100;
     return pad('y1'+m+n, `<span class="big">${x} × ${P(10,n)} = ${SLOT}</span>`, v,
     [`${P(10,n)} = ${fmt(10**n)}.`, `Slide the decimal point ${plural(n,'place')} right.`, 'Fill any empty places with zeros.'], `${x} × ${fmt(10**n)} = ${fmt(v)}.`); },
-  () => { let a; do { a=ri(12,999); } while (a%10===0); const n=ri(1,2), v=a/10**n;
+  () => { let a; do { a=ri(12,250); } while (a%10===0); const n=ri(1,2), v=a/10**n;
     return pad('y2'+a+n, `<span class="big">${a} ÷ ${P(10,n)} = ${SLOT}</span>`, v,
     [`${P(10,n)} = ${fmt(10**n)}.`, `Dividing by ${fmt(10**n)} slides the decimal point ${plural(n,'place')} left.`, `${a} is the same as ${a}.0. Now move the point.`], `${a} ÷ ${fmt(10**n)} = ${fmt(v)}.`); },
   () => { const a=ri(2,6), b=ri(2,6); return pad('y3'+a+b, `<span class="big">${P(10,a)} × ${P(10,b)} = 10<sup>${SLOT}</sup></span>`, a+b,
     [`${P(10,a)} has ${a} zeros and ${P(10,b)} has ${b} zeros.`, 'When you multiply them, the zeros pile up together.', 'Add the exponents.'],
     `${fmt(10**a)} × ${fmt(10**b)} = ${fmt(10**(a+b))} = ${P(10,a+b)}.`); },
-  () => { const d=ri(2,9), n=ri(4,8); return pad('y4'+d+n, `Scientists write big numbers the short way.<br><span class="big">${fmt(d*10**n)} = ${d} × 10<sup>${SLOT}</sup></span>`, n,
+  () => { const d=ri(2,9), n=ri(3,6); return pad('y4'+d+n, `Scientists write big numbers the short way.<br><span class="big">${fmt(d*10**n)} = ${d} × 10<sup>${SLOT}</sup></span>`, n,
     [`Count the zeros after the ${d}.`, `${d} × 10 = ${d*10}, ${d} × 100 = ${d*100} …`, 'Each zero is one power of 10.'],
     `${fmt(d*10**n)} = ${d} × ${P(10,n)}. This is called scientific notation.`); },
   () => { const f=pick([['The Moon is about 384,000 km away.','3.84',5],['The Sun is about 150,000,000 km away.','1.5',8],['About 8,000,000,000 people live on Earth.','8',9],['A blue whale can weigh about 150,000 kg.','1.5',5],['Light travels about 300,000 km every second.','3',5]]);
@@ -442,22 +481,22 @@ G.gems = { basic:[
   () => { const s=ri(4,10), sq=s*s, ds=new Set(); while (ds.size<3){ const d=sq+pick([-3,-2,-1,1,2,3,4,5]); if (d>1 && !Number.isInteger(Math.sqrt(d))) ds.add(d); }
     return mcq('g3'+s, 'Which number of gems can make a perfect square?', [sq,...ds],
       ['A square number is a whole number times itself.', 'Try 4 × 4 = 16, 5 × 5 = 25, 6 × 6 = 36 …', 'Which choice is on that list?'], `${sq} = ${s} × ${s} = ${P(s,2)}.`); },
-  () => { const n=ri(5,12); return pad('g4'+n, `A square of gems has <b>${n*n}</b> gems. How many gems are along each side?`, n,
+  () => { const n=ri(4,10); return pad('g4'+n, `A square of gems has <b>${n*n}</b> gems. How many gems are along each side?`, n,
     ['Which number times itself makes it?', '10 × 10 = 100. Bigger or smaller?', 'Guess, then check.'], `${n} × ${n} = ${n*n}, so each side has ${n}. This is called the square root.`); },
 ], adv:[
   () => { const n=ri(4,7), odds=Array.from({length:n},(_,i)=>2*i+1); return pad('h1'+n, `Add the first ${n} odd numbers:<br><span class="big">${odds.join(' + ')} = ${SLOT}</span>`, n*n,
     ['Look at the picture: each new L-shape of colour is the next odd number.', 'The L-shapes build a square.', `The square is ${n} by ${n}.`],
     `${odds.join(' + ')} = ${n*n} = ${P(n,2)}. The first n odd numbers always add up to n squared.`, gemGrid(n,true)); },
-  () => { const n=ri(5,20); return pad('h2'+n, `Niffler has a ${n} × ${n} square of gems. How many <b>more</b> gems does it need to make a ${n+1} × ${n+1} square?`, 2*n+1,
+  () => { const n=ri(3,10); return pad('h2'+n, `Niffler has a ${n} × ${n} square of gems. How many <b>more</b> gems does it need to make a ${n+1} × ${n+1} square?`, 2*n+1,
     [`${P(n+1,2)} − ${P(n,2)}.`, `${P(n+1,2)} = ${(n+1)**2} and ${P(n,2)} = ${n*n}.`, 'Or picture it: add a new row, a new column and one corner gem.'],
     `${(n+1)**2} − ${n*n} = ${2*n+1}. That is ${n} + ${n} + 1: a row, a column and a corner.`); },
-  () => { const n=pick([5,6,10]); return pad('h3'+n, `<span class="big">${P(n,3)} = ${SLOT}</span>`, n**3,
+  () => { const n=pick([4,5,10]); return pad('h3'+n, `<span class="big">${P(n,3)} = ${SLOT}</span>`, n**3,
     [`First find ${n} × ${n} = ${n*n}.`, `Then multiply by ${n} again.`, `${n*n} × ${n}.`], `${P(n,3)} = ${times(n,3)} = ${fmt(n**3)}.`); },
   () => { const ds=shuffle([16,27,36,100,125,81,8,49]).slice(0,3); return mcq('h4'+ds.join(''), 'Which number is <b>both</b> a square number and a cube number?', [64,...ds],
     ['Square numbers: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 …', 'Cube numbers: 1, 8, 27, 64, 125 …', 'Which choice is on both lists?'], `64 = ${P(8,2)} and 64 = ${P(4,3)}. The next number like this is 729!`); },
-  () => { const n=ri(11,20); return pad('h5'+n, `A square vault floor is covered by <b>${n*n}</b> square tiles. How many tiles long is each side?`, n,
-    ['Find a number that times itself makes it.', '15 × 15 = 225. Bigger or smaller?', 'The last digit gives a clue.'], `${n} × ${n} = ${n*n}, so each side is ${n} tiles.`); },
-  () => { let N; do { N=ri(20,150); } while (Number.isInteger(Math.sqrt(N))); const k=Math.floor(Math.sqrt(N));
+  () => { const n=ri(6,13); return pad('h5'+n, `A square vault floor is covered by <b>${n*n}</b> square tiles. How many tiles long is each side?`, n,
+    ['Find a number that times itself makes it.', '10 × 10 = 100. Is the side bigger or smaller than 10?', 'The last digit gives a clue.'], `${n} × ${n} = ${n*n}, so each side is ${n} tiles.`); },
+  () => { let N; do { N=ri(10,90); } while (Number.isInteger(Math.sqrt(N))); const k=Math.floor(Math.sqrt(N));
     return mcq('h6'+N, `<b>${N}</b> is not a square number. Which two square numbers is it between?`, [[k,k+1],[k-1,k],[k+1,k+2],[k-2,k-1]].map(([a,b])=>`${P(a,2)} and ${P(b,2)}`),
       ['List squares: 16, 25, 36, 49, 64, 81, 100, 121, 144.', `Find the biggest square below ${N}.`, 'Then the next square above it.'],
       `${P(k,2)} = ${k*k} and ${P(k+1,2)} = ${(k+1)**2}, so ${N} sits between them.`); },
@@ -475,12 +514,12 @@ G.rules = { basic:[
   () => { const e=ri(2,3), k=ri(3,4); return pad('r4'+e+k, `Here <i>a</i> is a mystery number.<br><span class="big">${Array(k).fill(P('a',e)).join(' × ')} = a<sup>${SLOT}</sup></span>`, e*k,
     [`Each ${P('a',e)} is ${times('a',e)}.`, `There are ${k} groups of ${e}.`, `${k} × ${e}.`], `${k} groups of ${e} make ${e*k} copies of a, so the answer is ${P('a',e*k)}.`); },
 ], adv:[
-  () => { const a=ri(2,9), m=ri(8,25), n=ri(8,25); return pad('s1'+a+m+n, `<span class="big">${P(a,m)} × ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m+n,
+  () => { const a=ri(2,9), m=ri(5,12), n=ri(5,12); return pad('s1'+a+m+n, `<span class="big">${P(a,m)} × ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m+n,
     ['Too big to write out! Use the secret rule.', 'Same base, multiplying: add the exponents.', `${m} + ${n}.`], `${P(a,m)} × ${P(a,n)} = ${P(a,m+n)}.`); },
-  () => { const a=pick([2,3,5,10]), m=ri(2,5), n=ri(2,4); return pad('s2'+a+m+n, `<span class="big">(${P(a,m)})<sup>${n}</sup> = ${a}<sup>${SLOT}</sup></span>`, m*n,
+  () => { const a=pick([2,3,5,10]), m=ri(2,4), n=ri(2,3); return pad('s2'+a+m+n, `<span class="big">(${P(a,m)})<sup>${n}</sup> = ${a}<sup>${SLOT}</sup></span>`, m*n,
     [`(${P(a,m)})<sup>${n}</sup> means ${n} copies of ${P(a,m)} multiplied.`, `Each copy has ${m} ${a}s.`, `${n} × ${m}.`],
     `${n} copies of ${m} ${a}s is ${m*n} ${a}s: ${P(a,m*n)}. A power of a power multiplies the exponents.`); },
-  () => { const a=ri(2,9), m=ri(20,40), n=ri(5,19); return pad('s3'+a+m+n, `<span class="big">${P(a,m)} ÷ ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m-n,
+  () => { const a=ri(2,9), m=ri(8,15), n=ri(2,7); return pad('s3'+a+m+n, `<span class="big">${P(a,m)} ÷ ${P(a,n)} = ${a}<sup>${SLOT}</sup></span>`, m-n,
     ['Same base, dividing: subtract the exponents.', `${n} of the ${a}s on top get cancelled.`, `${m} − ${n}.`], `${P(a,m)} ÷ ${P(a,n)} = ${P(a,m-n)}.`); },
   () => { const n=ri(2,6); return pad('s4'+n, `<span class="big">${P(2,n)} × ${P(5,n)} = 10<sup>${SLOT}</sup></span>`, n,
     ['Write out the 2s and the 5s.', 'Pair each 2 with a 5: 2 × 5 = 10.', 'How many pairs are there?'], `There are ${n} pairs of (2 × 5), so the answer is ${P(10,n)} = ${fmt(10**n)}.`); },
@@ -507,11 +546,12 @@ G.catch = { basic:[
     : claim('u4'+n+'f', `${P(2,n)} + ${P(2,n)} = ${P(2,2*n)}`, false, P(2,n+1), [P(4,2*n)], `Adding is not multiplying! ${P(2,n)} + ${P(2,n)} = 2 × ${P(2,n)} = ${P(2,n+1)}.`); },
   () => claim('u5', `${P(2,10)} is bigger than ${P(10,3)}`, true, null, [{raw:'Wrong: they are equal'}, {raw:`Wrong: ${P(10,3)} is bigger`}], `Right! ${P(2,10)} = 1,024 and ${P(10,3)} = 1,000. Just barely!`),
   () => { const n=ri(2,5); return claim('u6'+n, `${P(2,n)} × ${P(5,n)} = ${P(10,n)}`, true, null, [P(10,2*n), P(7,n)], `Right! Each 2 pairs with a 5 to make 10, so it is ${P(10,n)} = ${fmt(10**n)}.`); },
-  () => { let n; do { n=ri(12,30); } while (n%4===1); const d=[6,2,4,8][n%4]; const other=[2,4,8,6].filter(x=>x!==d&&x!==2);
+  () => { let n; do { n=ri(6,15); } while (n%4===1); const d=[6,2,4,8][n%4]; const other=[2,4,8,6].filter(x=>x!==d&&x!==2);
     return claim('u7'+n, `The last digit of ${P(2,n)} is 2`, false, d, [pick(other)], `Last digits of powers of 2 repeat 2, 4, 8, 6. ${n} ÷ 4 has remainder ${n%4}, so the last digit is ${d}.`); },
 ]};
 
 const GAMES = [
+  {id:'balloon', name:'Balloon Pop', glyph:'pop!', blurb:'Balloons float up with answers on them. Pop the one that matches!', featured:true},
   {id:'double', name:'Pouch Doubling', glyph:'2<sup>n</sup>', blurb:"Niffler's coins double every night. How fast can a pile grow?"},
   {id:'code',   name:'Power Code',     glyph:'a<sup>b</sup>', blurb:'Crack the short way to write a number multiplied by itself.'},
   {id:'zero',   name:'Zero Mine',      glyph:'10<sup>6</sup>', blurb:'Powers of ten: dig up the zeros and slide the decimal point.'},
@@ -520,6 +560,7 @@ const GAMES = [
   {id:'catch',  name:'Catch the Niffler', glyph:'?!', blurb:'Niffler is showing off. Is it right, or did it fib?'},
 ];
 const WONDERS = {
+  balloon:`Double a balloon's width and it holds ${P(2,3)} = 8 times as much air. Volume grows with the cube!`,
   double:`Fold a sheet of paper in half 42 times and it would be thicker than the distance to the Moon. That is ${P(2,42)} layers.`,
   code:`A googol is ${P(10,100)}: a 1 with 100 zeros. There are fewer atoms in the whole universe!`,
   zero:`The Earth weighs about 6 × ${P(10,24)} kg. Without exponents you would write a 6 with 24 zeros.`,
@@ -644,8 +685,9 @@ function speak(html){
 }
 
 /* ---------- navigation ---------- */
-const SCREENS = ['home','topic','play','end','hoard','notes','grown'];
+const SCREENS = ['home','topic','play','balloon','end','hoard','notes','grown'];
 function show(name){
+  if (name!=='balloon') stopBalloon();
   SCREENS.forEach(s => { $('#scr-'+s).hidden = s!==name; });
   $('#nav-home').setAttribute('aria-current', String(['home','topic','notes'].includes(name)));
   $('#nav-hoard').setAttribute('aria-current', String(name==='hoard'));
@@ -704,7 +746,7 @@ function renderTopic(){
     <p class="formula">${P(2,5)} = 2 × 2 × 2 × 2 × 2 = 32</p>
   </div>
   <div class="games">${GAMES.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv');
-    return `<div class="game"><span class="glyph">${g.glyph}</span><h3>${g.name}</h3><p class="dim">${g.blurb}</p>
+    return `<div class="game${g.featured?' featured':''}"><span class="glyph">${g.glyph}</span><h3>${g.name}</h3><p class="dim">${g.blurb}</p>
       <div class="prog"><span>Basic: ${b.rounds ? `<b>${b.rounds} played</b>, best ${b.best}/6` : 'not yet'}</span><span>Advanced: ${a.rounds ? `<b>${a.rounds} played</b>, best ${a.best}/6` : 'not yet'}</span></div>
       <div class="row"><button class="btn gold" data-play="${g.id}" data-level="basic">Basic</button><button class="btn deep" data-play="${g.id}" data-level="adv">Advanced</button></div></div>`; }).join('')}
   </div>
@@ -722,6 +764,7 @@ function renderNotes(){
 /* ---------- play ---------- */
 let R = null;
 function startRound(gid, level){
+  if (gid==='balloon') return startBalloon(level);
   const kinds = shuffle(G[gid][level]), qs=[], keys=new Set(); let i=0, tries=0;
   while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
   R = {gid, level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
@@ -815,6 +858,120 @@ function showHint(){
   speak(q.hints[R.hints-1]);
 }
 function next(){ R.i++; if (R.i>=R.qs.length) endRound(); else renderQ(); }
+
+/* ---------- Balloon Pop ---------- */
+const others = (ans, cands, n=4) => { const out=[]; for (const c of shuffle(cands)){ const v=String(c); if (v!==String(ans) && !out.includes(v)) out.push(v); if (out.length>=n) break; } return out; };
+const BAL = { basic:[
+  () => { const [a,b]=pick([[2,2],[2,3],[2,4],[3,2],[3,3],[4,2],[5,2],[6,2],[10,2],[2,5]]), v=a**b;
+    return {key:'p1'+a+b, ask:`Pop ${P(a,b)}`, sub:'Find the balloon with its value.', answer:fmt(v),
+      others:others(fmt(v),[a*b,a+b,v+a,v+1,v*2,Number(`${a}${b}`),b**a].map(fmt)), explain:`${P(a,b)} = ${times(a,b)} = ${fmt(v)}.`}; },
+  () => { const r=ri(2,10), sq=r*r, c=new Set(); while (c.size<6){ const d=sq+pick([-3,-2,-1,1,2,3,5,6]); if (d>1 && !Number.isInteger(Math.sqrt(d))) c.add(d); }
+    return {key:'p2'+r, ask:'Pop the square number', sub:'A square number is a number times itself.', answer:String(sq), others:others(sq,[...c]), explain:`${sq} = ${r} × ${r} = ${P(r,2)}.`}; },
+  () => { const [v,a,b]=pick([[4,2,2],[8,2,3],[9,3,2],[16,4,2],[25,5,2],[27,3,3],[100,10,2],[32,2,5],[36,6,2]]);
+    const pool=[[2,2],[2,3],[2,4],[3,2],[3,3],[4,2],[5,2],[2,5],[6,2],[10,2],[4,3],[5,3]].filter(([x,y])=>x**y!==v).map(([x,y])=>P(x,y));
+    return {key:'p3'+v, ask:`Pop the balloon that equals ${v}`, sub:'Work out each power on the balloons.', answer:P(a,b), others:others(P(a,b),pool), explain:`${P(a,b)} = ${times(a,b)} = ${v}.`}; },
+  () => { const n=ri(1,4), v=10**n;
+    return {key:'p4'+n, ask:`Pop ${P(10,n)}`, sub:'The exponent counts the zeros.', answer:fmt(v), others:others(fmt(v),[10**(n+1),n>1?10**(n-1):1,10*n,v+10,n*100].map(fmt)), explain:`${P(10,n)} = ${fmt(v)}: a 1 with ${plural(n,'zero')}.`}; },
+], adv:[
+  () => { const a=pick([2,3,10]), m=ri(1,3), n=ri(2,3);
+    return {key:'q1'+a+m+n, ask:`Pop ${P(a,m)} × ${P(a,n)}`, sub:'Same base: add the exponents.', answer:P(a,m+n), others:others(P(a,m+n),[P(a,m*n),P(a*a,m+n),P(a,m+n+1),P(a,m+n-1),P(a*2,m+n)]), explain:`${P(a,m)} × ${P(a,n)} = ${P(a,m+n)} because ${m} + ${n} = ${m+n}.`}; },
+  () => { let m; do { m=ri(11,99); } while (m%10===0); const x=m/10, n=ri(1,2), v=m*10**n/10;
+    return {key:'q2'+m+n, ask:`Pop ${x} × ${P(10,n)}`, sub:'Slide the decimal point to the right.', answer:fmt(v), others:others(fmt(v),[m*10**(n+1)/10, m*10**(n-1)/10, m*10**n, x+10**n, m].map(fmt)), explain:`${x} × ${fmt(10**n)} = ${fmt(v)}.`}; },
+  () => { const c=pick([8,27,64,125]);
+    return {key:'q3'+c, ask:'Pop the cube number', sub:'A cube number is a number used three times: 2 × 2 × 2.', answer:String(c), others:others(c,[9,16,36,49,100,30,50,12,18]), explain:`${c} = ${P(Math.round(Math.cbrt(c)),3)}.`}; },
+  () => { const a=ri(2,12);
+    return {key:'q4'+a, ask:`Pop ${P(a,0)}`, sub:'What happens with an exponent of 0?', answer:'1', others:others('1',['0',a,10,a*a,a*10].map(String)), explain:`${P(a,0)} = 1. Any number except 0 to the power 0 is 1.`}; },
+  () => { const pool=[[2,3],[3,2],[2,4],[4,2],[5,2],[2,5],[3,3],[6,2],[4,3],[10,2]]; let set; do { set=shuffle(pool).slice(0,5); } while (new Set(set.map(([x,y])=>x**y)).size<5);
+    const best=set.slice().sort((p,q)=>q[0]**q[1]-p[0]**p[1])[0];
+    return {key:'q5'+set.map(z=>z.join('')).join(''), ask:'Pop the biggest treasure', sub:'Work out each power, then compare.', answer:P(best[0],best[1]), others:set.filter(z=>z!==best).map(z=>P(z[0],z[1])), explain:set.map(([x,y])=>`${P(x,y)} = ${x**y}`).join(', ')+'.'}; },
+]};
+const BAL_COLORS = ['#ff6b8b','#4fc3f7','#ffd54f','#7ed492','#bd7ce0','#ff9f43'];
+function balloonSVG(c){ return `<svg viewBox="0 0 112 152" aria-hidden="true"><path d="M56 6 C88 6 104 30 104 56 C104 88 78 108 60 112 L64 120 L48 120 L52 112 C34 108 8 88 8 56 C8 30 24 6 56 6Z" fill="${c}"/><ellipse cx="36" cy="38" rx="10" ry="17" fill="#fff" opacity=".35" transform="rotate(-20 36 38)"/><path d="M56 120 Q46 132 58 141 Q66 148 56 152" stroke="rgba(255,255,255,.65)" stroke-width="2" fill="none"/></svg>`; }
+const isSmall = html => html.replace(/<[^>]+>/g,'').length > 4;
+let BL = null;
+function stopBalloon(){ if (BL){ cancelAnimationFrame(BL.raf); clearTimeout(BL.timer); BL.balloons.forEach(b=>b.el.remove()); BL=null; } }
+function startBalloon(level){
+  stopBalloon();
+  const kinds=shuffle(BAL[level]), qs=[], keys=new Set(); let i=0, tries=0;
+  while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key) || q.others.length<3) continue; keys.add(q.key); qs.push(q); }
+  R = {gid:'balloon', level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
+  const tag=$('#balLvl'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className='lvl'+(level==='adv'?' adv':'');
+  $('#balNiff').innerHTML = niffSVG(S.fur,S.wear);
+  show('balloon');
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  BL = {balloons:[], t:0, last:0, raf:0, timer:0, speed:(level==='adv'?58:46)*(reduce?.6:1)};
+  measure(); setupTarget();
+  BL.raf = requestAnimationFrame(loop);
+}
+function measure(){ const st=$('#stage'); BL.W=st.clientWidth; BL.H=st.clientHeight; BL.lanes=Math.max(3,Math.min(5,Math.floor(BL.W/122))); }
+function laneX(l){ return BL.lanes===1 ? (BL.W-112)/2 : 8 + l*((BL.W-16-112)/(BL.lanes-1)); }
+function balDots(){ $('#balDots').innerHTML = R.qs.map((_,k)=>`<span class="dot${k<R.i?' done':''}${k===R.i?' now':''}"></span>`).join(''); }
+function setupTarget(){
+  const q=R.qs[R.i]; Object.assign(R,{att:0,done:false});
+  $('#balAsk').innerHTML=q.ask; $('#balSub').textContent=q.sub; $('#balFeedback').innerHTML='';
+  $('#balBubble').innerHTML = R.i===0 ? 'Tap the right balloon before it floats away. Don\'t worry, it comes back!' : pick(THINK);
+  balDots();
+  BL.balloons.forEach(b=>b.el.remove()); BL.balloons=[];
+  const n=BL.lanes, labels=[]; for (let k=0;k<n-1;k++) labels.push(q.others[k%q.others.length]);
+  const correctAt=ri(0,Math.min(2,n-1)); labels.splice(correctAt,0,q.answer);
+  const lanes=shuffle([...Array(n).keys()]);
+  labels.forEach((lab,k)=>spawn(lab, k===correctAt, lanes[k], BL.H - 170 + k*Math.max(110,BL.H/n)));
+  speak(q.ask);
+}
+function spawn(label, correct, lane, y){
+  const el=document.createElement('div'); el.className='balloon';
+  el.innerHTML = balloonSVG(pick(BAL_COLORS)) + `<div class="lbl${isSmall(label)?' sm':''}">${label}</div>`;
+  el.setAttribute('role','button'); el.setAttribute('aria-label','balloon '+label.replace(/<sup>(.*?)<\/sup>/g,' to the power $1').replace(/<[^>]+>/g,''));
+  $('#stage').appendChild(el);
+  const b={el, lane, x:laneX(lane), y, phase:Math.random()*6, correct, label, dead:false};
+  el.style.transform=`translate(${b.x}px,${y}px)`;
+  BL.balloons.push(b); return b;
+}
+function loop(ts){
+  if (!BL) return;
+  const dt = BL.last ? Math.min(.05,(ts-BL.last)/1000) : 0; BL.last=ts; BL.t+=dt;
+  for (const b of BL.balloons){ if (b.dead) continue;
+    b.y -= BL.speed*dt;
+    if (b.y < -160){ b.y = BL.H + ri(10,120); b.x = laneX(b.lane);
+      if (!b.correct && R && !R.done){ const q=R.qs[R.i]; b.label=pick(q.others); b.el.querySelector('.lbl').innerHTML=b.label; b.el.querySelector('.lbl').className='lbl'+(isSmall(b.label)?' sm':''); } }
+    b.el.style.transform=`translate(${(b.x+Math.sin(BL.t*1.1+b.phase)*10).toFixed(1)}px,${b.y.toFixed(1)}px)`;
+  }
+  BL.raf=requestAnimationFrame(loop);
+}
+function burst(b, color){
+  const st=$('#stage'), cx=b.x+56+Math.sin(BL.t*1.1+b.phase)*10, cy=b.y+56;
+  for (let k=0;k<12;k++){ const d=document.createElement('div'); d.className='spark'; d.style.background=k%3?color:'#fff6c2'; d.style.left=(cx-7)+'px'; d.style.top=(cy-7)+'px'; st.appendChild(d);
+    const ang=k/12*Math.PI*2, dist=60+Math.random()*50;
+    if (d.animate) d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist}px) scale(.3)`,opacity:0}],{duration:600,easing:'ease-out'}).onfinish=()=>d.remove(); else setTimeout(()=>d.remove(),600); }
+  const w=document.createElement('div'); w.className='popword'; w.textContent='POP!'; w.style.left=(cx-40)+'px'; w.style.top=(cy-30)+'px'; st.appendChild(w);
+  if (w.animate) w.animate([{transform:'scale(.5)',opacity:1},{transform:'scale(1.3) translateY(-30px)',opacity:0}],{duration:800}).onfinish=()=>w.remove(); else setTimeout(()=>w.remove(),800);
+}
+const sPop = () => { tone(520,.06,0,'square',.08); tone(260,.12,.03,'triangle',.12); };
+function tapBalloon(el){
+  if (!BL || !R || R.done) return; const b=BL.balloons.find(x=>x.el===el); if (!b || b.dead) return;
+  const q=R.qs[R.i], color=b.el.querySelector('path').getAttribute('fill');
+  if (b.correct){
+    R.done=true; b.dead=true; burst(b,color); b.el.remove(); sPop(); setTimeout(sDing,120);
+    const clean=R.att===0, adv=R.level==='adv'; let c = clean?(adv?5:3):(adv?2:1); if (clean) R.first++;
+    let extra='';
+    if (R.i===R.mischief){ extra=` <span class="dim">Niffler grabbed your ${plural(c,'coin')}… and brought back ${c*2}!</span>`; c*=2; $('#balBubble').innerHTML='Hee hee! Coins love me.'; }
+    else $('#balBubble').innerHTML=pick(CHEERS);
+    S.coins+=c; R.earned+=c; save(); coinsUI(); bumpPurse(); flyCoins($('#balNiff'),c);
+    anim($('#balNiff'),'hop');
+    $('#balFeedback').innerHTML = `<span class="good">${pick(CHEERS)}</span> +${plural(c,'coin')}. ${q.explain}${extra}`;
+    R.i++; balDots(); R.i--;
+    BL.timer=setTimeout(()=>{ if (!BL) return; R.i++; if (R.i>=R.qs.length){ stopBalloon(); endRound(); } else setupTarget(); }, 2200);
+  } else {
+    R.att++; b.dead=true; sOops(); anim($('#balNiff'),'tilt');
+    const cur=b.el.style.transform;
+    if (b.el.animate) b.el.animate([{transform:cur,opacity:1},{transform:cur+' translateY(90px) rotate(25deg) scale(.4)',opacity:0}],{duration:700,easing:'ease-in',fill:'forwards'});
+    const qi=R.i; setTimeout(()=>{ if (!BL) return; b.el.remove(); BL.balloons=BL.balloons.filter(x=>x!==b); if (!R.done && R.i===qi) spawn(pick(q.others), false, b.lane, BL.H+30); }, 750);
+    $('#balFeedback').innerHTML = `<span class="oops">${R.att>=2?'Look for the glowing balloon!':'Not that one. Try another balloon!'}</span>`;
+    if (R.att>=2){ BL.balloons.filter(x=>x.correct).forEach(x=>x.el.classList.add('glow')); $('#balBubble').innerHTML=`Psst… ${q.explain}`; }
+  }
+}
+document.addEventListener('pointerdown', e => { const el=e.target.closest && e.target.closest('.balloon'); if (el){ e.preventDefault(); tapBalloon(el); } });
+window.addEventListener('resize', () => { if (BL){ measure(); BL.balloons.forEach(b=>{ if (b.lane>=BL.lanes) b.lane=BL.lanes-1; b.x=laneX(b.lane); }); } });
 
 /* ---------- end of round ---------- */
 function endRound(){
@@ -928,7 +1085,7 @@ document.addEventListener('click', e => {
   if (t.dataset.fur) return buyFur(t.dataset.fur);
   if (t.id==='hintBtn') return showHint();
   if (t.id==='nextBtn') return next();
-  if (t.id==='leaveBtn'){ renderTopic(); return show('topic'); }
+  if (t.id==='leaveBtn' || t.id==='balLeave'){ renderTopic(); return show('topic'); }
   if (t.id==='resetBtn'){
     if (!resetArmed){ resetArmed=true; t.textContent='Tap again to erase everything'; $('#resetMsg').textContent='This cannot be undone.'; return; }
     const keep={player:S.player,name:S.name,settings:S.settings}; S=Object.assign(clone(DEFAULT),keep); save(); coinsUI(); renderGrown(); $('#resetMsg').textContent='Progress erased.';
