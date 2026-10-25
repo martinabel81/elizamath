@@ -241,6 +241,88 @@ footer{margin-top:40px;display:flex;justify-content:center}
 .chip{padding:6px 12px;border-radius:999px;background:#235a45;border:2px solid var(--good);font-weight:900}
 .iso{overflow:visible}
 @media (max-width:720px){ .build-grid{grid-template-columns:1fr} }
+/* fractions */
+.wedge{fill:#f6dca6;stroke:#9a5f22;stroke-width:3;stroke-linejoin:round;cursor:pointer}
+.wedge.on{fill:#e2475b}
+.crust{fill:#d99a4e}
+.pie{touch-action:manipulation}
+.ix-stage{display:flex;justify-content:center;align-items:center;min-height:320px}
+.ix-stage.drag{touch-action:none}
+.ix-controls{display:flex;flex-direction:column;gap:10px}
+.pal{display:flex;flex-wrap:wrap;gap:10px}
+.palbtn{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:64px;padding:10px 12px;border-radius:16px;background:var(--tunnel);border:2px solid var(--root);font-family:var(--display);font-size:1.3rem}
+.palbtn:disabled{opacity:.4}
+.palbar{display:block;height:20px;border-radius:5px;border:2px solid rgba(0,0,0,.25)}
+.wall-whole{fill:none;stroke:var(--ink);stroke-width:3}
+.wall-target{fill:rgba(247,199,75,.12);stroke:var(--gold);stroke-width:3;stroke-dasharray:8 6}
+.wpiece{cursor:pointer}
+.wlbl{font-family:var(--display);font-size:18px;fill:#2b1d07}
+.nl{stroke:var(--ink);stroke-width:4;stroke-linecap:round}
+.nl.minor{stroke-width:2.5;opacity:.75}
+.arrows{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fin{display:flex;align-items:center;justify-content:center;gap:14px}
+.fstack{display:flex;flex-direction:column;align-items:center;gap:6px}
+.fbar{display:block;width:84px;height:4px;border-radius:2px;background:var(--ink)}
+.fbox{width:84px;height:60px;border-radius:14px;background:var(--soil-2);border:3px solid var(--root);font-family:var(--display);font-size:2rem;font-variant-numeric:tabular-nums}
+.fbox.w{height:84px}
+.fbox.on{border-color:var(--gold);box-shadow:0 0 0 3px rgba(247,199,75,.25)}
+.fin-tip{text-align:center;font-size:.95rem}
+.lbl .frac sup,.lbl .frac sub{font-size:.7em}
+/* gallery + vault */
+.gal-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
+.gal-frame{position:relative;width:100%;max-width:520px;aspect-ratio:1;border-radius:24px;overflow:hidden;border:3px solid var(--gold-deep);background:var(--soil-2)}
+.gal-frame .animal{position:absolute;inset:0;width:100%;height:100%}
+.tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#3a2d50;background-image:radial-gradient(rgba(255,255,255,.06) 2px,transparent 2.5px);background-size:14px 14px;border:1.5px solid #20172c;color:var(--gold);transition:opacity .4s,transform .4s}
+.tile span{font-family:var(--display);font-size:2rem;line-height:1}
+.tile small{font-weight:900;font-size:.72rem;color:var(--ink-dim)}
+.tile:hover:not(.open){background-color:#4a3966}
+.tile.open{opacity:0;transform:scale(.5);pointer-events:none}
+.gal-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.starguide{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:14px;background:var(--soil-2);font-size:.95rem}
+.stars{color:var(--gold);font-size:2rem;letter-spacing:.12em}
+.stars-sm{color:var(--gold);letter-spacing:.1em}
+.star-off{color:var(--root)}
+.pic{width:100%;aspect-ratio:1;background:var(--soil-2)}
+.gal-frame .pic{position:absolute;inset:0;aspect-ratio:auto}
+.pic .animal,.gal-frame img.animal{display:block;width:100%;height:100%}
+img.photo{object-fit:cover;aspect-ratio:1}
+.card img.photo{display:block;width:100%}
+.gtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.gtab{min-height:52px;padding:10px 18px;border-radius:999px;background:var(--tunnel);border:2px solid var(--root);font-weight:900;font-size:1.02rem}
+.gtab.on{background:var(--tunnel-2);border-color:var(--gold);color:var(--gold)}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.plist{display:grid;gap:12px;margin-top:12px}
+.prow{display:grid;grid-template-columns:140px minmax(0,1fr);gap:14px;align-items:start;padding:12px;border-radius:18px;background:var(--tunnel);border:2px solid var(--gem1)}
+.prow.saved{border-color:var(--root)}
+.prow img{width:140px;height:140px;object-fit:cover;border-radius:12px}
+.pfields{display:flex;flex-direction:column;gap:8px;min-width:0}
+@media (max-width:460px){ .prow{grid-template-columns:1fr} .prow img{width:100%;height:auto;aspect-ratio:1} }
+.guess{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gbtn{min-height:54px;padding:8px 10px;border-radius:14px;background:var(--tunnel-2);border:2px solid var(--root);font-weight:900;font-size:1.02rem}
+.gbtn:hover:not(:disabled){border-color:var(--gold)}
+.gbtn.no{text-decoration:line-through;opacity:.35}
+.gbtn:disabled:not(.no){opacity:.55}
+.coll{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.card{border-radius:20px;background:var(--tunnel);border:2px solid var(--root);overflow:hidden;display:flex;flex-direction:column}
+.card .animal{display:block;width:100%;height:auto}
+.card .body{padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.card.locked{border-style:dashed;min-height:190px;align-items:center;justify-content:center;font-family:var(--display);font-size:3rem;color:var(--root)}
+.vstory{padding:22px 24px;border-radius:24px;background:linear-gradient(160deg,#2a2347,var(--tunnel));border:2px solid var(--gold-deep);display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:20px;align-items:center;font-size:1.1rem}
+.vstory ol{margin:10px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.villo svg{width:100%;height:auto;display:block}
+.vq{margin-top:12px;font-family:var(--display);font-size:1.6rem;color:var(--gold)}
+.vanswer{margin-top:18px;padding:18px 20px;border-radius:22px;background:var(--tunnel);border:2px solid var(--root);display:flex;flex-direction:column;gap:10px}
+.vrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.vin{font:inherit;font-family:var(--display);font-size:1.8rem;width:150px;min-height:60px;padding:6px 12px;border-radius:14px;border:3px solid var(--root);background:var(--soil-2);color:var(--ink);text-align:center}
+.vin:focus{border-color:var(--gold);outline:none}
+.clues{display:grid;gap:12px}
+.clue{padding:14px 16px;border-radius:18px;background:var(--soil-2);border:2px dashed var(--root);display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.clue.open{border-style:solid;border-color:var(--gem1)}
+.clue.solved{border-style:solid;border-color:var(--good)}
+.solution{margin-top:14px}
+.solution ol{margin:6px 0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+@media (max-width:720px){ .gal-grid,.vstory{grid-template-columns:1fr} .villo{max-width:160px} }
 /* balloon pop */
 .bal-prompt{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 22px;border-radius:24px;background:var(--tunnel);border:2px solid var(--root);margin-bottom:12px}
 .bal-prompt .ask{font-family:var(--display);font-size:clamp(1.7rem,4.5vw,2.5rem);line-height:1.15}
@@ -290,6 +372,7 @@ footer{margin-top:40px;display:flex;justify-content:center}
     <button class="brand" data-go="home">Niffler's Hoard</button>
     <nav>
       <button class="navbtn" data-go="home" id="nav-home">Burrows</button>
+      <button class="navbtn" data-go="gallery" id="nav-gallery">Gallery</button>
       <button class="navbtn" data-go="hoard" id="nav-hoard">Hoard Room</button>
     </nav>
     <div class="purse" id="purse" aria-label="coins"><span class="coin-ico"></span><b id="coinCount">0</b></div>
@@ -366,8 +449,32 @@ footer{margin-top:40px;display:flex;justify-content:center}
         </div>
       </div>
     </section>
+    <section id="scr-ix" hidden>
+      <div class="play-top">
+        <button class="btn" id="ixLeave">&larr; Back to tunnel</button>
+        <span class="lvl" id="ixLvl">Basic</span>
+        <div class="dots" id="ixDots"></div>
+      </div>
+      <div class="build-grid">
+        <div class="qcard">
+          <div class="qtitle" id="ixTitle"></div>
+          <div class="prompt"><span id="ixAsk"></span><span class="dim" id="ixSub" style="display:block;font-size:1rem;margin-top:4px"></span></div>
+          <div class="ix-stage" id="ixStage"></div>
+          <div class="readout" id="ixRead"></div>
+        </div>
+        <div class="build-side">
+          <div class="build-niff"><div class="niff" id="ixNiff"></div><div class="bubble" id="ixBubble"></div></div>
+          <div class="ix-controls" id="ixControls"></div>
+          <button class="btn gold" id="ixCheck">Check</button>
+          <div class="feedback" id="ixFeedback" aria-live="polite"></div>
+          <button class="btn gold" id="ixNext" hidden>Next &rarr;</button>
+        </div>
+      </div>
+    </section>
     <section id="scr-end" hidden></section>
     <section id="scr-hoard" hidden></section>
+    <section id="scr-gallery" hidden></section>
+    <section id="scr-vault" hidden></section>
     <section id="scr-notes" hidden></section>
     <section id="scr-grown" hidden></section>
   </main>
@@ -381,7 +488,8 @@ footer{margin-top:40px;display:flex;justify-content:center}
 /* ---------- state ---------- */
 const KEY = 'nifflersHoard.v1';
 const DEFAULT = {coins:0, shinies:[], owned:[], wear:{}, fur:'lilac', furs:['lilac'], name:'Niffler', player:'friend',
-  stats:{}, wonders:[], settings:{sound:true, speak:false, hints:true}, tickleDay:'', tickles:0};
+  stats:{}, wonders:[], settings:{sound:true, speak:false, hints:true}, tickleDay:'', tickles:0,
+  gallery:{cur:0, tiles:[], choices:[], wrong:[], reveal:false, done:[]}, travel:{cur:null, tiles:[], choices:[], wrong:[], reveal:false, done:[]}, vault:{opened:[false,false,false], clueOk:[false,false,false], solved:false, stars:0, openedAtSolve:0, bonus:false}};
 const clone = o => JSON.parse(JSON.stringify(o));
 function load(){
   try { const r = JSON.parse(localStorage.getItem(KEY));
@@ -850,6 +958,143 @@ const SNOTES = [
   ['2-D or 3-D?','flat vs solid','Flat shapes have area but no volume.'],
 ];
 
+/* ---------- fractions: helpers ---------- */
+const gcd = (a,b) => { a=Math.abs(a); b=Math.abs(b); while (b){ [a,b]=[b,a%b]; } return a||1; };
+const simp = (n,d) => { const g=gcd(n,d); return [n/g,d/g]; };
+const fadd = (a,b) => simp(a[0]*b[1]+b[0]*a[1], a[1]*b[1]);
+const fsub = (a,b) => simp(a[0]*b[1]-b[0]*a[1], a[1]*b[1]);
+const fmul = (a,b) => simp(a[0]*b[0], a[1]*b[1]);
+function fh(n,d){ [n,d]=simp(n,d); if (d===1) return String(n); const w=Math.floor(n/d), r=n-w*d; return w ? `${w}${fr(r,d)}` : fr(n,d); }
+const fpad = (key,prompt,ans,hints,explain,fig='',opt={}) => ({type:'pad', frac:true, key, prompt, answer:simp(ans[0],ans[1]), hints, explain, fig, simplest:!!opt.simplest});
+const PIE_FILL='#e2475b';
+function piesFig(a,b){
+  const r=26, gap=12, w=a*(2*r+gap); let s='';
+  for (let i=0;i<a;i++){ const cx=r+4+i*(2*r+gap); s+=`<circle cx="${cx}" cy="34" r="${r}" fill="#f2cf8f" stroke="#9a5f22" stroke-width="3"/><circle cx="${cx}" cy="34" r="${r-7}" fill="${PIE_FILL}" opacity=".85"/>`; }
+  let n=''; for (let j=0;j<b;j++){ const cx=22+j*44; n+=`<g transform="translate(${cx},100)"><circle cx="-11" cy="-12" r="8" fill="#a99bd5"/><circle cx="11" cy="-12" r="8" fill="#a99bd5"/><circle r="15" fill="#a99bd5"/><circle cx="-5" cy="-2" r="2.5" fill="#251a30"/><circle cx="5" cy="-2" r="2.5" fill="#251a30"/><ellipse cx="0" cy="5" rx="3" ry="2" fill="#f27aa1"/></g>`; }
+  const W=Math.max(w, b*44)+10;
+  return `<svg class="fig" viewBox="0 0 ${W} 124" style="max-width:${Math.min(460,W*1.3)}px" role="img" aria-label="${a} pies shared by ${b} nifflers">${s}${n}</svg>`;
+}
+function gardenFig(a,n,b,m){
+  const W=300, H=200, o=60; let s=`<rect x="${o}" y="20" width="${W}" height="${H}" fill="#3b5a2c" stroke="var(--ink)" stroke-width="3"/>`;
+  s+=`<rect x="${o}" y="20" width="${W*n/a}" height="${H}" fill="#4fc3f7" opacity=".55"/><rect x="${o}" y="20" width="${W}" height="${H*m/b}" fill="#ff7fb5" opacity=".55"/>`;
+  for (let i=1;i<a;i++) s+=`<line x1="${o+W*i/a}" y1="20" x2="${o+W*i/a}" y2="${20+H}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  for (let j=1;j<b;j++) s+=`<line x1="${o}" y1="${20+H*j/b}" x2="${o+W}" y2="${20+H*j/b}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  s+=`<rect x="${o}" y="20" width="${W}" height="${H}" fill="none" stroke="var(--ink)" stroke-width="3"/>`;
+  s+=`<text x="${o+W*n/a/2}" y="14" text-anchor="middle" class="iso-lbl">${n}/${a}</text><text x="${o-8}" y="${20+H*m/b/2+5}" text-anchor="end" class="iso-lbl">${m}/${b}</text>`;
+  return `<svg class="fig" viewBox="0 0 ${W+o+20} ${H+34}" style="max-width:400px" role="img" aria-label="garden grid">${s}</svg>`;
+}
+
+G.fair = { basic:[
+  () => { const b=ri(2,6), a=ri(1,b-1); return fpad('fa1'+a+b, `Niffler shares <b>${plural(a,'pie')}</b> equally with <b>${b} nifflers</b>. How much pie does each one get?`, [a,b],
+    [`Cut every pie into ${b} slices.`, 'Each niffler gets one slice from every pie.', `That is ${a} slices, each ${fr(1,b)} of a pie.`], `${a} ÷ ${b} = ${fr(a,b)} of a pie each.`, piesFig(a,b)); },
+  () => { const [a,b]=pick([[3,2],[5,2],[5,4],[7,4],[4,3],[5,3]]); return fpad('fa2'+a+b, `<b>${a} pies</b> are shared equally by <b>${b} nifflers</b>. How much pie does each get?`, [a,b],
+    [`Each niffler gets at least ${Math.floor(a/b)} whole pie${Math.floor(a/b)>1?'s':''}.`, `${a%b} pie${a%b>1?'s are':' is'} left to cut into ${b} slices.`, `${a} ÷ ${b} = ${Math.floor(a/b)} with ${a%b} left over.`], `${a} ÷ ${b} = ${fh(a,b)} pies each.`, piesFig(a,b)); },
+  () => { const k=pick([2,3,4,6]), per=ri(2,4), tot=k*per; return fpad('fa3'+k+per, `<b>${tot} coins</b> are shared equally by <b>${k} nifflers</b>. What fraction of all the coins does each niffler get?`, [1,k],
+    ['Each niffler gets one equal share.', `There are ${k} equal shares.`, `One share out of ${k}.`], `Each gets ${per} of ${tot} coins, which is ${fr(per,tot)} = ${fr(1,k)}.`); },
+], adv:[
+  () => { const b=ri(3,4), a=ri(7,11); return fpad('fb1'+a+b, `<b>${a} pies</b> shared equally by <b>${b} nifflers</b>. How much pie each?`, [a,b],
+    [`${a} ÷ ${b}.`, `${b} × ${Math.floor(a/b)} = ${b*Math.floor(a/b)}, so ${a%b} pie${a%b>1?'s':''} left over.`, `Share the leftover pies: ${fr(a%b,b)} each.`], `${a} ÷ ${b} = ${fh(a,b)} pies each.`); },
+  () => { let A,B; do { A=[ri(3,6),0]; A[1]=A[0]+1; B=[ri(2,6),0]; B[1]=B[0]+ri(1,2); } while (A[0]*B[1]===B[0]*A[1]);
+    const c = A[0]*B[1] > B[0]*A[1] ? 0 : 1, opts=['Group A','Group B','The same'];
+    return mcq('fb2'+A.join('')+B.join(''), `Group A shares ${A[0]} pies among ${A[1]} nifflers. Group B shares ${B[0]} pies among ${B[1]} nifflers. In which group does each niffler get more?`, [opts[c], opts[1-c], opts[2]],
+      [`Group A: each gets ${fr(A[0],A[1])}.`, `Group B: each gets ${fr(B[0],B[1])}.`, `Compare with a common denominator: ${A[1]*B[1]}.`],
+      `${fr(A[0],A[1])} = ${fr(A[0]*B[1],A[1]*B[1])} and ${fr(B[0],B[1])} = ${fr(B[0]*A[1],A[1]*B[1])}. Group ${c?'B':'A'} gets more.`, '', true); },
+  () => { const [n,d]=pick([[3,4],[2,3],[1,2],[5,6]]), k=pick([4,6,8,9].filter(x=>x!==d)); return fpad('fb3'+n+d+k, `Each of ${k} nifflers ate ${fr(n,d)} of a pie. How many pies did they eat altogether?`, [n*k,d],
+    [`${k} × ${fr(n,d)}.`, `That is ${fr(n*k,d)}.`, `How many wholes are in ${fr(n*k,d)}?`], `${k} × ${fr(n,d)} = ${fr(n*k,d)} = ${fh(n*k,d)} pies.`); },
+  () => { const [a,b]=pick([[[2,3],[1,4]],[[1,2],[1,3]],[[3,8],[1,4]],[[1,3],[1,6]]]), left=fsub([1,1],fadd(a,b)); return fpad('fb4'+a+b, `Niffler ate ${fr(...a)} of a pie and its friend ate ${fr(...b)}. How much pie is left?`, left,
+    [`Add what they ate: ${fr(...a)} + ${fr(...b)}.`, `Use a common denominator: ${a[1]*b[1]/gcd(a[1],b[1])}.`, 'Take that away from 1 whole pie.'], `They ate ${fh(...fadd(a,b))}, so ${fh(...left)} is left.`); },
+]};
+
+G.recipe = { basic:[
+  () => { const k=ri(2,4), [n,d]=pick([[1,2],[3,4],[2,3],[1,3],[1,4]]); return fpad('ra1'+k+n+d, `Niffler's cookie recipe needs ${fr(n,d)} cup of sugar. How much sugar for <b>${k} batches</b>?`, [k*n,d],
+    [`${k} × ${fr(n,d)}.`, `Add ${fr(n,d)} ${k} times.`, `That is ${fr(k*n,d)}.`], `${k} × ${fr(n,d)} = ${fr(k*n,d)} = ${fh(k*n,d)} cups.`); },
+  () => { const [a,b]=pick([[[1,2],[1,4]],[[1,2],[1,3]],[[1,3],[1,6]],[[1,4],[2,4]],[[1,2],[1,6]],[[2,3],[1,6]]]), s=fadd(a,b);
+    return fpad('ra2'+a+b, `Mix ${fr(...a)} cup of flour and ${fr(...b)} cup of oats. How much is that altogether?`, s,
+      ['Make the bottom numbers the same first.', `A common denominator is ${a[1]*b[1]/gcd(a[1],b[1])}.`, 'Then add the top numbers.'], `${fr(...a)} + ${fr(...b)} = ${fh(...s)} cup.`); },
+  () => { const [a,b]=pick([[[3,4],[1,4]],[[5,6],[1,3]],[[1,1],[3,8]],[[7,8],[1,2]],[[2,3],[1,6]]]), s=fsub(a,b);
+    return fpad('ra3'+a+b, `Niffler had ${fh(...a)} cup of milk and used ${fr(...b)} cup. How much is left?`, s,
+      ['Make the bottom numbers the same.', `Write both with denominator ${a[1]*b[1]/gcd(a[1],b[1])}.`, 'Subtract the top numbers.'], `${fh(...a)} − ${fr(...b)} = ${fh(...s)} cup.`); },
+], adv:[
+  () => { const [a,b]=pick([[[2,3],[3,4]],[[1,2],[2,3]],[[3,4],[2,3]],[[1,2],[3,4]],[[2,3],[1,2]]]), p=fmul(a,b);
+    return fpad('rb1'+a+b, `Niffler makes ${fr(...a)} of a recipe that needs ${fr(...b)} cup of butter. How much butter?`, p,
+      [`"Of" means multiply: ${fr(...a)} × ${fr(...b)}.`, 'Multiply the tops, then the bottoms.', `${a[0]*b[0]} over ${a[1]*b[1]}. Simplify if you can.`], `${fr(...a)} × ${fr(...b)} = ${fr(a[0]*b[0],a[1]*b[1])} = ${fh(...p)} cup.`); },
+  () => { const [a,b]=pick([[[3,2],[2,1]],[[3,2],[9,4]],[[5,2],[3,2]],[[5,4],[2,1]],[[3,2],[5,2]]]), p=fmul(a,b);
+    return fpad('rb2'+a+b, `A recipe needs ${fh(...b)} cups of flour. Niffler makes ${fh(...a)} batches. How much flour?`, p,
+      [`Write both as improper fractions: ${fr(...a)} and ${fr(...b)}.`, 'Multiply tops and bottoms.', `${a[0]*b[0]} over ${a[1]*b[1]}, then make it a mixed number.`], `${fr(...a)} × ${fr(...b)} = ${fr(a[0]*b[0],a[1]*b[1])} = ${fh(...p)} cups.`); },
+  () => { const [n,d,c]=pick([[1,4,3],[1,3,2],[1,2,3.5],[1,4,2.5],[1,3,4]]), ans=c*d; const cs = Number.isInteger(c) ? String(c) : `${Math.floor(c)}${fr(1,2)}`;
+    return fpad('rb3'+d+c, `How many ${fr(n,d)}-cup scoops does Niffler need to fill <b>${cs} cups</b>?`, [ans,1],
+      [`Each cup holds ${d} scoops.`, `${cs} × ${d}.`, 'Count the scoops in each cup and add.'], `${cs} ÷ ${fr(n,d)} = ${cs} × ${d} = ${ans} scoops.`); },
+  () => { const [a,b]=pick([[[5,2],[7,4]],[[10,3],[3,2]],[[9,4],[3,2]],[[7,2],[5,4]]]), s=fsub(a,b);
+    return fpad('rb4'+a+b, `Niffler had ${fh(...a)} cups of honey and used ${fh(...b)} cups. How much is left?`, s,
+      [`Write as improper fractions: ${fr(...a)} − ${fr(...b)}.`, `Common denominator: ${a[1]*b[1]/gcd(a[1],b[1])}.`, 'Subtract the tops, then simplify.'], `${fh(...a)} − ${fh(...b)} = ${fh(...s)} cups.`); },
+]};
+
+G.garden = { basic:[
+  () => { const a=ri(2,4), b=ri(2,4), n=ri(1,a-1), m=ri(1,b-1); return fpad('ga1'+a+b+n+m, `Niffler plants carrots in ${fr(n,a)} of the garden (blue) and lettuce in ${fr(m,b)} (pink). What fraction of the garden has <b>both</b>? That is ${fr(m,b)} × ${fr(n,a)}.`, [n*m,a*b],
+    [`The dashed lines cut the garden into ${a} × ${b} = ${a*b} equal patches.`, `Count the patches that are blue and pink: ${n} × ${m} = ${n*m}.`, `${n*m} of the ${a*b} patches.`], `${fr(m,b)} × ${fr(n,a)} = ${fr(n*m,a*b)}${gcd(n*m,a*b)>1?` = ${fh(n*m,a*b)}`:''}.`, gardenFig(a,n,b,m)); },
+  () => { const L=ri(2,5), k=ri(1,3); return fpad('ga2'+L+k, `Find the area of this flower bed in square units.`, [L*(2*k+1),2],
+    [`Whole squares: ${L} × ${k} = ${L*k}.`, `The top row is ${L} half squares = ${fh(L,2)}.`, 'Add them.'], `${L} × ${k}${fr(1,2)} = ${fh(L*(2*k+1),2)} square units.`, fracRect(L,k)); },
+], adv:[
+  () => { const a=ri(3,6), b=ri(3,6), n=ri(1,a-1), m=ri(1,b-1); return fpad('gb1'+a+b+n+m, `Multiply ${fr(m,b)} × ${fr(n,a)}. Use the garden to help. Give the answer in <b>simplest form</b>.`, [n*m,a*b],
+    [`There are ${a*b} patches in all.`, `${n*m} patches have both colours.`, `Simplify ${fr(n*m,a*b)} by dividing top and bottom by ${gcd(n*m,a*b)}.`], `${fr(m,b)} × ${fr(n,a)} = ${fr(n*m,a*b)} = ${fh(n*m,a*b)}.`, gardenFig(a,n,b,m), {simplest:true}); },
+  () => { const [a,b]=pick([[[3,2],[3,2]],[[5,2],[3,2]],[[3,2],[5,4]],[[5,4],[5,4]]]), p=fmul(a,b);
+    return fpad('gb2'+a+b, `A garden is ${fh(...a)} m long and ${fh(...b)} m wide. What is its area in m<sup>2</sup>?`, p,
+      [`Change to improper fractions: ${fr(...a)} × ${fr(...b)}.`, 'Multiply tops and bottoms.', 'Turn the answer into a mixed number.'], `${fr(...a)} × ${fr(...b)} = ${fh(...p)} m<sup>2</sup>.`); },
+  () => { const k=pick([6,8,12]), [n,d]=pick([[3,4],[2,3],[5,6]]);
+    return mcq('gb3'+k+n+d, `Without working it out: is ${k} × ${fr(n,d)} more or less than ${k}?`, [`Less than ${k}`, `More than ${k}`, `Exactly ${k}`],
+      [`${fr(n,d)} is less than 1 whole.`, `${k} × 1 = ${k}.`, `Taking only part of ${k} gives less.`], `${fr(n,d)} is less than 1, so ${k} × ${fr(n,d)} = ${fh(k*n,d)} is less than ${k}. Multiplying by a fraction less than 1 makes a number smaller.`); },
+]};
+
+G.fcatch = { basic:[
+  () => { const [a,b]=pick([[[1,2],[1,3]],[[1,2],[1,4]],[[1,3],[1,4]],[[2,3],[1,6]]]), s=fadd(a,b);
+    return claim('fc1'+a+b, `${fr(...a)} + ${fr(...b)} = ${fr(a[0]+b[0],a[1]+b[1])}`, false, fh(...s), [fr(a[0]*b[0],a[1]+b[1])], `You can't add the bottom numbers. With a common denominator, ${fr(...a)} + ${fr(...b)} = ${fh(...s)}.`); },
+  () => { const [x,y]=pick([[4,8],[3,6],[2,5],[5,10]]); return claim('fc2'+x+y, `${fr(1,y)} is bigger than ${fr(1,x)} because ${y} is bigger than ${x}`, false, {raw:`Wrong: ${fr(1,x)} is bigger`}, [{raw:'Wrong: they are equal'}], `More slices means smaller slices. ${fr(1,x)} is bigger than ${fr(1,y)}.`); },
+  () => { const [n,d,k]=pick([[1,2,2],[1,3,2],[3,4,2],[2,3,3],[1,2,4]]); return claim('fc3'+n+d+k, `${fr(n*k,d*k)} = ${fr(n,d)}`, true, null, [{raw:`Wrong: ${fr(n*k,d*k)} is bigger`},{raw:`Wrong: ${fr(n*k,d*k)} is smaller`}], `Right! Divide the top and bottom of ${fr(n*k,d*k)} by ${k} to get ${fr(n,d)}.`); },
+  () => claim('fc4', `${fr(1,2)} + ${fr(1,2)} = ${fr(2,4)}`, false, '1', [fr(1,4)], `Two halves make one whole: ${fr(1,2)} + ${fr(1,2)} = ${fr(2,2)} = 1.`),
+  () => { const d=ri(3,9); return claim('fc5'+d, `${fr(d,d)} = 1`, true, null, ['0', String(d)], `Right! ${d} out of ${d} slices is the whole pie.`); },
+], adv:[
+  () => claim('fd1', 'Multiplying always makes a number bigger', false, {raw:`Wrong: 8 × ${fr(1,2)} = 4, which is smaller`}, [{raw:'Wrong: multiplying never changes a number'}], `Multiplying by a fraction less than 1 makes a number smaller: 8 × ${fr(1,2)} = 4.`),
+  () => claim('fd2', `${fr(1,2)} + ${fr(1,4)} + ${fr(1,8)} + ${fr(1,16)} + … keeps going and eventually passes 1`, false, {raw:'Wrong: it gets closer and closer to 1 but never passes it'}, [{raw:'Wrong: it stops at 1/2'}], 'Each step fills half of the gap that is left, so the total creeps toward 1 but never gets past it.'),
+  () => { const k=pick([2,3,4,5]); return claim('fd3'+k, `${k} ÷ ${fr(1,2)} = ${fh(k,2)}`, false, String(2*k), [fh(k,4)], `${k} ÷ ${fr(1,2)} asks "how many halves fit in ${k}?" Each whole holds 2 halves, so ${2*k}.`); },
+  () => { const [a,b]=pick([[[2,3],[3,4]],[[1,2],[2,3]],[[3,5],[5,6]]]), p=fmul(a,b); return claim('fd4'+a+b, `${fr(...a)} × ${fr(...b)} = ${fh(...p)}`, true, null, [fh(...fadd(a,b)), fr(a[0]+b[0],a[1]+b[1])], `Right! ${fr(a[0]*b[0],a[1]*b[1])} simplifies to ${fh(...p)}.`); },
+  () => { const [n,d]=pick([[7,4],[5,3],[11,4],[9,2]]); return claim('fd5'+n+d, `${fr(n,d)} = ${fh(n,d)}`, true, null, [fh(n+d,d), fh(n-1,d)], `Right! ${fr(n,d)} has ${Math.floor(n/d)} whole${Math.floor(n/d)>1?'s':''} and ${fr(n%d,d)} left.`); },
+]};
+
+const FRAC_GAMES = [
+  {id:'pie', name:'Pie Cutter', glyph:'◔', blurb:'Cut the pie into slices and tap to shade the right fraction.', featured:true},
+  {id:'wall', name:'Fraction Wall', glyph:'▭▭', blurb:'Tap fraction bars to build a row that fits exactly.', featured:true},
+  {id:'line', name:'Number Line Leap', glyph:'0 ½ 1', blurb:'Drag Niffler along the number line to land on the right spot.', featured:true},
+  {id:'fballoon', name:'Fraction Balloons', glyph:'pop!', blurb:'Pop the balloon with the matching fraction.', featured:true},
+  {id:'fair', name:'Fair Shares', glyph:'÷', blurb:'Share pies and coins fairly among nifflers.'},
+  {id:'recipe', name:'Recipe Remix', glyph:'¾ cup', blurb:'Double, halve and mix Niffler\'s cookie recipes.'},
+  {id:'garden', name:'Fraction Garden', glyph:'▦', blurb:'Multiply fractions with a garden grid.'},
+  {id:'fcatch', name:'Catch the Niffler', glyph:'?!', blurb:'Niffler brags about fractions. Spot the fibs!'},
+];
+const FRAC_WONDERS = {
+  pie:'With just 4 straight cuts you can slice a pie into 11 pieces, as long as the cuts don\'t all meet in the middle.',
+  wall:`Ancient Egyptians wrote fractions as sums of different unit fractions, like ${fr(3,4)} = ${fr(1,2)} + ${fr(1,4)}. Every fraction can be written this way!`,
+  line:'Between any two fractions there is always another fraction. You can never run out of them!',
+  fballoon:`Music is full of fractions: a half note lasts ${fr(1,2)} as long as a whole note, and a quarter note lasts ${fr(1,4)}.`,
+  fair:`A fraction is a division waiting to happen: ${fr(3,4)} means 3 ÷ 4. That is why 3 pies shared by 4 gives ${fr(3,4)} each.`,
+  recipe:'Doubling a recipe doubles every ingredient, but the baking time usually stays about the same.',
+  garden:`Multiplying by a fraction smaller than 1 always makes a number smaller: 8 × ${fr(3,4)} = 6.`,
+  fcatch:`${fr(1,2)} + ${fr(1,4)} + ${fr(1,8)} + ${fr(1,16)} + … gets closer and closer to 1 but never passes it.`,
+};
+const FNOTES = [
+  ['Numerator', fr(3,4), 'The top number. How many pieces you have.'],
+  ['Denominator', fr(3,4), 'The bottom number. How many equal pieces make a whole.'],
+  ['Unit fraction', fr(1,5), 'A fraction with 1 on top: one piece.'],
+  ['Equivalent fractions', `${fr(1,2)} = ${fr(2,4)}`, 'Different names for the same amount.'],
+  ['Simplest form', `${fr(6,8)} → ${fr(3,4)}`, 'Divide the top and bottom by the same number until you can\'t any more.'],
+  ['Mixed number', `1${fr(3,4)}`, 'A whole number and a fraction together.'],
+  ['Improper fraction', fr(7,4), 'The top is bigger than the bottom. It is more than 1 whole.'],
+  ['Common denominator', `${fr(1,2)} + ${fr(1,3)} = ${fr(3,6)} + ${fr(2,6)}`, 'Make the bottoms match before adding or subtracting.'],
+  ['Fraction as division', `${fr(3,4)} = 3 ÷ 4`, 'Sharing 3 things among 4 gives each one ' + fr(3,4) + '.'],
+  ['Multiplying fractions', `${fr(2,3)} × ${fr(3,4)} = ${fr(6,12)}`, 'Multiply the tops, multiply the bottoms.'],
+  ['"Of" means times', `${fr(1,2)} of 8 = 4`, 'Taking a fraction of something is multiplying.'],
+  ['Number line', '0 — ½ — 1', 'Fractions are numbers with their own place on the line.'],
+];
+
 const GAMES = [
   {id:'balloon', name:'Balloon Pop', glyph:'pop!', blurb:'Balloons float up with answers on them. Pop the one that matches!', featured:true},
   {id:'double', name:'Pouch Doubling', glyph:'2<sup>n</sup>', blurb:"Niffler's coins double every night. How fast can a pile grow?"},
@@ -884,7 +1129,7 @@ const NOTES = [
 ];
 const TOPICS = [
   {id:'exp', name:'Exponents', sub:'Powers, squares, cubes and powers of ten', glyph:'2<sup>n</sup>', open:true},
-  {id:'frac', name:'Fractions', sub:'Halves of halves and Egyptian fractions', glyph:'½'},
+  {id:'frac', name:'Fractions', sub:'Pies, fraction walls, number lines and recipes', glyph:'½', open:true},
   {id:'dec', name:'Decimals & Place Value', sub:'Thousandths and secret number bases', glyph:'0.01'},
   {id:'prime', name:'Primes & Factors', sub:'Divisibility tricks and codes', glyph:'7'},
   {id:'pat', name:'Patterns & Sequences', sub:'Fibonacci, triangles and handshakes', glyph:'1 1 2 3'},
@@ -892,14 +1137,15 @@ const TOPICS = [
   {id:'prob', name:'Chance & Counting', sub:'Probability and how many ways', glyph:'⚄'},
 ];
 
-Object.assign(WONDERS, SHAPE_WONDERS);
+Object.assign(WONDERS, SHAPE_WONDERS, FRAC_WONDERS);
 const TOPIC_META = {
   exp:{num:1, title:'The Exponent Tunnel', intro:'An exponent says how many times to multiply a number by itself.', formula:`${P(2,5)} = 2 × 2 × 2 × 2 × 2 = 32`, games:GAMES, notes:NOTES, notesSub:"Niffler's notebook of exponent words.", glyph:'a<sup>b</sup>', words:'exponent'},
   shape:{num:2, title:'The Box Burrow', intro:'Volume is how many cubes it takes to fill a shape.', formula:'V = l × w × h = B × h', games:SHAPE_GAMES, notes:SNOTES, notesSub:"Niffler's notebook of shape and volume words.", glyph:'cm<sup>3</sup>', words:'volume'},
+  frac:{num:3, title:'The Pie Pantry', intro:'Niffler raided a bakery! A fraction is part of a whole: the bottom number says how many equal pieces, the top says how many you have.', formula:`${fr(3,4)} = 3 ÷ 4`, games:FRAC_GAMES, notes:FNOTES, notesSub:"Niffler's notebook of fraction words.", glyph:'½', words:'fraction'},
 };
-const ALL_GAMES = [...GAMES, ...SHAPE_GAMES];
+const ALL_GAMES = [...GAMES, ...SHAPE_GAMES, ...FRAC_GAMES];
 const topicOf = gid => Object.keys(TOPIC_META).find(k => TOPIC_META[k].games.some(g => g.id===gid));
-let curTopic = 'shape';
+let curTopic = 'frac';
 
 /* ---------- Niffler (original design) ---------- */
 const FURS = {
@@ -916,6 +1162,8 @@ const ITEMS = [
   {id:'goggles', name:'Dig goggles', slot:'face', cost:35},
   {id:'scarf', name:'Cosy scarf', slot:'neck', cost:50},
   {id:'cape', name:'Starry cape', slot:'back', cost:75},
+  {id:'apron', name:'Baker\'s apron', slot:'body', cost:60},
+  {id:'chef', name:'Chef\'s hat', slot:'head', cost:90},
   {id:'crown', name:'Gold crown', slot:'head', cost:120},
 ];
 function niffSVG(furId, wear){
@@ -933,6 +1181,7 @@ function niffSVG(furId, wear){
   <circle cx="100" cy="170" r="11" fill="#f7c74b" stroke="#d9951b" stroke-width="2.5"/>
   <path d="M66 170 Q100 190 134 170 L134 192 Q100 208 66 192Z" fill="${f.belly}"/>
   <path d="M66 170 Q100 190 134 170" fill="none" stroke="${f.dark}" stroke-width="3" stroke-linecap="round"/>
+  ${w.body==='apron' ? `<path d="M74 132 L126 132 L132 200 Q100 210 68 200 Z" fill="#fff4f8" stroke="#e58fb3" stroke-width="3"/><path d="M74 132 L62 150 M126 132 L138 150" stroke="#e58fb3" stroke-width="5" stroke-linecap="round"/><rect x="86" y="160" width="28" height="20" rx="5" fill="#ffd1e3"/><circle cx="100" cy="146" r="5" fill="#e2475b"/>` : ''}
   <ellipse cx="60" cy="150" rx="12" ry="10" fill="${f.dark}"/><ellipse cx="140" cy="150" rx="12" ry="10" fill="${f.dark}"/>
   <ellipse cx="66" cy="104" rx="9" ry="5.5" fill="#f49ab4" opacity=".65"/><ellipse cx="134" cy="104" rx="9" ry="5.5" fill="#f49ab4" opacity=".65"/>
   <g><circle cx="80" cy="86" r="10.5" fill="#251a30"/><circle cx="120" cy="86" r="10.5" fill="#251a30"/><circle cx="83.5" cy="82" r="3.8" fill="#fff"/><circle cx="123.5" cy="82" r="3.8" fill="#fff"/></g>
@@ -940,6 +1189,7 @@ function niffSVG(furId, wear){
   <path d="M91 112 Q100 120 109 112" fill="none" stroke="#251a30" stroke-width="2.8" stroke-linecap="round"/>
   ${w.face==='goggles' ? `<rect x="54" y="54" width="92" height="8" rx="4" fill="#5b4632"/><circle cx="80" cy="58" r="12" fill="#a6e6ff" stroke="#c98a2e" stroke-width="4"/><circle cx="120" cy="58" r="12" fill="#a6e6ff" stroke="#c98a2e" stroke-width="4"/>` : ''}
   ${w.head==='helmet' ? `<path d="M58 60 Q58 24 100 22 Q142 24 142 60 Z" fill="#f2b72f"/><rect x="52" y="56" width="96" height="10" rx="5" fill="#d9951b"/><circle cx="100" cy="38" r="10" fill="#fff6c2" stroke="#d9951b" stroke-width="3"/>` : ''}
+  ${w.head==='chef' ? `<rect x="72" y="34" width="56" height="18" rx="4" fill="#fff" stroke="#d8d0e6" stroke-width="2"/><circle cx="78" cy="24" r="15" fill="#fff"/><circle cx="100" cy="14" r="18" fill="#fff"/><circle cx="122" cy="24" r="15" fill="#fff"/><rect x="74" y="26" width="52" height="14" fill="#fff"/>` : ''}
   ${w.head==='crown' ? `<path d="M70 42 L74 14 L87 30 L100 8 L113 30 L126 14 L130 42 Z" fill="#f7c74b" stroke="#d9951b" stroke-width="3" stroke-linejoin="round"/><circle cx="100" cy="31" r="4.5" fill="#e2475b"/><circle cx="80" cy="35" r="3" fill="#3d7be0"/><circle cx="120" cy="35" r="3" fill="#2fb67a"/>` : ''}
   ${w.neck==='scarf' ? `<path d="M52 128 Q100 150 148 128 L148 142 Q100 164 52 142Z" fill="#e2475b"/><path d="M126 146 L138 182 L122 184 L114 150Z" fill="#c23246"/>` : ''}
   ${w.neck==='bow' ? `<path d="M100 138 L80 127 L80 149 Z M100 138 L120 127 L120 149 Z" fill="#3d7be0"/><circle cx="100" cy="138" r="5.5" fill="#2a5bb0"/>` : ''}
@@ -987,19 +1237,20 @@ const sFan = () => { [523,659,784,1047].forEach((f,i)=>tone(f,.3,i*.11)); };
 const sCoin = () => tone(1568,.12,0,'square',.05);
 function speak(html){
   if (!S.settings.speak || !window.speechSynthesis) return;
-  try { const t = html.replace(/<span class="slot"><\/span>/g,' what ').replace(/<sup>(.*?)<\/sup>/g,' to the power of $1 ').replace(/<[^>]+>/g,' ')
+  try { const t = html.replace(/<span class="slot"><\/span>/g,' what ').replace(/<span class="frac"><sup>(\d+)<\/sup>&frasl;<sub>(\d+)<\/sub><\/span>/g,' $1 over $2 ').replace(/<sup>(.*?)<\/sup>/g,' to the power of $1 ').replace(/<[^>]+>/g,' ')
       .replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/−/g,' minus ').replace(/√/g,' square root of ');
     speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=.95; speechSynthesis.speak(u);
   } catch(e) {}
 }
 
 /* ---------- navigation ---------- */
-const SCREENS = ['home','topic','play','balloon','build','end','hoard','notes','grown'];
+const SCREENS = ['home','topic','play','balloon','build','ix','end','hoard','gallery','vault','notes','grown'];
 function show(name){
   if (name!=='balloon') stopBalloon();
   SCREENS.forEach(s => { $('#scr-'+s).hidden = s!==name; });
   $('#nav-home').setAttribute('aria-current', String(['home','topic','notes'].includes(name)));
   $('#nav-hoard').setAttribute('aria-current', String(name==='hoard'));
+  $('#nav-gallery').setAttribute('aria-current', String(name==='gallery'||name==='vault'));
   window.scrollTo({top:0});
 }
 function coinsUI(){ $('#coinCount').textContent = fmt(S.coins); }
@@ -1027,7 +1278,8 @@ function renderHome(){
       <span class="kicker">The Burrows</span>
       <h1>Hi ${esc(S.player)}! Where shall ${esc(S.name)} dig today?</h1>
       <div class="bubble" id="homeBubble">${pick(HOME_LINES)}</div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn gold" data-topic="shape">Dig into Shapes &amp; Volume</button><button class="btn" data-topic="exp">Exponents</button><button class="btn" data-go="hoard">Visit the Hoard Room</button></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn gold" data-topic="frac">Dig into Fractions</button><button class="btn" data-topic="shape">Shapes &amp; Volume</button><button class="btn" data-topic="exp">Exponents</button><button class="btn" data-go="hoard">Visit the Hoard Room</button></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn deep" data-go="gallery">Mystery Gallery</button><button class="btn deep" data-go="vault">Deep Vault mystery</button></div>
     </div>
     <div class="niff" id="homeNiff" role="button" aria-label="Tickle ${esc(S.name)}" tabindex="0">${niffSVG(S.fur,S.wear)}</div>
   </div>
@@ -1075,7 +1327,8 @@ function renderNotes(){
 let R = null;
 function startRound(gid, level){
   curTopic = topicOf(gid) || curTopic;
-  if (gid==='balloon' || gid==='sballoon') return startBalloon(gid, level);
+  if (gid==='balloon' || gid==='sballoon' || gid==='fballoon') return startBalloon(gid, level);
+  if (IX[gid]) return startIx(gid, level);
   if (gid==='builder') return startBuild(level);
   const kinds = shuffle(G[gid][level]), qs=[], keys=new Set(); let i=0, tries=0;
   while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
@@ -1096,6 +1349,10 @@ function renderQ(){
   if (q.type==='mcq'){
     R.order = shuffle(q.options.map((_,k)=>k));
     $('#qAnswer').innerHTML = `<div class="opts">${R.order.map(k=>`<button class="opt${q.small?' small':''}" data-opt="${k}">${q.options[k]}</button>`).join('')}</div>`;
+  } else if (q.frac) {
+    R.fin={w:'',n:'',d:'',f:'n'};
+    $('#qAnswer').innerHTML = `<div class="fin"><button class="fbox w" data-ff="w" aria-label="whole number"></button><span class="fstack"><button class="fbox" data-ff="n" aria-label="top number"></button><span class="fbar"></span><button class="fbox" data-ff="d" aria-label="bottom number"></button></span></div><p class="dim fin-tip">Tap a box, then type. Leave the big box empty if there is no whole number.</p><div class="pad" id="pad">${['7','8','9','4','5','6','1','2','3','next','0','⌫'].map(k=>`<button class="key" data-key="${k}" aria-label="${k==='⌫'?'delete':k==='next'?'next box':k}">${k==='next'?'⇥':k}</button>`).join('')}<button class="key check" data-key="ok">Check</button></div>`;
+    updFrac();
   } else {
     const slot = q.prompt.includes('class="slot"');
     $('#qAnswer').innerHTML = `${slot?'':'<div class="display" id="disp" aria-live="polite">?</div>'}<div class="pad" id="pad">${['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(k=>`<button class="key" data-key="${k}" aria-label="${k==='⌫'?'delete':k}">${k}</button>`).join('')}<button class="key check" data-key="ok">Check</button></div>`;
@@ -1110,6 +1367,7 @@ function updInput(){
 }
 function padKey(k){
   if (!R || R.done) return; const q=R.qs[R.i]; if (q.type!=='pad') return;
+  if (q.frac) return fracKey(k);
   if (k==='ok') return checkPad();
   if (k==='⌫') R.input=R.input.slice(0,-1);
   else if (k==='.') { if (!R.input.includes('.') && R.input.length<12) R.input = (R.input||'0')+'.'; }
@@ -1143,10 +1401,10 @@ function correct(){
 }
 function wrong(){
   const q=R.qs[R.i]; R.att++; sOops(); anim($('#playNiff'),'tilt');
-  if (q.type==='pad'){ R.input=''; updInput(); }
+  if (q.type==='pad'){ if (q.frac){ R.fin={w:'',n:'',d:'',f:'n'}; updFrac(); } else { R.input=''; updInput(); } }
   if (R.att>=3){
     R.done=true;
-    const ans = q.type==='mcq' ? q.options[0] : fmt(q.answer);
+    const ans = q.type==='mcq' ? q.options[0] : q.frac ? fh(...q.answer) : fmt(q.answer);
     $('#qFeedback').innerHTML = `<span>That one was tricky. The answer is <b>${ans}</b>.</span><div class="explain">${q.explain}</div>`;
     $('#playBubble').innerHTML = "Tricky tunnels are the best ones. Let's keep digging!";
     if (q.type==='mcq') $$('.opt').forEach(b=>{ if (+b.dataset.opt===0) b.classList.add('right'); });
@@ -1158,7 +1416,7 @@ function wrong(){
   if (R.att===2 && S.settings.hints && R.hints < q.hints.length) showHint();
 }
 function finishQ(q, reveal){
-  if (q.type==='pad'){ const p=$('#pad'); if (p) p.classList.add('off'); if (reveal){ R.input=String(q.answer); updInput(); } }
+  if (q.type==='pad'){ const p=$('#pad'); if (p) p.classList.add('off'); if (reveal){ if (q.frac){ const [n,d]=q.answer, w=Math.floor(n/d), r=n-w*d; R.fin={w:w?String(w):'',n:r?String(r):'',d:r?String(d):'',f:''}; updFrac(); } else { R.input=String(q.answer); updInput(); } } }
   else $$('.opt').forEach(b=>b.disabled=true);
   $('#hintBtn').hidden=true; $('#nextBtn').hidden=false; $('#nextBtn').textContent = R.i===R.qs.length-1 ? 'Finish round →' : 'Next →';
   R.i++; renderDots(); R.i--;
@@ -1290,9 +1548,201 @@ function finishBuild(){ $('#buildCheck').hidden=true; $('#buildNext').hidden=fal
   $('#buildDots').innerHTML = R.qs.map((_,k)=>`<span class="dot${k<=R.i?' done':''}"></span>`).join(''); }
 function nextBuild(){ R.i++; if (R.i>=R.qs.length) endRound(); else setupBuild(); }
 
+/* ---------- Fraction Balloons bank ---------- */
+const notEq = (f, list) => list.filter(g => g[0]*f[1] !== f[0]*g[1]);
+BAL.fballoon = { basic:[
+  () => { const k=ri(2,6), ans=[k,2*k], pool=notEq([1,2],[[1,3],[2,3],[3,4],[1,4],[2,5],[3,5],[k,2*k+1],[k+1,2*k],[3,8],[5,8]]);
+    return {key:'fp1'+k, ask:`Pop the fraction equal to ${fr(1,2)}`, sub:'Half of the bottom number is on top.', answer:fr(...ans), others:others(fr(...ans), pool.map(f=>fr(...f))), explain:`${fr(...ans)} = ${fr(1,2)} because ${k} is half of ${2*k}.`}; },
+  () => { const same=Math.random()<.5, d=ri(5,9), n=ri(2,5); let set;
+    if (same) set=shuffle([1,2,3,4,5,6,7,8].filter(x=>x<d)).slice(0,4).map(x=>[x,d]); else set=shuffle([2,3,4,5,6,8,10]).slice(0,4).map(x=>[1,x]);
+    const best=set.slice().sort((p,q)=>q[0]/q[1]-p[0]/p[1])[0];
+    return {key:'fp2'+set.join('|'), ask:'Pop the biggest fraction', sub: same?'Same bottom number: compare the tops.':'Same top number: fewer slices means bigger slices.', answer:fr(...best), others:set.filter(f=>f!==best).map(f=>fr(...f)), explain: same?`With the same denominator, the biggest top wins: ${fr(...best)}.`:`${fr(...best)} has the fewest slices, so each slice is biggest.`}; },
+  () => { const d=pick([4,5,6,8,10]), a=ri(1,Math.floor(d/2)), b=ri(1,d-a-1), s=simp(a+b,d);
+    return {key:'fp3'+d+a+b, ask:`Pop ${fr(a,d)} + ${fr(b,d)}`, sub:'Same bottom number: add the tops.', answer:fh(a+b,d), others:others(fh(a+b,d), notEq([a+b,d],[[a+b,2*d],[a*b,d],[a+b+1,d],[a+b-1,d],[a+b,d+d+1]]).filter(f=>f[0]>0).map(f=>fh(...f))), explain:`${fr(a,d)} + ${fr(b,d)} = ${fr(a+b,d)}${s[1]!==d?` = ${fh(...s)}`:''}.`}; },
+  () => { const b=ri(3,9), a=ri(1,b-1), ans=simp(a,b);
+    return {key:'fp4'+a+b, ask:`Pop ${a} ÷ ${b}`, sub:'Sharing a things among b gives a/b.', answer:fh(a,b), others:others(fh(a,b), notEq([a,b],[[b,a],[a,b+1],[a+1,b],[1,b],[a,2*b]]).map(f=>fh(...f))), explain:`${a} ÷ ${b} = ${fh(a,b)}.`}; },
+], adv:[
+  () => { const [a,b]=pick([[[2,3],[3,4]],[[1,2],[2,3]],[[3,4],[2,5]],[[2,5],[5,6]],[[1,3],[3,5]]]), p=fmul(a,b);
+    return {key:'fq1'+a+b, ask:`Pop ${fr(...a)} × ${fr(...b)}`, sub:'Multiply tops and bottoms, then simplify.', answer:fh(...p), others:others(fh(...p), notEq(p,[fadd(a,b),[a[0]+b[0],a[1]+b[1]],[a[0]*b[1],a[1]*b[0]],[p[0]+1,p[1]],[p[0],p[1]+1]]).map(f=>fh(...f))), explain:`${fr(...a)} × ${fr(...b)} = ${fr(a[0]*b[0],a[1]*b[1])} = ${fh(...p)}.`}; },
+  () => { const d=pick([3,4,5]), n=ri(1,d-2), lo=[n,d], hi=[n+1,d], mid=[2*n+1,2*d];
+    return {key:'fq2'+n+d, ask:`Pop a fraction between ${fr(...lo)} and ${fr(...hi)}`, sub:'Try doubling the top and bottom numbers.', answer:fr(...mid), others:others(fr(...mid), [[n,d+1],[n+2,d],[n,2*d],[2*n+3,2*d],[1,2*d]].filter(f=>f[0]/f[1]<=lo[0]/lo[1]||f[0]/f[1]>=hi[0]/hi[1]).map(f=>fr(...f))), explain:`${fr(...lo)} = ${fr(2*n,2*d)} and ${fr(...hi)} = ${fr(2*n+2,2*d)}, so ${fr(...mid)} is in between.`}; },
+  () => { const d=pick([2,3,4,5]), w=ri(1,3), r=ri(1,d-1), n=w*d+r;
+    return {key:'fq3'+n+d, ask:`Pop ${fr(n,d)} as a mixed number`, sub:'How many wholes fit? What is left over?', answer:`${w}${fr(r,d)}`, others:others(`${w}${fr(r,d)}`, [`${w+1}${fr(r,d)}`,`${r}${fr(w,d)}`,`${w}${fr(r+1>=d?r-1||1:r+1,d)}`,`${n}${fr(1,d)}`, `${w}${fr(d,r+d)}`]), explain:`${n} ÷ ${d} = ${w} remainder ${r}, so ${fr(n,d)} = ${w}${fr(r,d)}.`}; },
+  () => { const [a,b]=pick([[[1,2],[1,3]],[[1,4],[2,3]],[[1,3],[1,6]],[[3,4],[1,6]],[[2,5],[1,2]]]), s=fadd(a,b);
+    return {key:'fq4'+a+b, ask:`Pop ${fr(...a)} + ${fr(...b)}`, sub:'Find a common denominator first.', answer:fh(...s), others:others(fh(...s), notEq(s,[[a[0]+b[0],a[1]+b[1]],fmul(a,b),[s[0]+1,s[1]],[s[0],s[1]+1],[a[0]+b[0],a[1]*b[1]]]).map(f=>fh(...f))), explain:`${fr(...a)} + ${fr(...b)} = ${fh(...s)}.`}; },
+  () => { const set=shuffle([[5,8],[3,5],[2,3],[7,12],[3,4],[4,5],[5,6]]).slice(0,4); const small=set.slice().sort((p,q)=>p[0]/p[1]-q[0]/q[1])[0];
+    return {key:'fq5'+set.join('|'), ask:'Pop the smallest fraction', sub:'Compare each one with 1/2, or use a common denominator.', answer:fr(...small), others:set.filter(f=>f!==small).map(f=>fr(...f)), explain:set.map(f=>`${fr(...f)} ≈ ${(f[0]/f[1]).toFixed(2)}`).join(', ')+'.'}; },
+]};
+
+/* ---------- interactive engine (Pie Cutter, Fraction Wall, Number Line Leap) ---------- */
+let IS = null;
+const IX = {};
+function startIx(gid, level){
+  const kinds=shuffle(IX[gid].bank[level]), qs=[], keys=new Set(); let i=0, tries=0;
+  while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
+  R = {gid, level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
+  $('#ixTitle').textContent = ALL_GAMES.find(g=>g.id===gid).name;
+  const tag=$('#ixLvl'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className='lvl'+(level==='adv'?' adv':'');
+  $('#ixNiff').innerHTML = niffSVG(S.fur,S.wear);
+  show('ix'); setupIx();
+}
+function ixDots(done){ $('#ixDots').innerHTML = R.qs.map((_,k)=>`<span class="dot${k<R.i||(done&&k===R.i)?' done':''}${k===R.i&&!done?' now':''}"></span>`).join(''); }
+function setupIx(){
+  const q=R.qs[R.i]; Object.assign(R,{att:0,done:false});
+  $('#ixAsk').innerHTML=q.ask; $('#ixSub').textContent=q.sub; $('#ixFeedback').innerHTML='';
+  $('#ixBubble').innerHTML = R.i===0 ? IX[R.gid].intro : pick(THINK);
+  $('#ixNext').hidden=true; $('#ixCheck').hidden=false; $('#ixStage').classList.toggle('drag', R.gid==='line');
+  ixDots(); IX[R.gid].init(q); speak(q.ask);
+}
+function ixAct(a,v){ if (!R || R.done || !IX[R.gid]) return; IX[R.gid].act(a,v,R.qs[R.i]); }
+function checkIx(){
+  if (!R || R.done) return; const q=R.qs[R.i], X=IX[R.gid], res=X.test(q);
+  if (res===true){
+    R.done=true; const clean=R.att===0, adv=R.level==='adv'; let c=clean?(adv?5:3):(adv?2:1); if (clean) R.first++;
+    let extra=''; if (R.i===R.mischief){ extra=` <span class="dim">Niffler snatched your ${plural(c,'coin')} and came back with ${c*2}!</span>`; c*=2; }
+    S.coins+=c; R.earned+=c; save(); coinsUI(); flyCoins($('#ixNiff'),c); sDing(); anim($('#ixNiff'),'hop');
+    $('#ixBubble').innerHTML=pick(CHEERS);
+    $('#ixFeedback').innerHTML=`<span class="good">${pick(CHEERS)}</span> +${plural(c,'coin')}. ${X.describe(q)}${extra}`;
+    finishIx(); return;
+  }
+  if (typeof res==='string'){ $('#ixFeedback').innerHTML=`<span class="oops">${res}</span>`; return; }
+  R.att++; sOops(); anim($('#ixNiff'),'tilt');
+  if (R.att>=3){ X.solve(q); R.done=true; X.render(q); $('#ixFeedback').innerHTML=`Tricky one! Here is one way to do it. ${X.describe(q)}`; $('#ixBubble').innerHTML='Every explorer needs a peek sometimes.'; finishIx(); return; }
+  $('#ixFeedback').innerHTML=`<span class="oops">Not quite.</span> ${X.describe(q)} ${q.hint}`;
+  $('#ixBubble').innerHTML = R.att===1 ? 'Close! Change something and try again.' : 'Read the hint below. You can do it!';
+}
+function finishIx(){ $('#ixCheck').hidden=true; $('#ixNext').hidden=false; $('#ixNext').textContent = R.i===R.qs.length-1 ? 'Finish round →' : 'Next →'; ixDots(true); IX[R.gid].render(R.qs[R.i]); }
+function nextIx(){ R.i++; if (R.i>=R.qs.length) endRound(); else setupIx(); }
+const stepperHTML = (label, act, val, lo, hi) => `<div class="stepper"><span class="slabel">${label}</span><button class="sbtn" data-ix="${act}" data-v="-1" ${R.done||val<=lo?'disabled':''} aria-label="fewer">−</button><b>${val}</b><button class="sbtn" data-ix="${act}" data-v="1" ${R.done||val>=hi?'disabled':''} aria-label="more">+</button></div>`;
+
+/* Pie Cutter */
+IX.pie = { intro:'Tap slices to shade them. Use + and − to cut more or fewer slices.', bank:{ basic:[
+  () => { const [n,d]=pick([[3,4],[2,3],[1,2],[3,8],[5,6],[2,5],[3,5]]); return {key:'pa'+n+d, ask:`Shade ${fr(n,d)} of the pie.`, sub:'Tap slices to shade them.', k0:d, lock:true, test:(k,s)=>s===n, sol:[d,n], hint:`The pie has ${d} slices. Shade ${n} of them.`}; },
+  () => { const [n,d,m]=pick([[3,4,2],[1,2,3],[2,3,2],[1,3,3],[1,2,4],[3,4,3]]), K=d*m; return {key:'pb'+n+d+m, ask:`Show ${fr(n,d)} using <b>${K} slices</b>.`, sub:'Cut the pie into more slices, then shade.', k0:d, lock:false, test:(k,s)=>k===K&&s===n*m, sol:[K,n*m], hint:`Cut into ${K} slices. Each ${fr(1,d)} becomes ${m} slices.`}; },
+  () => { const [n,d]=pick([[2,5],[3,4],[1,3],[4,6],[5,8]]); return {key:'pc'+n+d, ask:`Cut the pie and shade ${fr(n,d)}.`, sub:'You choose how many slices.', k0:1, lock:false, test:(k,s)=>s*d===n*k, sol:[d,n], hint:`Cut the pie into ${d} equal slices first.`}; },
+  () => { const [n,d]=pick([[1,4],[3,8],[2,6],[1,3]]); return {key:'pd'+n+d, ask:`Niffler ate ${fr(n,d)} of the pie. Shade the part that is <b>left</b>.`, sub:'Left over = the whole pie minus what was eaten.', k0:d, lock:true, test:(k,s)=>s===d-n, sol:[d,d-n], hint:`1 whole = ${fr(d,d)}. Take away ${fr(n,d)}.`}; },
+], adv:[
+  () => { const [n,d,K]=pick([[2,3,12],[3,4,12],[5,6,12],[3,5,10],[1,4,8]]); return {key:'qa'+n+d+K, ask:`Shade ${fr(n,d)} using exactly <b>${K} slices</b>.`, sub:'Cut first, then shade.', k0:1, lock:false, test:(k,s)=>k===K&&s*d===n*K, sol:[K,n*K/d], hint:`Each ${fr(1,d)} is ${K/d} of the ${K} slices.`}; },
+  () => { const [n,d]=pick([[5,10],[6,8],[4,12],[9,12],[6,10],[8,12]]), [a,b]=simp(n,d); return {key:'qb'+n+d, ask:`Shade a fraction equal to ${fr(n,d)} using as <b>few slices</b> as you can.`, sub:'Simplify first.', k0:d, lock:false, test:(k,s)=>k===b&&s===a, sol:[b,a], hint:`Find a number that divides both ${n} and ${d}.`}; },
+  () => { const [a,b,c,d]=pick([[3,4,2,3],[1,2,2,3],[2,3,3,4],[1,2,1,2],[1,3,3,4]]), p=simp(a*c,b*d); return {key:'qc'+a+b+c+d, ask:`Niffler gets ${fr(c,d)} of the pie and eats ${fr(a,b)} of its share. Shade what Niffler ate.`, sub:`That is ${fr(a,b)} × ${fr(c,d)}.`, k0:1, lock:false, test:(k,s)=>s*p[1]===p[0]*k&&s>0, sol:[p[1],p[0]], hint:`${fr(a,b)} × ${fr(c,d)} = ${fr(a*c,b*d)}. Simplify it, then cut and shade.`}; },
+  () => { const [a,b]=pick([[[1,2],[1,3]],[[1,4],[1,2]],[[1,3],[1,6]],[[1,4],[1,3]],[[1,6],[1,2]]]), s=fadd(a,b); return {key:'qd'+a+b, ask:`Shade ${fr(...a)} + ${fr(...b)}.`, sub:'Pick a number of slices that works for both.', k0:1, lock:false, test:(k,sh)=>sh*s[1]===s[0]*k, sol:[s[1],s[0]], hint:`Try ${s[1]} slices: ${fr(...a)} = ${fr(a[0]*s[1]/a[1],s[1])} and ${fr(...b)} = ${fr(b[0]*s[1]/b[1],s[1])}.`}; },
+  () => { const [n,d]=pick([[3,8],[2,5],[5,12],[1,6]]); return {key:'qe'+n+d, ask:`Shade 1 − ${fr(n,d)}.`, sub:'Cut the pie yourself.', k0:1, lock:false, test:(k,s)=>s*d===(d-n)*k, sol:[d,d-n], hint:`Cut into ${d} slices. 1 whole is ${fr(d,d)}.`}; },
+]},
+  init(q){ IS={k:q.k0, sh:Array(q.k0).fill(false)}; this.render(q); },
+  render(q){
+    const {k,sh}=IS, cx=160, cy=160, r=140; let s='';
+    if (k===1) s=`<circle cx="${cx}" cy="${cy}" r="${r}" class="wedge${sh[0]?' on':''}" data-ix="slice" data-v="0"/>`;
+    else for (let i=0;i<k;i++){ const a0=-Math.PI/2+i*2*Math.PI/k, a1=a0+2*Math.PI/k, x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      s+=`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${k===2?0:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" class="wedge${sh[i]?' on':''}" data-ix="slice" data-v="${i}"/>`; }
+    $('#ixStage').innerHTML = `<svg class="fig pie" viewBox="0 0 320 320" style="max-width:340px" role="img" aria-label="pie cut into ${k} slices"><circle cx="${cx}" cy="${cy}" r="${r+8}" class="crust"/>${s}</svg>`;
+    const n=sh.filter(Boolean).length;
+    $('#ixRead').innerHTML = `${n} of ${k} slice${k>1?'s':''} = ${fr(n,k)}`;
+    $('#ixControls').innerHTML = q.lock ? `<p class="dim">This pie is already cut into ${k} slices.</p>` : stepperHTML('Slices','cut',k,1,12) + `<button class="btn" data-ix="clear" ${R.done?'disabled':''}>Unshade all</button>`;
+  },
+  act(a,v,q){ if (a==='slice'){ IS.sh[+v]=!IS.sh[+v]; tone(IS.sh[+v]?660:440,.06,0,'sine',.08); }
+    if (a==='cut'){ const k=IS.k+Number(v); if (k<1||k>12) return; IS.k=k; IS.sh=Array(k).fill(false); tone(300+k*30,.06,0,'sine',.08); }
+    if (a==='clear') IS.sh=IS.sh.map(()=>false);
+    this.render(q); },
+  test(q){ const n=IS.sh.filter(Boolean).length; return q.test(IS.k,n); },
+  describe(){ const n=IS.sh.filter(Boolean).length; return `You shaded ${n} of ${IS.k} slices: ${fr(n,IS.k)}${gcd(n,IS.k)>1&&n?` = ${fh(n,IS.k)}`:''}.`; },
+  solve(q){ IS.k=q.sol[0]; IS.sh=Array(IS.k).fill(false).map((_,i)=>i<q.sol[1]); },
+};
+
+/* Fraction Wall: units of 1/120 */
+const WALL_COL = {2:'#ff6b8b',3:'#ffb547',4:'#ffd54f',5:'#9be36b',6:'#4fd1b5',8:'#4fc3f7',10:'#8f9cff',12:'#c88bff'};
+const wsum = p => p.reduce((t,d)=>t+120/d,0);
+const distinct = p => new Set(p).size===p.length;
+IX.wall = { intro:'Tap a bar below to add it to the wall. Tap a bar on the wall to take it off.', bank:{ basic:[
+  () => ({key:'wa1', ask:'Fill <b>exactly one whole</b>.', sub:'Use at least two different sizes.', pal:[2,4,8], target:[1,1], rule:p=>new Set(p).size>=2||'Use at least two different sizes of bar.', sol:[2,4,8,8], hint:`${fr(1,2)} + ${fr(1,4)} = ${fr(3,4)}. What fills the rest?`}),
+  () => { const [n,d]=pick([[3,4],[7,8],[5,8]]); return {key:'wa2'+n+d, ask:`Build a row that is exactly ${fr(n,d)} long.`, sub:'Any bars are fine.', pal:[2,4,8], target:[n,d], rule:()=>true, sol:n===3?[2,4]:n===7?[2,4,8]:[2,8], hint:`${fr(1,2)} = ${fr(4,8)} and ${fr(1,4)} = ${fr(2,8)}.`}; },
+  () => ({key:'wa3', ask:`Build exactly ${fr(5,6)}.`, sub:'Halves, thirds and sixths.', pal:[2,3,6], target:[5,6], rule:()=>true, sol:[2,3], hint:`${fr(1,2)} = ${fr(3,6)} and ${fr(1,3)} = ${fr(2,6)}.`}),
+  () => { const [n,d,u]=pick([[2,3,6],[3,4,8],[1,2,10],[3,5,10]]); return {key:'wa4'+n+d+u, ask:`Build ${fr(n,d)} using only ${fr(1,u)} bars.`, sub:'This shows an equivalent fraction.', pal:[u], target:[n,d], rule:()=>true, sol:Array(n*u/d).fill(u), hint:`${fr(n,d)} = ${fr(n*u/d,u)}.`}; },
+  () => ({key:'wa5', ask:'Fill exactly one whole using <b>both</b> thirds and sixths.', sub:'You need at least one of each.', pal:[3,6], target:[1,1], rule:p=>(p.includes(3)&&p.includes(6))||'Use at least one third and one sixth.', sol:[3,3,6,6], hint:`${fr(1,3)} = ${fr(2,6)}.`}),
+], adv:[
+  () => { const [n,d,sol]=pick([[3,4,[2,4]],[5,6,[2,3]],[11,12,[2,4,6]],[7,12,[3,4]],[7,10,[2,5]],[1,1,[2,3,6]]]); return {key:'wb1'+n+d, ask:`Egyptian challenge: build ${n===d?'one whole':fr(n,d)} using <b>different</b> unit fractions.`, sub:'No size may be used twice.', pal:[2,3,4,5,6,8,10,12], target:[n,d], rule:p=>distinct(p)||'Each bar size can only be used once!', sol, hint:`Start with the biggest bar that fits, ${fr(1,sol[0])}.`}; },
+  () => ({key:'wb2', ask:`Build ${fr(7,12)} with as <b>few bars</b> as possible.`, sub:'Two bars can do it!', pal:[2,3,4,6,12], target:[7,12], rule:p=>p.length<=2||'That works, but can you do it with only 2 bars?', sol:[3,4], hint:`${fr(1,3)} = ${fr(4,12)} and ${fr(1,4)} = ${fr(3,12)}.`}),
+  () => ({key:'wb3', ask:'Fill one whole using <b>exactly 4 bars</b>, all different sizes.', sub:'A tricky one!', pal:[2,3,4,5,6,8,10,12], target:[1,1], rule:p=>(p.length===4&&distinct(p))||'Use exactly 4 bars, all different.', sol:[2,4,6,12], hint:`Try ${fr(1,2)} + ${fr(1,4)} first. What two different bars make ${fr(1,4)}?`}),
+  () => { const [n,d]=pick([[2,3],[3,5],[3,4]]); return {key:'wb4'+n+d, ask:`Build ${fr(n,d)}, but <b>do not use</b> any ${fr(1,d)} bars.`, sub:'Find another way to make it.', pal:[2,3,4,5,6,8,10,12].filter(x=>x!==d), target:[n,d], rule:()=>true, sol:{'2/3':[2,6],'3/5':[2,10],'3/4':[2,6,12]}[n+'/'+d], hint:`Start with ${fr(1,2)}. What is left to fill?`}; },
+]},
+  init(q){ IS={p:[]}; this.render(q); },
+  render(q){
+    const W=600, o=20, T=120*q.target[0]/q.target[1], sum=wsum(IS.p); let s='', x=0;
+    s+=`<text x="${o}" y="22" class="iso-lbl">1 whole</text><rect x="${o}" y="30" width="${W}" height="46" rx="8" class="wall-whole"/>`;
+    s+=`<rect x="${o}" y="96" width="${W*T/120}" height="54" rx="8" class="wall-target"/><text x="${o+W*T/120}" y="172" text-anchor="${T>=110?'end':'middle'}" class="iso-lbl">target ${q.target[0]===q.target[1]?'1':q.target[0]+'/'+q.target[1]}</text>`;
+    IS.p.forEach((d,i)=>{ const w=W*(120/d)/120, xx=o+W*x/120, over=x+120/d>120;
+      s+=`<g data-ix="rm" data-v="${i}" class="wpiece"><rect x="${xx+1}" y="99" width="${Math.max(2,w-2)}" height="48" rx="6" fill="${WALL_COL[d]}" ${over?'opacity=".45"':''}/><text x="${xx+w/2}" y="129" text-anchor="middle" class="wlbl">1/${d}</text></g>`; x+=120/d; });
+    $('#ixStage').innerHTML = `<svg class="fig" viewBox="0 0 ${W+2*o} 182" style="max-width:640px" role="img" aria-label="fraction wall">${s}</svg>`;
+    const sumF = sum ? fh(sum,120) : '0';
+    $('#ixRead').innerHTML = IS.p.length ? `${IS.p.map(d=>fr(1,d)).join(' + ')} = ${sumF}` : 'Tap a bar to start';
+    $('#ixControls').innerHTML = `<div class="pal">${q.pal.map(d=>`<button class="palbtn" data-ix="add" data-v="${d}" ${R.done?'disabled':''}><span class="palbar" style="width:${Math.round(240/d)}px;background:${WALL_COL[d]}"></span>${fr(1,d)}</button>`).join('')}</div><button class="btn" data-ix="clear" ${R.done?'disabled':''}>Clear the wall</button>`;
+  },
+  act(a,v,q){ if (a==='add'){ if (wsum(IS.p)>=120){ $('#ixFeedback').innerHTML='<span class="oops">The wall is full! Tap a bar to take it off.</span>'; return; } IS.p.push(+v); tone(300+(+v)*40,.07,0,'triangle',.1); }
+    if (a==='rm') IS.p.splice(+v,1); if (a==='clear') IS.p=[]; this.render(q); },
+  test(q){ const T=120*q.target[0]/q.target[1], s=wsum(IS.p); if (s!==T) return false; const r=q.rule(IS.p); return r===true ? true : r; },
+  describe(){ const s=wsum(IS.p); return IS.p.length ? `Your wall: ${IS.p.map(d=>fr(1,d)).join(' + ')} = ${s?fh(s,120):'0'}.` : 'The wall is empty.'; },
+  solve(q){ IS.p=q.sol.slice(); },
+};
+
+/* Number Line Leap */
+IX.line = { intro:'Drag Niffler along the line, or use the arrow buttons.', bank:{ basic:[
+  () => { const [n,d,max,t]=pick([[5,8,1,8],[3,4,1,8],[2,3,1,6],[3,5,1,5],[1,2,1,10]]); return {key:'la'+n+d+t, ask:`Help Niffler land on ${fr(n,d)}.`, sub:`The line is cut into ${t}ths between 0 and 1.`.replace('2ths','halves').replace('3ths','thirds').replace('4ths','fourths').replace('5ths','fifths').replace('6ths','sixths').replace('8ths','eighths').replace('10ths','tenths'), max, d:t, target:[n,d], hint:`${fr(n,d)} = ${fr(n*t/d,t)}. Count ${n*t/d} ticks from 0.`}; },
+  () => { const [n,d,max]=pick([[5,4,2],[7,4,2],[5,2,3],[3,2,2],[7,3,3],[9,4,3]]); return {key:'lb'+n+d, ask:`Help Niffler land on ${Math.random()<.5?fr(n,d):fh(n,d)}.`, sub:'Count the whole numbers first.', max, d, target:[n,d], hint:`${fr(n,d)} = ${fh(n,d)}. Go past ${Math.floor(n/d)}, then ${n%d} more tick${n%d>1?'s':''}.`}; },
+], adv:[
+  () => ({key:'lc1', ask:`Land on ${fr(2,3)} + ${fr(1,4)}.`, sub:'The ticks are twelfths.', max:1, d:12, target:[11,12], hint:`${fr(2,3)} = ${fr(8,12)} and ${fr(1,4)} = ${fr(3,12)}.`}),
+  () => ({key:'lc2', ask:`Land exactly halfway between ${fr(1,3)} and ${fr(1,2)}.`, sub:'The ticks are twelfths.', max:1, d:12, target:[5,12], hint:`${fr(1,3)} = ${fr(4,12)} and ${fr(1,2)} = ${fr(6,12)}.`}),
+  () => { const [n,d,k,max]=pick([[3,4,4,3],[2,3,3,3],[5,6,3,3],[3,8,4,2]]); return {key:'lc3'+n+d+k, ask:`Niffler hops ${fr(n,d)} at a time. Where does it land after <b>${k} hops</b> from 0?`, sub:`That is ${k} × ${fr(n,d)}.`, max, d, target:[n*k,d], hint:`${k} × ${fr(n,d)} = ${fr(n*k,d)}.`}; },
+  () => { const [n,d]=pick([[3,8],[5,12],[2,6]]); return {key:'lc4'+n+d, ask:`Land on 1 − ${fr(n,d)}.`, sub:'Start at 1 and go back.', max:1, d, target:[d-n,d], hint:`1 = ${fr(d,d)}. Take away ${n} ticks.`}; },
+  () => ({key:'lc5', ask:`Land on ${fr(2,3)} of 1${fr(1,2)}.`, sub:'"Of" means multiply.', max:2, d:6, target:[1,1], hint:`${fr(2,3)} × ${fr(3,2)} = ${fr(6,6)}.`}),
+  () => ({key:'lc6', ask:`Land on 1${fr(1,2)} + ${fr(5,6)}.`, sub:'The ticks are sixths.', max:3, d:6, target:[7,3], hint:`1${fr(1,2)} = ${fr(9,6)}. Add ${fr(5,6)}.`}),
+]},
+  init(q){ IS={pos:0}; this.render(q); },
+  tgt(q){ return q.target[0]*q.d/q.target[1]; },
+  render(q){
+    const W=660, x0=40, x1=620, N=q.max*q.d, X=t=>x0+(x1-x0)*t/N, y=118; let s=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" class="nl"/>`;
+    for (let t=0;t<=N;t++){ const whole=t%q.d===0; s+=`<line x1="${X(t)}" y1="${y-(whole?20:11)}" x2="${X(t)}" y2="${y+(whole?20:11)}" class="nl${whole?'':' minor'}"/>`; if (whole) s+=`<text x="${X(t)}" y="${y+46}" text-anchor="middle" class="iso-lbl">${t/q.d}</text>`; }
+    if (R.done){ const tt=this.tgt(q); s+=`<circle cx="${X(tt)}" cy="${y}" r="9" fill="var(--good)"/>`; }
+    const px=X(IS.pos);
+    s+=`<g transform="translate(${px.toFixed(1)},${y-40})" class="nl-niff"><path d="M0 34 L-7 20 L7 20 Z" fill="#7a6bb2"/><circle cx="-12" cy="-12" r="9" fill="#a99bd5"/><circle cx="12" cy="-12" r="9" fill="#a99bd5"/><circle r="20" fill="#a99bd5"/><circle cx="-7" cy="-3" r="3.4" fill="#251a30"/><circle cx="7" cy="-3" r="3.4" fill="#251a30"/><ellipse cx="0" cy="7" rx="4.5" ry="3" fill="#f27aa1"/></g>`;
+    $('#ixStage').innerHTML = `<svg class="fig" id="lineSvg" viewBox="0 0 ${W} 180" style="max-width:660px" role="img" aria-label="number line">${s}</svg>`;
+    $('#ixRead').innerHTML = `Niffler is on ${IS.pos===0?'0':fh(IS.pos,q.d)}`;
+    $('#ixControls').innerHTML = `<div class="arrows"><button class="sbtn" data-ix="step" data-v="-1" ${R.done||IS.pos<=0?'disabled':''} aria-label="left">◀</button><button class="sbtn" data-ix="step" data-v="1" ${R.done||IS.pos>=N?'disabled':''} aria-label="right">▶</button></div>`;
+  },
+  act(a,v,q){ if (a==='step'){ const N=q.max*q.d, p=IS.pos+Number(v); if (p<0||p>N) return; IS.pos=p; tone(400+p*15,.05,0,'sine',.07); this.render(q); } },
+  dragTo(clientX){ const q=R.qs[R.i], svg=$('#lineSvg'); if (!svg) return; const r=svg.getBoundingClientRect(), vx=(clientX-r.left)/r.width*660, N=q.max*q.d;
+    const p=Math.max(0,Math.min(N,Math.round((vx-40)/(580)*N))); if (p!==IS.pos){ IS.pos=p; tone(400+p*15,.04,0,'sine',.05); this.render(q); } },
+  test(q){ return IS.pos===this.tgt(q); },
+  describe(q){ return `Niffler landed on ${IS.pos===0?'0':fh(IS.pos,q.d)}.`; },
+  solve(q){ IS.pos=this.tgt(q); },
+};
+let lineDrag=false;
+document.addEventListener('pointerdown', e => { if (R && R.gid==='line' && !R.done && e.target.closest && e.target.closest('#lineSvg')){ lineDrag=true; e.preventDefault(); IX.line.dragTo(e.clientX); } });
+document.addEventListener('pointermove', e => { if (lineDrag && R && !R.done) IX.line.dragTo(e.clientX); });
+document.addEventListener('pointerup', () => { lineDrag=false; });
+document.addEventListener('pointercancel', () => { lineDrag=false; });
+
+/* fraction answer pad */
+function fracKey(k){
+  const f=R.fin; if (k==='ok') return checkFrac();
+  if (k==='⌫'){ if (f[f.f]) f[f.f]=f[f.f].slice(0,-1); }
+  else if (k==='next'){ f.f = f.f==='n'?'d':f.f==='d'?'w':'n'; }
+  else if (/^[0-9]$/.test(k) && f[f.f].length<3){ f[f.f]+=k; if (f.f==='n' && f[f.f].length>=String(R.qs[R.i].answer[1]).length && !f.d) {} }
+  updFrac();
+}
+function updFrac(){ const f=R.fin; $$('.fbox').forEach(b=>{ const k=b.dataset.ff; b.textContent=f[k]||''; b.classList.toggle('on', f.f===k); }); }
+function checkFrac(){
+  const q=R.qs[R.i], f=R.fin; if (!f.w && !f.n){ $('#qFeedback').innerHTML='<span class="oops">Type an answer first.</span>'; return; }
+  if (f.n && !f.d && q.answer[1]===1){ f.w=String(+(f.w||0)+(+f.n)); f.n=''; }
+  if (f.n && (!f.d || +f.d===0)){ $('#qFeedback').innerHTML='<span class="oops">Fill in the bottom number too.</span>'; f.f='d'; updFrac(); return; }
+  const W=+(f.w||0), N=+(f.n||0), D=f.n ? +f.d : 1, [an,ad]=q.answer;
+  if ((W*D+N)*ad === an*D){
+    if (q.simplest && N && gcd(N,D)>1){ $('#qFeedback').innerHTML='<span class="oops">That is equal! Now write it in simplest form.</span>'; return; }
+    correct();
+  } else wrong();
+}
+
 const BAL_COLORS = ['#ff6b8b','#4fc3f7','#ffd54f','#7ed492','#bd7ce0','#ff9f43'];
 function balloonSVG(c){ return `<svg viewBox="0 0 112 152" aria-hidden="true"><path d="M56 6 C88 6 104 30 104 56 C104 88 78 108 60 112 L64 120 L48 120 L52 112 C34 108 8 88 8 56 C8 30 24 6 56 6Z" fill="${c}"/><ellipse cx="36" cy="38" rx="10" ry="17" fill="#fff" opacity=".35" transform="rotate(-20 36 38)"/><path d="M56 120 Q46 132 58 141 Q66 148 56 152" stroke="rgba(255,255,255,.65)" stroke-width="2" fill="none"/></svg>`; }
-const isSmall = html => html.replace(/<[^>]+>/g,'').length > 4;
+const isSmall = html => html.replace(/<[^>]+>/g,'').replace(/&[a-z]+;/g,'/').length > 4;
 let BL = null;
 function stopBalloon(){ if (BL){ cancelAnimationFrame(BL.raf); clearTimeout(BL.timer); BL.balloons.forEach(b=>b.el.remove()); BL=null; } }
 function startBalloon(gid, level){
@@ -1378,6 +1828,412 @@ function tapBalloon(el){
 document.addEventListener('pointerdown', e => { const el=e.target.closest && e.target.closest('.balloon'); if (el){ e.preventDefault(); tapBalloon(el); } });
 window.addEventListener('resize', () => { if (BL){ measure(); BL.balloons.forEach(b=>{ if (b.lane>=BL.lanes) b.lane=BL.lanes-1; b.x=laneX(b.lane); }); } });
 
+/* ---------- Mystery Gallery animals (original illustrations) ---------- */
+const svgWrap = (id, inner) => `<svg viewBox="0 0 400 400" class="animal" role="img" aria-label="mystery picture">${inner}</svg>`;
+function gillSet(side){ // axolotl gills, side = -1 left, 1 right
+  let s=''; const bases=[[200+side*78,108],[200+side*90,140],[200+side*80,172]], tips=[[200+side*150,62],[200+side*168,140],[200+side*150,214]];
+  bases.forEach((b,i)=>{ const t=tips[i], mx=(b[0]+t[0])/2, my=(b[1]+t[1])/2;
+    s+=`<path d="M${b[0]} ${b[1]} Q${mx} ${my-8} ${t[0]} ${t[1]}" stroke="#ff4f86" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+    for (let k=1;k<=4;k++){ const f=k/5, x=b[0]+(t[0]-b[0])*f, y=b[1]+(t[1]-b[1])*f-4*Math.sin(f*Math.PI);
+      s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} l${(side*8).toFixed(1)} -14 M${x.toFixed(1)} ${y.toFixed(1)} l${(side*8).toFixed(1)} 14" stroke="#ff7aa5" stroke-width="5" stroke-linecap="round"/>`; } });
+  return s;
+}
+const ANIMALS = [
+  { id:'narwhal', name:'Narwhal', fact:'A narwhal\'s "tusk" is really a tooth. It can grow up to about 3 meters long, longer than a grown-up lying down!',
+    similar:['Dolphin','Beluga whale','Swordfish','Shark','Walrus','Seal','Manatee','Orca','Sawfish'],
+    draw:()=>svgWrap('nar',`<defs><linearGradient id="g-nar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5cc0ea"/><stop offset="1" stop-color="#0f4f86"/></linearGradient></defs>
+      <rect width="400" height="400" fill="url(#g-nar)"/><path d="M60 0 L120 0 L60 400 L20 400Z M220 0 L260 0 L230 400 L190 400Z" fill="#fff" opacity=".07"/>
+      <circle cx="350" cy="320" r="8" fill="none" stroke="#cfefff" stroke-width="3"/><circle cx="365" cy="290" r="5" fill="none" stroke="#cfefff" stroke-width="3"/><circle cx="60" cy="110" r="7" fill="none" stroke="#cfefff" stroke-width="3"/>
+      <path d="M78 232 L28 196 Q42 232 26 268 Z" fill="#8aa3ba"/>
+      <path d="M70 232 C92 172 205 150 292 190 C332 206 348 232 332 252 C302 282 202 292 140 272 C110 263 88 252 70 232 Z" fill="#8aa3ba"/>
+      <path d="M120 264 C182 288 284 282 328 250 C300 268 200 276 120 264Z" fill="#dbe6ee"/>
+      <ellipse cx="160" cy="210" rx="9" ry="6" fill="#6c8399"/><ellipse cx="200" cy="196" rx="7" ry="5" fill="#6c8399"/><ellipse cx="240" cy="205" rx="10" ry="6" fill="#6c8399"/><ellipse cx="185" cy="232" rx="6" ry="4" fill="#6c8399"/><ellipse cx="125" cy="232" rx="7" ry="5" fill="#6c8399"/>
+      <path d="M205 262 Q218 304 246 304 Q232 278 230 258 Z" fill="#7690a8"/>
+      <circle cx="306" cy="214" r="6.5" fill="#1b2633"/><path d="M300 238 Q312 242 322 236" stroke="#55697d" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <polygon points="333,218 400,176 400,184 337,227" fill="#f3ecd8"/>
+      <path d="M346 214 l4 7 M358 206 l4 7 M370 199 l4 7 M382 191 l4 7 M394 184 l3 6" stroke="#cbbf9e" stroke-width="2.5"/>`) },
+  { id:'flamingo', name:'Flamingo', fact:'Flamingos are born grey. They turn pink from the tiny shrimp and algae they eat.',
+    similar:['Heron','Stork','Swan','Pelican','Crane','Ostrich','Spoonbill','Parrot','Emu'],
+    draw:()=>svgWrap('fla',`<rect width="400" height="400" fill="#ffe0c9"/><circle cx="320" cy="90" r="46" fill="#ffc06b"/><rect y="300" width="400" height="100" fill="#79c5d6"/>
+      <path d="M40 330 h70 M150 352 h90 M280 330 h80 M60 375 h60" stroke="#c8eef6" stroke-width="4" stroke-linecap="round"/>
+      <line x1="232" y1="238" x2="232" y2="330" stroke="#e85d8c" stroke-width="6" stroke-linecap="round"/>
+      <path d="M252 236 L280 270 L240 282" stroke="#e85d8c" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M232 330 l-16 6 M232 330 l14 6" stroke="#e85d8c" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="240" cy="205" rx="78" ry="44" transform="rotate(-14 240 205)" fill="#ff7fab"/>
+      <path d="M250 180 C290 170 320 190 312 215 C290 222 262 214 250 180Z" fill="#f05b8f"/>
+      <path d="M312 196 l26 -8 l-14 14 l22 2 l-26 8 Z" fill="#f05b8f"/>
+      <path d="M180 200 C135 175 145 112 188 102 C224 94 226 62 197 56" stroke="#ff7fab" stroke-width="20" fill="none" stroke-linecap="round"/>
+      <circle cx="194" cy="56" r="17" fill="#ff7fab"/><circle cx="199" cy="50" r="3.5" fill="#2a1b24"/>
+      <path d="M181 54 Q160 56 156 78 Q166 70 182 68 Z" fill="#fff3e6"/><path d="M156 78 Q152 94 163 92 Q160 84 166 72 Z" fill="#2a1b24"/>`) },
+  { id:'octopus', name:'Octopus', fact:'An octopus has three hearts and blue blood.',
+    similar:['Squid','Jellyfish','Starfish','Cuttlefish','Sea anemone','Nautilus','Crab','Lobster','Sea urchin'],
+    draw:()=>{ const T=['M125 215 C90 250 60 300 90 330 C110 350 130 330 115 315','M150 225 C130 280 120 330 150 350 C170 360 180 340 165 330','M175 230 C170 290 175 340 200 360 C215 370 225 355 210 345','M200 232 C205 290 220 330 250 345 C265 352 270 335 255 330','M225 230 C240 280 270 310 300 315 C318 318 318 300 302 300','M250 225 C280 260 320 270 340 255 C352 245 342 232 330 240','M268 212 C300 228 330 222 345 202 C352 190 338 184 332 196','M132 205 C100 212 66 202 58 180 C54 166 70 162 72 176'];
+      return svgWrap('oct',`<rect width="400" height="400" fill="#123b63"/><path d="M0 360 Q100 340 200 362 T400 355 V400 H0Z" fill="#d9b779"/><path d="M40 360 q6 -30 12 0 M330 358 q8 -40 16 0" stroke="#3aa37a" stroke-width="6" fill="none"/>
+        <circle cx="340" cy="80" r="6" fill="none" stroke="#9fd2ff" stroke-width="3"/><circle cx="356" cy="58" r="4" fill="none" stroke="#9fd2ff" stroke-width="3"/>
+        ${T.map(d=>`<path d="${d}" stroke="#a45ccc" stroke-width="22" fill="none" stroke-linecap="round"/>`).join('')}
+        ${T.map(d=>`<path d="${d}" stroke="#e9bff7" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="2 14"/>`).join('')}
+        <ellipse cx="200" cy="150" rx="86" ry="96" fill="#a45ccc"/><ellipse cx="170" cy="105" rx="22" ry="14" fill="#c48ae0" opacity=".7"/><circle cx="240" cy="95" r="7" fill="#8a46b0"/><circle cx="255" cy="120" r="5" fill="#8a46b0"/><circle cx="150" cy="140" r="6" fill="#8a46b0"/>
+        <ellipse cx="170" cy="182" rx="17" ry="20" fill="#fff"/><ellipse cx="230" cy="182" rx="17" ry="20" fill="#fff"/><circle cx="174" cy="186" r="9" fill="#221430"/><circle cx="226" cy="186" r="9" fill="#221430"/>
+        <path d="M188 214 Q200 222 212 214" stroke="#5e2f7a" stroke-width="4" fill="none" stroke-linecap="round"/>`); } },
+  { id:'axolotl', name:'Axolotl', fact:'An axolotl can regrow a lost leg, and even parts of its heart and brain.',
+    similar:['Salamander','Newt','Frog','Tadpole','Gecko','Catfish','Lizard','Mudskipper','Seahorse'],
+    draw:()=>svgWrap('axo',`<rect width="400" height="400" fill="#2c7a6c"/><path d="M30 400 C20 320 50 280 40 220 M60 400 C70 330 50 300 66 250 M350 400 C360 330 330 290 345 240 M375 400 C368 340 390 300 380 260" stroke="#4fb36d" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <circle cx="320" cy="60" r="6" fill="none" stroke="#b8f0e0" stroke-width="3"/><circle cx="335" cy="38" r="4" fill="none" stroke="#b8f0e0" stroke-width="3"/>
+      ${gillSet(-1)}${gillSet(1)}
+      <path d="M200 280 C232 326 230 372 200 400 C170 372 168 326 200 280Z" fill="#ffd9e4"/><path d="M200 290 C216 330 214 368 200 396 C186 368 184 330 200 290Z" fill="#ffb7cc"/>
+      <ellipse cx="200" cy="245" rx="56" ry="88" fill="#ffb7cc"/>
+      <ellipse cx="140" cy="210" rx="26" ry="10" transform="rotate(-35 140 210)" fill="#ffb7cc"/><ellipse cx="260" cy="210" rx="26" ry="10" transform="rotate(35 260 210)" fill="#ffb7cc"/>
+      <ellipse cx="148" cy="300" rx="26" ry="10" transform="rotate(30 148 300)" fill="#ffb7cc"/><ellipse cx="252" cy="300" rx="26" ry="10" transform="rotate(-30 252 300)" fill="#ffb7cc"/>
+      <ellipse cx="200" cy="140" rx="92" ry="66" fill="#ffc2d4"/>
+      <circle cx="160" cy="128" r="9" fill="#2a1a22"/><circle cx="240" cy="128" r="9" fill="#2a1a22"/><circle cx="163" cy="125" r="3" fill="#fff"/><circle cx="243" cy="125" r="3" fill="#fff"/>
+      <path d="M160 162 Q200 186 240 162" stroke="#c4577a" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="140" cy="152" rx="10" ry="6" fill="#ff8fb0" opacity=".6"/><ellipse cx="260" cy="152" rx="10" ry="6" fill="#ff8fb0" opacity=".6"/>`) },
+  { id:'giraffe', name:'Giraffe', fact:'A giraffe\'s very long neck has just 7 bones, the same number as your neck.',
+    similar:['Okapi','Camel','Zebra','Llama','Deer','Antelope','Horse','Moose','Kangaroo'],
+    draw:()=>svgWrap('gir',`<rect width="400" height="400" fill="#a6dcf2"/><rect y="330" width="400" height="70" fill="#d9b26a"/>
+      <path d="M330 330 V250" stroke="#7a5230" stroke-width="12"/><ellipse cx="330" cy="240" rx="60" ry="18" fill="#4f9a4a"/><ellipse cx="300" cy="226" rx="34" ry="12" fill="#4f9a4a"/>
+      <rect x="190" y="270" width="15" height="80" rx="6" fill="#e8a83e"/><rect x="215" y="272" width="15" height="78" rx="6" fill="#e8a83e"/><rect x="265" y="272" width="15" height="78" rx="6" fill="#e8a83e"/><rect x="288" y="270" width="15" height="80" rx="6" fill="#e8a83e"/>
+      <path d="M305 236 q24 20 20 52" stroke="#e8a83e" stroke-width="5" fill="none"/><circle cx="325" cy="290" r="6" fill="#7a4a24"/>
+      <ellipse cx="245" cy="250" rx="72" ry="40" fill="#f3bb4e"/>
+      <path d="M195 238 L150 90" stroke="#f3bb4e" stroke-width="40" stroke-linecap="round"/>
+      <path d="M168 82 L208 228" stroke="#a0622d" stroke-width="6" stroke-dasharray="10 6"/>
+      <ellipse cx="128" cy="78" rx="38" ry="21" transform="rotate(-20 128 78)" fill="#f3bb4e"/><ellipse cx="98" cy="90" rx="14" ry="11" fill="#e4a03c"/>
+      <path d="M140 58 l-4 -26 M156 62 l2 -26" stroke="#b6782f" stroke-width="6" stroke-linecap="round"/><circle cx="136" cy="31" r="6" fill="#7a4a24"/><circle cx="158" cy="35" r="6" fill="#7a4a24"/>
+      <ellipse cx="166" cy="72" rx="13" ry="6" transform="rotate(-30 166 72)" fill="#e4a03c"/><circle cx="128" cy="70" r="5" fill="#2b1d10"/>
+      ${[[230,245],[262,232],[285,255],[248,268],[214,262],[205,232],[178,170],[168,130],[188,205],[160,100]].map(([x,y],i)=>`<path d="M${x-11} ${y-6} L${x+2} ${y-12} L${x+12} ${y-2} L${x+6} ${y+10} L${x-8} ${y+9} Z" fill="#a0622d"/>`).join('')}`) },
+  { id:'penguin', name:'Emperor penguin', fact:'Emperor penguins can dive deeper than 500 meters and hold their breath for over 20 minutes.',
+    similar:['Puffin','Seal','Toucan','Albatross','Seagull','Duck','Auk','Cormorant','Pelican'],
+    draw:()=>svgWrap('pen',`<rect width="400" height="400" fill="#cfe8ff"/><path d="M0 300 L120 250 L210 300 L300 240 L400 290 V400 H0Z" fill="#fff"/><path d="M120 250 L160 300 L210 300Z M300 240 L330 300 L400 290Z" fill="#d6e6f5"/>
+      ${[[50,60],[120,120],[330,70],[370,160],[60,190],[250,40]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4" fill="#fff"/>`).join('')}
+      <ellipse cx="160" cy="352" rx="22" ry="9" fill="#f59a2b"/><ellipse cx="240" cy="352" rx="22" ry="9" fill="#f59a2b"/>
+      <ellipse cx="200" cy="225" rx="88" ry="128" fill="#1e2532"/>
+      <ellipse cx="118" cy="235" rx="18" ry="62" transform="rotate(16 118 235)" fill="#151a24"/><ellipse cx="282" cy="235" rx="18" ry="62" transform="rotate(-16 282 235)" fill="#151a24"/>
+      <ellipse cx="200" cy="250" rx="62" ry="100" fill="#fbfbf7"/><ellipse cx="200" cy="175" rx="55" ry="30" fill="#ffe8a8" opacity=".55"/>
+      <path d="M142 150 Q130 175 150 192 Q160 170 158 150Z M258 150 Q270 175 250 192 Q240 170 242 150Z" fill="#ffc53d"/>
+      <circle cx="178" cy="132" r="13" fill="#fff"/><circle cx="222" cy="132" r="13" fill="#fff"/><circle cx="181" cy="134" r="7" fill="#151a24"/><circle cx="219" cy="134" r="7" fill="#151a24"/>
+      <path d="M188 150 L212 150 L200 176 Z" fill="#f59a2b"/>`) },
+  { id:'chameleon', name:'Chameleon', fact:'A chameleon\'s tongue can shoot out about twice as long as its body in a fraction of a second.',
+    similar:['Iguana','Gecko','Frog','Salamander','Komodo dragon','Snake','Turtle','Crocodile','Newt'],
+    draw:()=>svgWrap('cha',`<rect width="400" height="400" fill="#2f6b3a"/><ellipse cx="60" cy="60" rx="70" ry="26" transform="rotate(25 60 60)" fill="#3e8a47"/><ellipse cx="350" cy="90" rx="70" ry="24" transform="rotate(-20 350 90)" fill="#3e8a47"/><ellipse cx="340" cy="360" rx="60" ry="20" transform="rotate(15 340 360)" fill="#3e8a47"/>
+      <path d="M0 312 C120 296 260 286 400 262" stroke="#6b4423" stroke-width="24" fill="none" stroke-linecap="round"/>
+      <path d="M150 262 L140 300 M180 266 L186 298 M248 262 L240 292 M276 258 L286 288" stroke="#58c45a" stroke-width="12" stroke-linecap="round"/>
+      <path d="M315 236 C352 246 362 282 342 302 C324 320 296 306 302 286 C307 270 326 276 322 290" stroke="#58c45a" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M120 232 C130 182 200 162 262 176 C302 186 322 212 316 236 C302 262 222 272 160 264 C136 260 118 250 120 232 Z" fill="#6fd56b"/>
+      <path d="M150 182 l12 -14 l10 12 l12 -16 l10 14 l12 -16 l10 14 l12 -14 l10 14 l12 -12 l10 14" stroke="#4aa64d" stroke-width="6" fill="none" stroke-linejoin="round"/>
+      <path d="M170 210 q10 30 0 50 M210 205 q10 32 0 58 M250 205 q10 30 0 54" stroke="#a6f08f" stroke-width="6" fill="none" opacity=".7"/>
+      <path d="M125 230 L62 212 Q52 236 70 254 L130 252 Z" fill="#6fd56b"/><path d="M118 196 Q90 180 70 212 L125 226 Z" fill="#58c45a"/>
+      <path d="M64 236 Q80 242 100 238" stroke="#2f6b2f" stroke-width="3" fill="none"/>
+      <circle cx="100" cy="220" r="17" fill="#8be07f" stroke="#3f9a42" stroke-width="4"/><circle cx="96" cy="218" r="5" fill="#1b2a12"/>`) },
+  { id:'owl', name:'Owl', fact:'An owl can turn its head about 270 degrees. That is three quarters of a full turn!',
+    similar:['Eagle','Hawk','Parrot','Bat','Falcon','Raccoon','Lemur','Pigeon','Toucan'],
+    draw:()=>svgWrap('owl',`<rect width="400" height="400" fill="#1b2347"/><circle cx="330" cy="80" r="42" fill="#fff3c4"/><circle cx="345" cy="70" r="8" fill="#efe0a8"/>
+      ${[[50,50],[110,90],[220,40],[60,160],[370,190],[260,100]].map(([x,y])=>`<path d="M${x} ${y-6} l2 4 4 2 -4 2 -2 4 -2 -4 -4 -2 4 -2z" fill="#fff6c2"/>`).join('')}
+      <path d="M0 345 C120 330 280 335 400 320" stroke="#5a3a22" stroke-width="22" fill="none"/>
+      <path d="M125 120 L140 70 L170 110 Z M275 120 L260 70 L230 110 Z" fill="#8a5a30"/>
+      <ellipse cx="200" cy="225" rx="92" ry="118" fill="#a8743f"/>
+      <ellipse cx="122" cy="245" rx="28" ry="78" transform="rotate(12 122 245)" fill="#8a5a30"/><ellipse cx="278" cy="245" rx="28" ry="78" transform="rotate(-12 278 245)" fill="#8a5a30"/>
+      <ellipse cx="200" cy="270" rx="56" ry="70" fill="#e3c08e"/>
+      ${[[180,245],[220,245],[200,270],[175,295],[225,295],[200,320]].map(([x,y])=>`<path d="M${x-8} ${y} q8 9 16 0" stroke="#a8743f" stroke-width="4" fill="none"/>`).join('')}
+      <circle cx="162" cy="172" r="42" fill="#f0d7aa"/><circle cx="238" cy="172" r="42" fill="#f0d7aa"/>
+      <circle cx="162" cy="172" r="26" fill="#ffd23f"/><circle cx="238" cy="172" r="26" fill="#ffd23f"/><circle cx="162" cy="174" r="13" fill="#141414"/><circle cx="238" cy="174" r="13" fill="#141414"/><circle cx="167" cy="168" r="4" fill="#fff"/><circle cx="243" cy="168" r="4" fill="#fff"/>
+      <path d="M190 196 L210 196 L200 218 Z" fill="#e89a2c"/>
+      <path d="M165 336 l-6 14 M175 336 v15 M185 336 l6 14 M215 336 l-6 14 M225 336 v15 M235 336 l6 14" stroke="#e89a2c" stroke-width="6" stroke-linecap="round"/>`) },
+  { id:'elephant', name:'Elephant', fact:'An elephant\'s trunk has about 40,000 muscles. Your whole body has about 600!',
+    similar:['Rhinoceros','Hippopotamus','Mammoth','Tapir','Walrus','Buffalo','Anteater','Manatee','Warthog'],
+    draw:()=>svgWrap('ele',`<rect width="400" height="400" fill="#f6d68c"/><circle cx="330" cy="70" r="36" fill="#ffefb8"/><rect y="320" width="400" height="80" fill="#c9a35a"/>
+      <rect x="185" y="260" width="34" height="90" rx="12" fill="#8f99a4"/><rect x="230" y="262" width="34" height="88" rx="12" fill="#97a1ac"/><rect x="290" y="262" width="34" height="88" rx="12" fill="#8f99a4"/><rect x="330" y="258" width="34" height="92" rx="12" fill="#97a1ac"/>
+      <path d="M362 210 q24 20 16 56" stroke="#8f99a4" stroke-width="6" fill="none"/>
+      <ellipse cx="275" cy="225" rx="105" ry="75" fill="#a2acb7"/>
+      <circle cx="150" cy="185" r="62" fill="#a2acb7"/>
+      <path d="M175 140 C250 120 262 220 210 250 C190 262 172 240 172 220 Z" fill="#949fab"/><path d="M185 156 C232 146 240 214 208 234 C196 240 186 228 186 216 Z" fill="#e7b3bd" opacity=".75"/>
+      <path d="M110 215 C92 262 92 302 114 322 C130 336 150 326 144 310" stroke="#a2acb7" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <path d="M100 250 h20 M98 272 h20 M102 294 h18" stroke="#8a95a1" stroke-width="3"/>
+      <path d="M128 228 Q118 252 134 262" stroke="#fffaf0" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <circle cx="132" cy="172" r="6" fill="#262c33"/>`) },
+  { id:'toucan', name:'Toucan', fact:'A toucan\'s huge beak is about one third of its body length, but it is light because it is hollow inside, like a honeycomb.',
+    similar:['Parrot','Puffin','Hornbill','Penguin','Kingfisher','Woodpecker','Macaw','Pelican','Crow'],
+    draw:()=>svgWrap('tou',`<rect width="400" height="400" fill="#1f6b4a"/><ellipse cx="40" cy="80" rx="70" ry="22" transform="rotate(20 40 80)" fill="#2e8a5c"/><ellipse cx="360" cy="60" rx="70" ry="22" transform="rotate(-25 360 60)" fill="#2e8a5c"/><ellipse cx="350" cy="350" rx="70" ry="22" transform="rotate(-10 350 350)" fill="#2e8a5c"/>
+      <path d="M0 330 C140 318 260 322 400 300" stroke="#6b4423" stroke-width="20" fill="none"/>
+      <path d="M240 300 L250 350 L232 330Z M262 298 L285 345 L262 330Z" fill="#141414"/>
+      <ellipse cx="240" cy="220" rx="62" ry="98" transform="rotate(12 240 220)" fill="#141414"/>
+      <path d="M200 140 C230 128 262 150 258 186 C252 214 222 222 206 204 C190 186 190 156 200 140Z" fill="#fff7d6"/><path d="M206 200 C222 214 248 208 254 196 C246 220 214 226 206 200Z" fill="#f2c94c"/>
+      <path d="M216 312 Q240 320 262 312 L256 300 Q238 306 222 300Z" fill="#e2475b"/>
+      <circle cx="226" cy="148" r="15" fill="#4fc3f7"/><circle cx="226" cy="148" r="7" fill="#141414"/><circle cx="229" cy="145" r="2.5" fill="#fff"/>
+      <path d="M206 142 C150 118 80 128 40 160 C80 168 150 170 206 168 Z" fill="#ff9f2e"/>
+      <path d="M206 168 C150 172 90 172 46 166 C90 186 160 190 206 180 Z" fill="#ffd23f"/>
+      <path d="M40 160 C50 156 62 158 70 162 L64 176 C56 176 48 172 46 166 Z" fill="#141414"/><path d="M206 142 C190 136 176 134 166 134 L170 178 C182 180 196 180 206 180Z" fill="#7cd36b" opacity=".85"/>
+      <path d="M60 162 Q130 158 200 160" stroke="#c8641a" stroke-width="3" fill="none"/>`) },
+];
+const MORE_NAMES = ['Kangaroo','Koala','Panda','Sloth','Lion','Tiger','Wolf','Fox','Bear','Rabbit','Squirrel','Hedgehog','Mole','Platypus','Otter','Beaver','Turtle','Goldfish','Butterfly','Bee'];
+
+/* ---------- impressionist painter: re-paints an SVG with brush strokes ---------- */
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const strHash = s => { let h=2166136261; for (let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; };
+const PAINT_CACHE = new Map();
+function paintSVG(id, svg){
+  if (PAINT_CACHE.has(id)) return PAINT_CACHE.get(id);
+  const pr = new Promise(resolve => {
+    const N=640, img=new Image();
+    img.onload = () => { try {
+      const src=document.createElement('canvas'); src.width=src.height=N; const sc=src.getContext('2d'); sc.drawImage(img,0,0,N,N);
+      const d=sc.getImageData(0,0,N,N).data;
+      const out=document.createElement('canvas'); out.width=out.height=N; const c=out.getContext('2d');
+      const tiny=document.createElement('canvas'); tiny.width=tiny.height=48; tiny.getContext('2d').drawImage(img,0,0,48,48);
+      c.imageSmoothingEnabled=true; c.drawImage(tiny,0,0,N,N);
+      const L=new Float32Array(N*N); for (let i=0;i<N*N;i++) L[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];
+      const rnd=mulberry32(strHash(id)), cl=v=>Math.max(0,Math.min(255,v|0)), ci=v=>Math.max(1,Math.min(N-2,v|0));
+      const px=(x,y)=>{ const i=(ci(y)*N+ci(x))*4; return [d[i],d[i+1],d[i+2]]; };
+      const grad=(x,y)=>{ x=ci(x); y=ci(y); const gx=(L[y*N+x+1]-L[y*N+x-1])+.5*(L[(y-1)*N+x+1]-L[(y-1)*N+x-1]+L[(y+1)*N+x+1]-L[(y+1)*N+x-1]);
+        const gy=(L[(y+1)*N+x]-L[(y-1)*N+x])+.5*(L[(y+1)*N+x-1]-L[(y-1)*N+x-1]+L[(y+1)*N+x+1]-L[(y-1)*N+x+1]); return [gx,gy]; };
+      const base=.55+rnd()*.5;
+      c.lineCap='round';
+      const layer=(step,len,w,minMag,alpha)=>{
+        const pts=[]; for (let y=0;y<N;y+=step) for (let x=0;x<N;x+=step) pts.push([x+(rnd()-.5)*step, y+(rnd()-.5)*step]);
+        for (let i=pts.length-1;i>0;i--){ const j=(rnd()*(i+1))|0; [pts[i],pts[j]]=[pts[j],pts[i]]; }
+        for (const [x,y] of pts){
+          const [gx,gy]=grad(x,y), mag=Math.hypot(gx,gy); if (mag<minMag) continue;
+          let ang = mag>6 ? Math.atan2(gy,gx)+Math.PI/2 : base+(rnd()-.5)*.9; ang+=(rnd()-.5)*.3;
+          const [r,g,b]=px(x,y), k=1+(rnd()-.5)*.2, s=(rnd()-.5)*20, warm=(rnd()-.5)*16, br=rnd()<.12?(rnd()<.5?18:-18):0;
+          c.strokeStyle=`rgb(${cl(r*k+s+warm+br)},${cl(g*k+s+br*.4)},${cl(b*k+s-warm-br)})`; c.globalAlpha=alpha;
+          const l=len*(.65+rnd()*.7), dx=Math.cos(ang)*l/2, dy=Math.sin(ang)*l/2; c.lineWidth=w*(.7+rnd()*.6);
+          c.beginPath(); c.moveTo(x-dx,y-dy); c.quadraticCurveTo(x+(rnd()-.5)*w*1.2, y+(rnd()-.5)*w*1.2, x+dx, y+dy); c.stroke();
+        }
+      };
+      layer(10,40,14,0,.75); layer(6,24,8,0,.8); layer(4,13,4.5,10,.85); layer(2.6,7,2.6,40,.9);
+      c.globalAlpha=.05; for (let i=0;i<2600;i++){ c.fillStyle=rnd()<.5?'#fff':'#000'; c.fillRect(rnd()*N, rnd()*N, 2, 2); }
+      resolve(out.toDataURL('image/jpeg',.88));
+    } catch(e){ resolve(null); } };
+    img.onerror=()=>resolve(null);
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('<svg viewBox="0 0 400 400"','<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"'));
+  });
+  PAINT_CACHE.set(id, pr); return pr;
+}
+function hydratePics(root=document){
+  root.querySelectorAll('[data-pic]').forEach(el => {
+    const a=ANIMALS.find(x=>x.id===el.dataset.pic); if (!a || el.dataset.done) return; el.dataset.done='1';
+    paintSVG(a.id, a.draw()).then(url => { el.innerHTML = url ? `<img class="animal" src="${url}" alt="">` : a.draw(); });
+  });
+}
+
+/* ---------- Mystery Gallery (animals + Where in the World?) ---------- */
+const TILE_COST = 10;
+const starTxt = n => '★'.repeat(n) + (n<3?`<span class="star-off">${'★'.repeat(3-n)}</span>`:'');
+const aOrAn = w => /^[AEIOU]/.test(w) ? 'an' : 'a';
+let galTab = 'animals';
+let PHOTOS = [];
+const WORLD_PLACES = ['Paris, France','Rome, Italy','Venice, Italy','Barcelona, Spain','Lisbon, Portugal','London, England','Edinburgh, Scotland','Dublin, Ireland','Amsterdam, Netherlands','Berlin, Germany','Vienna, Austria','Prague, Czech Republic','Athens, Greece','Santorini, Greece','Istanbul, Turkey','Reykjavik, Iceland','Oslo, Norway','Copenhagen, Denmark','Swiss Alps, Switzerland','Cairo, Egypt','Marrakech, Morocco','Cape Town, South Africa','Nairobi, Kenya','Dubai, UAE','Mumbai, India','Bangkok, Thailand','Tokyo, Japan','Kyoto, Japan','Seoul, South Korea','Beijing, China','Bali, Indonesia','Sydney, Australia','Queenstown, New Zealand','Hawaii, USA','New York City, USA','San Francisco, USA','Grand Canyon, USA','Acadia, Maine, USA','Boston, USA','Vancouver, Canada','Quebec City, Canada','Mexico City, Mexico','Cancún, Mexico','Costa Rica','Machu Picchu, Peru','Rio de Janeiro, Brazil','Buenos Aires, Argentina','Patagonia, Chile'];
+
+/* photo store: stays in this browser on this device */
+const PDB = {
+  db:null,
+  open(){ if (this.db) return Promise.resolve(this.db); return new Promise((res,rej)=>{ try { const r=indexedDB.open('niffler-photos',1); r.onupgradeneeded=()=>r.result.createObjectStore('photos',{keyPath:'id'}); r.onsuccess=()=>{ this.db=r.result; res(this.db); }; r.onerror=()=>rej(r.error); } catch(e){ rej(e); } }); },
+  tx(mode, fn){ return this.open().then(db=>new Promise((res,rej)=>{ const t=db.transaction('photos',mode), st=t.objectStore('photos'), q=fn(st); t.oncomplete=()=>res(q&&q.result); t.onerror=()=>rej(t.error); })); },
+  all(){ return this.tx('readonly', st=>st.getAll()).then(r=>(r||[]).sort((a,b)=>a.added-b.added)).catch(()=>[]); },
+  put(p){ return this.tx('readwrite', st=>st.put(p)); },
+  del(id){ return this.tx('readwrite', st=>st.delete(id)); },
+};
+function loadPhotos(){ return PDB.all().then(r=>{ PHOTOS=r; return r; }); }
+function shrinkImage(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onerror=()=>rej(fr.error);
+  fr.onload=()=>{ const im=new Image(); im.onerror=()=>rej(new Error('not an image')); im.onload=()=>{ const M=1200, sc=Math.min(1, M/Math.max(im.width,im.height)), cv=document.createElement('canvas');
+    cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc); cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height); res(cv.toDataURL('image/jpeg',.85)); }; im.src=fr.result; };
+  fr.readAsDataURL(file); }); }
+
+/* the two puzzle kinds share one engine */
+function pzState(kind){
+  const key = kind==='animals' ? 'gallery' : 'travel';
+  if (!S[key] || typeof S[key]!=='object') S[key] = clone(DEFAULT[key]);
+  return S[key];
+}
+function pzItem(kind){
+  const st=pzState(kind);
+  if (kind==='animals'){ const a=ANIMALS[st.cur]; return a ? {id:a.id, name:a.name, fact:a.fact, pic:`<div class="pic" data-pic="${a.id}"></div>`} : null; }
+  let p = PHOTOS.find(x=>x.id===st.cur && !st.done.some(d=>d.id===x.id));
+  if (!p && st.reveal) p = PHOTOS.find(x=>x.id===st.cur);
+  if (!p){ p = PHOTOS.find(x=>!st.done.some(d=>d.id===x.id)); if (p && st.cur!==p.id){ st.cur=p.id; st.choices=[]; } }
+  return p ? {id:p.id, name:p.place, fact:p.note, pic:`<img class="animal photo" src="${p.img}" alt="">`} : null;
+}
+function pzEnsure(kind){
+  const st=pzState(kind), it=pzItem(kind); if (!it) return;
+  if (!st.choices || st.choices.length<2 || !st.choices.includes(it.name)){
+    let pool;
+    if (kind==='animals'){ const a=ANIMALS[st.cur]; pool=[...shuffle(a.similar).slice(0,6), ...shuffle(MORE_NAMES.filter(n=>!a.similar.includes(n))).slice(0,3)]; }
+    else { const low=it.name.trim().toLowerCase(), mine=shuffle([...new Set(PHOTOS.map(p=>p.place))].filter(n=>n.trim().toLowerCase()!==low)).slice(0,4);
+      pool=[...mine, ...shuffle(WORLD_PLACES.filter(n=>n.toLowerCase()!==low && !mine.includes(n)))].slice(0,9); }
+    st.choices=shuffle([it.name, ...pool]); st.tiles=Array(16).fill(false); st.wrong=[]; st.reveal=false; save();
+  }
+}
+function renderGallery(){
+  const kind=galTab, st=pzState(kind); pzEnsure(kind); const it=pzItem(kind), open=it?st.tiles.filter(Boolean).length:0;
+  const total = kind==='animals' ? ANIMALS.length : PHOTOS.length;
+  const pos = kind==='animals' ? st.cur+1 : st.done.length + (st.reveal?0:1);
+  let main;
+  if (!it){
+    main = kind==='animals'
+      ? `<div class="vstory"><div><span class="kicker">All found!</span><h2>You uncovered every mystery animal.</h2><p class="dim" style="margin-top:8px">New pictures are on their way. Try Where in the World?</p></div></div>`
+      : `<div class="vstory"><div><span class="kicker">${PHOTOS.length?'All places found!':'No photos yet'}</span><h2>${PHOTOS.length?'You guessed every vacation photo.':'Ask a grown-up to add vacation photos.'}</h2><p class="dim" style="margin-top:8px">Photos are added in <button class="linkbtn" data-go="grown" style="padding:0">Grown-up settings</button>. They stay on this device.</p></div></div>`;
+  } else {
+    const last = st.done.find(d=>d.id===it.id), isA = kind==='animals';
+    main = `<div class="gal-grid">
+      <div class="gal-frame">${it.pic}<div class="tiles">${st.tiles.map((t,i)=>{ const o=t||st.reveal; return `<button class="tile${o?' open':''}" data-tile="${i}" ${o?'tabindex="-1" aria-hidden="true"':'aria-label="uncover this tile"'}><span>?</span><small>${open===0?'free':TILE_COST+' coins'}</small></button>`; }).join('')}</div></div>
+      <div class="gal-side">
+        <span class="kicker">${isA?'Mystery picture':'Vacation photo'} ${pos} of ${total}</span>
+        ${st.reveal && last ? `<h2>${isA?`It's ${aOrAn(it.name)} ${it.name}!`:`It's ${esc(it.name)}!`}</h2>
+          <div class="stars" aria-label="${last.stars} stars">${starTxt(last.stars)}</div>
+          <p>You guessed it with <b>${plural(last.tiles,'tile')}</b> showing. +${last.stars*10} coins.</p>
+          ${it.fact ? `<div class="wonder"><span class="kicker">${isA?'Animal fact':'Remember?'}</span><p>${esc(it.fact)}</p></div>` : ''}
+          <p class="dim">It is now in your ${isA?'gallery':'travel album'} below.</p>
+          <button class="btn gold" id="galNext">Next ${isA?'mystery picture':'photo'} →</button>`
+        : `<h2>${isA?'Who is hiding?':'Where in the world is this?'}</h2>
+          <p class="dim">Tap a tile to uncover it. Your first tile is free, then each costs ${TILE_COST} coins. Guess any time. Fewer tiles means more stars!</p>
+          <div class="starguide"><span><b class="stars-sm">${starTxt(3)}</b> 1–4 tiles: +30 coins</span><span><b class="stars-sm">${starTxt(2)}</b> 5–8 tiles: +20 coins</span><span><b class="stars-sm">${starTxt(1)}</b> 9–16 tiles: +10 coins</span></div>
+          <p><b>${open}</b> of 16 tiles uncovered. ${open?'Make your guess:':'Uncover a tile to start guessing.'}</p>
+          <div class="guess">${st.choices.map(n=>`<button class="gbtn${st.wrong.includes(n)?' no':''}" data-guess="${esc(n)}" ${st.wrong.includes(n)||!open?'disabled':''}>${esc(n)}</button>`).join('')}</div>`}
+        <p class="feedback" id="galMsg" aria-live="polite"></p>
+      </div>
+    </div>`;
+  }
+  const cards = kind==='animals'
+    ? ANIMALS.map(x => { const d=st.done.find(z=>z.id===x.id); return d ? `<div class="card"><div class="pic" data-pic="${x.id}"></div><div class="body"><h3>${x.name}</h3><span class="stars-sm">${starTxt(d.stars)}</span><span class="dim">${x.fact}</span></div></div>` : `<div class="card locked">?</div>`; }).join('')
+    : st.done.map(d => { const p=PHOTOS.find(x=>x.id===d.id); return p ? `<div class="card"><img class="animal photo" src="${p.img}" alt=""><div class="body"><h3>${esc(p.place)}</h3><span class="stars-sm">${starTxt(d.stars)}</span>${p.note?`<span class="dim">${esc(p.note)}</span>`:''}</div></div>` : ''; }).join('') || '<p class="dim">Guess a photo to start your travel album.</p>';
+  const vt = S.vault||{};
+  $('#scr-gallery').innerHTML = `
+    <div class="topic-head"><span class="kicker">Spend your coins</span><h1>Mystery Gallery</h1></div>
+    <div class="gtabs" role="tablist"><button class="gtab${kind==='animals'?' on':''}" data-gtab="animals" role="tab" aria-selected="${kind==='animals'}">Mystery animals</button><button class="gtab${kind==='travel'?' on':''}" data-gtab="travel" role="tab" aria-selected="${kind==='travel'}">Where in the world?</button></div>
+    ${main}
+    <div class="section-title"><h2>${kind==='animals'?'My gallery':'My travel album'}</h2><span class="dim">${kind==='animals'?`${st.done.length} of ${ANIMALS.length} animals found`:`${st.done.length} of ${PHOTOS.length} places found`}</span></div>
+    <div class="coll">${cards}</div>
+    <div class="section-title"><h2>Deep Vault trophies</h2></div>
+    <div class="extras" style="margin-top:0">
+      <button class="extra" data-go="vault"><span class="glyph">24?</span><span><h3>The Midnight Cookie Mystery</h3><span class="dim">${vt.solved?`Solved ${starTxt(vt.stars)}${vt.bonus?' + bonus lock':''}`:'A multi-step mystery. Can you crack it?'}</span></span></button>
+    </div>`;
+  hydratePics($('#scr-gallery'));
+}
+function buyTile(i){
+  const st=pzState(galTab); if (!pzItem(galTab) || st.reveal || st.tiles[i]) return;
+  const cost = st.tiles.some(Boolean) ? TILE_COST : 0;
+  if (S.coins < cost){ $('#galMsg').innerHTML=`<span class="oops">You need ${cost-S.coins} more coins. Play a round to earn some!</span>`; sOops(); return; }
+  S.coins -= cost; st.tiles[i]=true; save(); coinsUI(); tone(520+i*20,.08,0,'triangle',.1);
+  const el=$(`.tile[data-tile="${i}"]`); if (el){ el.classList.add('open'); }
+  setTimeout(renderGallery, 380);
+  if (cost===0) setTimeout(()=>{ const m=$('#galMsg'); if (m) m.innerHTML='That tile was free! The next ones cost 10 coins.'; }, 400);
+}
+function guessAnimal(name){
+  const st=pzState(galTab), it=pzItem(galTab); if (!it || st.reveal || st.wrong.includes(name)) return;
+  const open=st.tiles.filter(Boolean).length; if (!open) return;
+  if (name===it.name){
+    const stars = open<=4?3:open<=8?2:1; st.reveal=true; st.done.push({id:it.id, stars, tiles:open}); S.coins += stars*10; save(); coinsUI(); bumpPurse(); sFan(); coinRain(); renderGallery();
+  } else { st.wrong.push(name); save(); sOops(); renderGallery(); $('#galMsg').innerHTML=`<span class="oops">${galTab==='animals'?`It's not ${aOrAn(name)} ${esc(name)}.`:`It's not ${esc(name)}.`} Look closer, or uncover another tile.</span>`; }
+}
+function nextPicture(){ const st=pzState(galTab); if (galTab==='animals') st.cur++; else st.cur=null; st.choices=[]; st.tiles=[]; st.wrong=[]; st.reveal=false; save(); renderGallery(); window.scrollTo({top:0}); }
+
+/* grown-up photo manager */
+let PENDING = [];
+function photoManagerHTML(){
+  return `<div class="section-title"><h2>Vacation photo puzzles</h2></div>
+  <p class="dim">Add photos for the "Where in the world?" game. Photos stay in this browser on this device only and are never uploaded. They are shrunk and their hidden location data is removed when saved. Add them on the device Eliza plays on.</p>
+  <div style="margin:12px 0"><label class="btn gold" for="photoIn">Add photos</label><input type="file" id="photoIn" accept="image/*" multiple class="vh"></div>
+  <div id="photoPending" class="plist">${PENDING.map(p=>`<div class="prow" data-pend="${p.tmp}"><img src="${p.img}" alt=""><div class="pfields"><div class="field"><label for="pl-${p.tmp}">Where was this taken?</label><input type="text" id="pl-${p.tmp}" placeholder="e.g. Lisbon, Portugal" maxlength="40"></div><div class="field"><label for="pn-${p.tmp}">A memory or fun fact (optional)</label><input type="text" id="pn-${p.tmp}" placeholder="e.g. We rode the yellow tram!" maxlength="140"></div><div class="vrow"><button class="btn gold" data-psave="${p.tmp}">Save photo</button><button class="btn" data-pdiscard="${p.tmp}">Discard</button></div><span class="feedback" id="pm-${p.tmp}"></span></div></div>`).join('')}</div>
+  <div class="plist">${PHOTOS.length ? PHOTOS.map(p=>`<div class="prow saved"><img src="${p.img}" alt=""><div class="pfields"><b>${esc(p.place)}</b>${p.note?`<span class="dim">${esc(p.note)}</span>`:''}<span class="dim">${(S.travel&&S.travel.done.some(d=>d.id===p.id))?'Guessed ✓':'Not guessed yet'}</span><div><button class="btn" data-pdel="${p.id}">Remove</button></div></div></div>`).join('') : '<p class="dim">No photos saved yet.</p>'}</div>`;
+}
+function refreshPhotoManager(){ const el=$('#photoMgr'); if (el) el.innerHTML=photoManagerHTML(); }
+async function onPhotoFiles(files){
+  for (const f of files){ try { const img=await shrinkImage(f); PENDING.push({tmp:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), img}); } catch(e){} }
+  refreshPhotoManager();
+}
+async function savePending(tmp){
+  const p=PENDING.find(x=>x.tmp===tmp); if (!p) return; const place=($('#pl-'+tmp).value||'').trim(), note=($('#pn-'+tmp).value||'').trim();
+  if (!place){ $('#pm-'+tmp).innerHTML='<span class="oops">Type where the photo was taken first.</span>'; return; }
+  try { await PDB.put({id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), place, note, img:p.img, added:Date.now()}); }
+  catch(e){ $('#pm-'+tmp).innerHTML='<span class="oops">This browser could not save the photo. Private browsing can block saving.</span>'; return; }
+  PENDING=PENDING.filter(x=>x!==p); await loadPhotos(); refreshPhotoManager();
+}
+let delArmed=null;
+async function deletePhoto(id, btn){
+  if (delArmed!==id){ delArmed=id; btn.textContent='Tap again to remove'; return; }
+  delArmed=null; await PDB.del(id); await loadPhotos(); if (S.travel){ S.travel.done=S.travel.done.filter(d=>d.id!==id); if (S.travel.cur===id){ S.travel.cur=null; S.travel.choices=[]; } save(); } refreshPhotoManager();
+}
+
+/* ---------- Deep Vault: The Midnight Cookie Mystery ---------- */
+const VAULT = {
+  clues:[
+    {q:'Start in the morning and go backwards. Just before Niffler grabbed the 2 lucky cookies, how many cookies were there?', a:6, ex:'4 were left after taking 2, so there were 4 + 2 = 6.'},
+    {q:'Those 6 cookies were the half that Niffler did <b>not</b> eat on night 3. How many cookies were there at the start of night 3?', a:12, ex:'6 is half, so the whole was 6 × 2 = 12.'},
+    {q:`On night 2 Niffler ate ${fr(1,4)}, so ${fr(3,4)} were left, and that was 12 cookies. How many were there at the start of night 2?`, a:16, ex:`${fr(3,4)} is 12, so ${fr(1,4)} is 4, and the whole is 16.`},
+  ],
+  answer:24, bonus:48,
+};
+function vaultSim(n, target){
+  if (!Number.isInteger(n) || n<=0) return {ok:false, txt:'Try a whole number of cookies.'};
+  const L=[]; let x=n;
+  if (x%3) return {ok:false, txt:`Let's test ${n}: on night 1 Niffler eats ${fr(1,3)} of ${n} cookies, but ${n} can't be split into 3 equal parts. Niffler never breaks a cookie, so ${n} can't be right.`};
+  L.push(`Night 1: eats ${x/3}, leaving ${x-x/3}.`); x-=x/3;
+  if (x%4) return {ok:false, txt:`Let's test ${n}: ${L.join(' ')} On night 2 Niffler eats ${fr(1,4)} of ${x}, which isn't a whole number of cookies. So ${n} can't be right.`};
+  L.push(`Night 2: eats ${x/4}, leaving ${x-x/4}.`); x-=x/4;
+  if (x%2) return {ok:false, txt:`Let's test ${n}: ${L.join(' ')} On night 3 Niffler eats half of ${x}, which would break a cookie. So ${n} can't be right.`};
+  const h=x/2; x=h-2; L.push(`Night 3: eats half (${h}), then 2 more, leaving ${x}.`);
+  if (x===target) return {ok:true, txt:L.join(' ')};
+  return {ok:false, txt:`Let's test ${n}: ${L.join(' ')} That leaves ${x} in the morning, not ${target}. Try a ${x>target?'smaller':'bigger'} number.`};
+}
+function vaultIllo(){
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="a cookie jar at night"><rect width="200" height="200" rx="20" fill="#1b2347"/><circle cx="160" cy="40" r="20" fill="#fff3c4"/>
+    <rect x="50" y="70" width="100" height="110" rx="22" fill="#cfe8ff" opacity=".35" stroke="#e9f4ff" stroke-width="4"/><rect x="62" y="56" width="76" height="18" rx="6" fill="#d9951b"/>
+    ${[[78,160],[112,162],[95,140],[124,138],[80,120]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="15" fill="#d99a4e"/><circle cx="${x-5}" cy="${y-3}" r="2.5" fill="#5a3418"/><circle cx="${x+5}" cy="${y+3}" r="2.5" fill="#5a3418"/><circle cx="${x+3}" cy="${y-6}" r="2" fill="#5a3418"/>`).join('')}
+    <circle cx="30" cy="30" r="2" fill="#fff"/><circle cx="60" cy="20" r="1.5" fill="#fff"/><circle cx="120" cy="25" r="1.5" fill="#fff"/></svg>`;
+}
+function renderVault(){
+  if (!S.vault || typeof S.vault!=='object') S.vault = clone(DEFAULT.vault);
+  const v=S.vault, opened=v.opened.filter(Boolean).length;
+  const clueHTML = VAULT.clues.map((c,i)=>{
+    if (v.solved && !v.opened[i]) return '';
+    if (!v.opened[i]) { const can = i===0 || v.opened[i-1]; return `<div class="clue"><b>Clue card ${i+1}</b><button class="btn" data-clue="${i}" ${!can||v.solved?'disabled':''}>Open clue card ${i+1}</button>${i===0?'<span class="dim">Opening clue cards lowers your stars, but they are there if you need them.</span>':''}</div>`; }
+    if (v.clueOk[i]) return `<div class="clue solved"><b>Clue card ${i+1} ✓</b><span>${c.q}</span><span><b>${c.a}</b>. ${c.ex}</span></div>`;
+    return `<div class="clue open"><b>Clue card ${i+1}</b><span>${c.q}</span><div class="vrow"><input class="vin" id="clue-${i}" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="clue answer"><button class="btn" data-cluecheck="${i}">Check</button></div><span class="feedback" id="clueMsg-${i}"></span></div>`;
+  }).join('');
+  const solution = `<div class="wonder solution"><span class="kicker">How it works</span><p>Work backwards from the morning:</p><ol>
+      <li>4 left, plus the 2 lucky cookies: <b>6</b></li><li>6 is the half Niffler didn't eat on night 3, so before night 3: <b>12</b></li>
+      <li>12 is ${fr(3,4)} of the pile, so before night 2: <b>16</b></li><li>16 is ${fr(2,3)} of the pile, so Niffler baked <b>24</b></li></ol>
+      <p>Check forwards: 24 → eats 8 → 16 → eats 4 → 12 → eats 6, then 2 more → 4 ✓</p></div>`;
+  const bonusHTML = !v.solved ? '' : v.bonus
+    ? `<div class="clue solved"><b>Bonus lock ✓</b><span>To have 10 left, Niffler must bake <b>48</b>. Did you spot the shortcut? Cookies baked = 4 × (cookies left + 2). For 4 left: 4 × 6 = 24. For 10 left: 4 × 12 = 48.</span></div>`
+    : `<div class="clue open"><b>Bonus lock: extra treasure</b><span>Next week Niffler bakes again and eats the same way: ${fr(1,3)} on night 1, ${fr(1,4)} of what is left on night 2, then half of what is left plus 2 more on night 3. This time <b>10 cookies</b> are left in the morning. How many did Niffler bake?</span><div class="vrow"><input class="vin" id="bonusAns" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="bonus answer"><button class="btn gold" id="bonusCheck">Check</button></div><span class="feedback" id="bonusMsg"></span></div>`;
+  $('#scr-vault').innerHTML = `
+    <div class="topic-head"><span class="kicker">The Deep Vault</span><h1>The Midnight Cookie Mystery</h1><p class="dim">A puzzle with several steps. Take your time, and use paper if you like.</p></div>
+    <div class="vstory">
+      <div>
+        <p>Niffler baked a batch of cookies and hid them in a jar. Then, three nights in a row, Niffler sneaked into the kitchen:</p>
+        <ol>
+          <li><b>Night 1:</b> Niffler ate ${fr(1,3)} of the cookies.</li>
+          <li><b>Night 2:</b> Niffler ate ${fr(1,4)} of the cookies that were left.</li>
+          <li><b>Night 3:</b> Niffler ate half of the cookies that were left, and then 2 more for luck.</li>
+        </ol>
+        <p style="margin-top:10px">In the morning, there were <b>4 cookies</b> left in the jar. Niffler never breaks a cookie.</p>
+        <p class="vq">How many cookies did Niffler bake?</p>
+      </div>
+      <div class="villo">${vaultIllo()}</div>
+    </div>
+    ${v.solved
+      ? `<div class="end" style="margin-top:20px"><div class="niff hop">${niffSVG(S.fur,S.wear)}</div><div style="display:flex;flex-direction:column;gap:12px;min-width:0"><span class="kicker">Mystery solved</span><h2>Niffler baked 24 cookies!</h2><div class="stars">${starTxt(v.stars)}</div><p>${v.stars===3?'Solved with no clue cards. A true detective!':`Solved with ${plural(v.openedAtSolve,'clue card')}.`} You earned the <b>Golden Cookie Jar</b> trophy.</p></div></div>${solution}`
+      : `<div class="vanswer"><label for="vaultAns"><b>Your answer:</b></label><div class="vrow"><input class="vin" id="vaultAns" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off"><button class="btn gold" id="vaultCheck">Check</button></div><p class="feedback" id="vaultMsg" aria-live="polite">You can test any number. Niffler will tell you what happens to it.</p><p class="dim">Stars: no clue cards <span class="stars-sm">${starTxt(3)}</span> +60 coins · 1 card <span class="stars-sm">${starTxt(2)}</span> +40 · 2 or 3 cards <span class="stars-sm">${starTxt(1)}</span> +25</p></div>`}
+    <div class="section-title"><h3>${v.solved?(opened?'Your clue cards':'Bonus round'):'Clue cards'}</h3>${v.solved?'':`<span class="dim">${opened} of 3 opened</span>`}</div>
+    <div class="clues">${clueHTML}${bonusHTML}</div>
+    <div style="margin-top:20px"><button class="btn" data-go="gallery">&larr; Back to the Gallery</button></div>`;
+}
+const readNum = id => { const el=$('#'+id); return el ? Number(String(el.value).trim()) : NaN; };
+function openClue(i){ const v=S.vault; if (v.solved || v.opened[i] || (i>0 && !v.opened[i-1])) return; v.opened[i]=true; save(); renderVault(); const el=$('#clue-'+i); if (el) el.focus(); }
+function checkClue(i){ const n=readNum('clue-'+i), c=VAULT.clues[i];
+  if (n===c.a){ S.vault.clueOk[i]=true; save(); sDing(); renderVault(); }
+  else { sOops(); $('#clueMsg-'+i).innerHTML=`<span class="oops">Not quite. Read the clue again slowly.</span>`; } }
+function checkVault(){
+  const n=readNum('vaultAns'), r=vaultSim(n,4), msg=$('#vaultMsg');
+  if (r.ok){ const v=S.vault, op=v.opened.filter(Boolean).length, stars= op===0?3:op===1?2:1, c={3:60,2:40,1:25}[stars];
+    v.solved=true; v.stars=stars; v.openedAtSolve=op; S.coins+=c; save(); coinsUI(); bumpPurse(); sFan(); coinRain(); renderVault(); speak('Mystery solved! Niffler baked 24 cookies.'); }
+  else { sOops(); msg.innerHTML=`<span class="oops">${r.txt}</span>`; }
+}
+function checkBonus(){
+  const n=readNum('bonusAns'), r=vaultSim(n,10);
+  if (r.ok){ S.vault.bonus=true; S.coins+=30; save(); coinsUI(); bumpPurse(); sFan(); coinRain(); renderVault(); }
+  else { sOops(); $('#bonusMsg').innerHTML=`<span class="oops">${r.txt}</span>`; }
+}
+
 /* ---------- end of round ---------- */
 function endRound(){
   const {gid, level, first, earned} = R;
@@ -1421,7 +2277,7 @@ function renderHoard(){
     <div style="min-width:0">
       <span class="kicker">The Hoard Room</span>
       <h1>Dress up ${esc(S.name)}</h1>
-      <p class="dim" style="margin-top:8px">Spend coins on outfits. Tap something you own to put it on or take it off. Coins are never lost.</p>
+      <p class="dim" style="margin-top:8px">Spend coins on outfits. Tap something you own to put it on or take it off. Coins are never lost. Out of things to buy? Uncover mystery animals in the <button class="linkbtn" data-go="gallery" style="padding:0">Gallery</button>.</p>
       <div class="section-title"><h3>Outfits</h3></div>
       <div class="shop">${ITEMS.map(it => { const own=S.owned.includes(it.id), on=S.wear[it.slot]===it.id;
         return `<button class="item${on?' on':''}" data-item="${it.id}"><b>${it.name}</b><span class="dim">${on?'Wearing':own?'Tap to wear':''}</span>${own?'':`<span class="cost"><span class="coin-ico"></span>${it.cost}</span>`}</button>`; }).join('')}</div>
@@ -1473,15 +2329,32 @@ function renderGrown(){
   <div class="section-title"><h2>Progress by game</h2></div>
   <div class="tablewrap"><table><thead><tr><th>Game</th><th>Basic rounds</th><th>Basic first-try</th><th>Advanced rounds</th><th>Advanced first-try</th></tr></thead><tbody>${rows}</tbody></table></div>
   <p class="dim" style="margin-top:12px">Coins: ${fmt(S.coins)} · Shinies: ${S.shinies.length} of ${ALL_SHINIES.length} · Wonder Cards: ${S.wonders.length} of ${ALL_GAMES.length}</p>
+  <div id="photoMgr">${photoManagerHTML()}</div>
   <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center"><button class="btn" id="resetBtn">Reset all progress</button><span class="dim" id="resetMsg"></span></div>`;
   resetArmed=false;
+  loadPhotos().then(refreshPhotoManager);
 }
 
 /* ---------- events ---------- */
 document.addEventListener('click', e => {
+  const ixel = e.target.closest('[data-ix]'); if (ixel && !$('#scr-ix').hidden){ if (!ixel.disabled) ixAct(ixel.dataset.ix, ixel.dataset.v); return; }
   const t = e.target.closest('button, [data-go], #homeNiff'); if (!t) return;
+  if (t.dataset.ff && R && R.fin && !R.done){ R.fin.f=t.dataset.ff; return updFrac(); }
+  if (t.id==='ixCheck') return checkIx();
+  if (t.dataset.tile!==undefined) return buyTile(+t.dataset.tile);
+  if (t.dataset.gtab){ galTab=t.dataset.gtab; return renderGallery(); }
+  if (t.dataset.psave) return savePending(t.dataset.psave);
+  if (t.dataset.pdiscard){ PENDING=PENDING.filter(x=>x.tmp!==t.dataset.pdiscard); return refreshPhotoManager(); }
+  if (t.dataset.pdel) return deletePhoto(t.dataset.pdel, t);
+  if (t.dataset.guess) return guessAnimal(t.dataset.guess);
+  if (t.id==='galNext') return nextPicture();
+  if (t.dataset.clue!==undefined) return openClue(+t.dataset.clue);
+  if (t.dataset.cluecheck!==undefined) return checkClue(+t.dataset.cluecheck);
+  if (t.id==='vaultCheck') return checkVault();
+  if (t.id==='bonusCheck') return checkBonus();
+  if (t.id==='ixNext') return nextIx();
   if (t.id==='homeNiff') return tickle();
-  if (t.dataset.go){ const g=t.dataset.go; ({home:renderHome,hoard:renderHoard,notes:renderNotes,grown:renderGrown}[g]||(()=>{}))(); return show(g); }
+  if (t.dataset.go){ const g=t.dataset.go; ({home:renderHome,hoard:renderHoard,notes:renderNotes,grown:renderGrown,gallery:()=>{ renderGallery(); loadPhotos().then(()=>{ if (!$('#scr-gallery').hidden) renderGallery(); }); },vault:renderVault}[g]||(()=>{}))(); return show(g); }
   if (t.dataset.topic){ renderTopic(t.dataset.topic); return show('topic'); }
   if (t.dataset.dim) return stepDim(t.dataset.dim, Number(t.dataset.d));
   if (t.id==='buildCheck') return checkBuild();
@@ -1493,14 +2366,14 @@ document.addEventListener('click', e => {
   if (t.dataset.fur) return buyFur(t.dataset.fur);
   if (t.id==='hintBtn') return showHint();
   if (t.id==='nextBtn') return next();
-  if (t.id==='leaveBtn' || t.id==='balLeave' || t.id==='buildLeave'){ renderTopic(curTopic); return show('topic'); }
+  if (t.id==='leaveBtn' || t.id==='balLeave' || t.id==='buildLeave' || t.id==='ixLeave'){ renderTopic(curTopic); return show('topic'); }
   if (t.id==='resetBtn'){
     if (!resetArmed){ resetArmed=true; t.textContent='Tap again to erase everything'; $('#resetMsg').textContent='This cannot be undone.'; return; }
     const keep={player:S.player,name:S.name,settings:S.settings}; S=Object.assign(clone(DEFAULT),keep); save(); coinsUI(); renderGrown(); $('#resetMsg').textContent='Progress erased.';
   }
 });
 document.addEventListener('keydown', e => {
-  if (e.target.closest('input')) return;
+  if (e.target.closest('input')){ if (e.key==='Enter'){ const id=e.target.id; if (id==='vaultAns') checkVault(); else if (id==='bonusAns') checkBonus(); else if (id.startsWith('clue-')) checkClue(+id.slice(5)); } return; }
   if (e.target.id==='homeNiff' && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); return tickle(); }
   if ($('#scr-play').hidden || !R) return;
   if (/^[0-9]$/.test(e.key)) padKey(e.key);
@@ -1510,6 +2383,7 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('change', e => {
   const id=e.target.id;
+  if (id==='photoIn'){ onPhotoFiles(Array.from(e.target.files||[])); e.target.value=''; return; }
   if (id==='setSound') S.settings.sound=e.target.checked;
   if (id==='setSpeak') S.settings.speak=e.target.checked;
   if (id==='setHints') S.settings.hints=e.target.checked;
@@ -1521,8 +2395,8 @@ document.addEventListener('input', e => {
   save();
 });
 
-coinsUI(); renderHome(); show('home');
-window.__NH = {G, GAMES, BAL, BUILD, solveBuild, ALL_GAMES};
+coinsUI(); renderHome(); show('home'); loadPhotos();
+window.__NH = {G, GAMES, BAL, BUILD, solveBuild, ALL_GAMES, IX, wsum, niffSVG, ANIMALS, vaultSim, paintSVG, PDB, loadPhotos};
 })();
 </script>
 </body>
