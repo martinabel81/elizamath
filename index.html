@@ -96,6 +96,10 @@ p{margin:0}
 .game .glyph{font-family:var(--display);font-size:2.4rem;color:var(--gold);line-height:1}
 .game .row{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
 .game .row .btn{flex:1 1 120px}
+.game .row .btn.mm{flex-basis:100%}
+.btn.mm{background:linear-gradient(135deg,#7a1f3d,#b8325c);border-color:#ff7aa5;color:#fff;box-shadow:0 4px 0 #4f1027}
+.btn.mm:active{box-shadow:0 1px 0 #4f1027}
+.lvl.mm{background:linear-gradient(135deg,#7a1f3d,#b8325c);color:#fff}
 .prog{font-size:.9rem;color:var(--ink-dim);display:flex;gap:12px;flex-wrap:wrap}
 .prog b{color:var(--good)}
 .extras{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:16px}
@@ -1306,10 +1310,10 @@ function renderTopic(tid){
     <p class="dim">${T.intro}</p>
     <p class="formula">${T.formula}</p>
   </div>
-  <div class="games">${T.games.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv');
+  <div class="games">${T.games.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv'), m=stat(g.id,'mm');
     return `<div class="game${g.featured?' featured':''}"><span class="glyph">${g.glyph}</span><h3>${g.name}</h3><p class="dim">${g.blurb}</p>
-      <div class="prog"><span>Basic: ${b.rounds ? `<b>${b.rounds} played</b>, best ${b.best}/6` : 'not yet'}</span><span>Advanced: ${a.rounds ? `<b>${a.rounds} played</b>, best ${a.best}/6` : 'not yet'}</span></div>
-      <div class="row"><button class="btn gold" data-play="${g.id}" data-level="basic">Basic</button><button class="btn deep" data-play="${g.id}" data-level="adv">Advanced</button></div></div>`; }).join('')}
+      <div class="prog"><span>Basic: ${b.rounds ? `<b>${b.rounds} played</b>, best ${b.best}/6` : 'not yet'}</span><span>Advanced: ${a.rounds ? `<b>${a.rounds} played</b>, best ${a.best}/6` : 'not yet'}</span><span>Master Mind: ${m.rounds ? `<b>${m.rounds} played</b>, best ${m.best}/6` : 'not yet'}</span></div>
+      <div class="row"><button class="btn gold" data-play="${g.id}" data-level="basic">Basic</button><button class="btn deep" data-play="${g.id}" data-level="adv">Advanced</button><button class="btn mm" data-play="${g.id}" data-level="mm">Master Mind</button></div></div>`; }).join('')}
   </div>
   <div class="extras">
     <button class="extra" data-go="notes"><span class="glyph">${T.glyph}</span><span><h3>Treasure Notes</h3><span class="dim">Every ${T.words} word, with an example</span></span></button>
@@ -1323,6 +1327,13 @@ function renderNotes(){
   <div style="margin-top:20px"><button class="btn" data-topic="${curTopic}">&larr; Back to the tunnel</button></div>`;
 }
 
+/* ---------- levels ---------- */
+const LVL = { basic:{name:'Basic', cls:'', coins:[3,1]}, adv:{name:'Advanced', cls:'adv', coins:[5,2]}, mm:{name:'Master Mind', cls:'mm', coins:[8,3]} };
+const LEVELS = ['basic','adv','mm'];
+const lvlCoins = clean => (LVL[R.level]||LVL.basic).coins[clean?0:1];
+function setTag(el, level){ el.textContent=LVL[level].name; el.className='lvl'+(LVL[level].cls?' '+LVL[level].cls:''); }
+const bankFor = (bank, level) => bank[level] || bank.adv;
+
 /* ---------- play ---------- */
 let R = null;
 function startRound(gid, level){
@@ -1330,12 +1341,12 @@ function startRound(gid, level){
   if (gid==='balloon' || gid==='sballoon' || gid==='fballoon') return startBalloon(gid, level);
   if (IX[gid]) return startIx(gid, level);
   if (gid==='builder') return startBuild(level);
-  const kinds = shuffle(G[gid][level]), qs=[], keys=new Set(); let i=0, tries=0;
+  const kinds = shuffle(bankFor(G[gid],level)), qs=[], keys=new Set(); let i=0, tries=0;
   while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
   R = {gid, level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
   const g = ALL_GAMES.find(x=>x.id===gid);
   $('#qTitle').textContent = g.name;
-  const tag=$('#lvlTag'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className = 'lvl'+(level==='adv'?' adv':'');
+  setTag($('#lvlTag'), level);
   $('#playNiff').innerHTML = niffSVG(S.fur,S.wear);
   show('play'); renderQ();
 }
@@ -1344,7 +1355,7 @@ function renderQ(){
   const q=R.qs[R.i]; Object.assign(R,{att:0,hints:0,done:false,input:''});
   $('#qPrompt').innerHTML=q.prompt; $('#qFig').innerHTML=q.fig||''; $('#qFeedback').innerHTML=''; $('#hintList').innerHTML='';
   $('#nextBtn').hidden=true; $('#hintBtn').hidden=!S.settings.hints; $('#hintBtn').disabled=false;
-  $('#playBubble').innerHTML = R.i===0 ? `Let's dig! ${R.level==='adv'?'Advanced treasure is extra shiny.':'Six shinies to find.'}` : pick(THINK);
+  $('#playBubble').innerHTML = R.i===0 ? `Let's dig! ${R.level==='mm'?'Master Mind! Only the sharpest minds crack these.':R.level==='adv'?'Advanced treasure is extra shiny.':'Six shinies to find.'}` : pick(THINK);
   renderDots();
   if (q.type==='mcq'){
     R.order = shuffle(q.options.map((_,k)=>k));
@@ -1384,8 +1395,8 @@ function chooseOpt(btn){
 }
 function correct(){
   const q=R.qs[R.i]; R.done=true;
-  const clean = R.att===0 && R.hints===0, adv = R.level==='adv';
-  let c = clean ? (adv?5:3) : (adv?2:1); if (clean) R.first++;
+  const clean = R.att===0 && R.hints===0;
+  let c = lvlCoins(clean); if (clean) R.first++;
   const niff=$('#playNiff'); let extra='';
   if (R.i===R.mischief){
     extra = `<div class="mischief">Niffler swiped your ${plural(c,'coin')} and dashed into a tunnel… then came back with ${c*2}! Sneaky.</div>`;
@@ -1497,10 +1508,10 @@ const BMAX=6;
 let BS=null;
 function solveBuild(task, avoid=[]){ for (let a=1;a<=BMAX;a++) for (let b=1;b<=BMAX;b++) for (let c=1;c<=BMAX;c++){ const k=[a,b,c].sort().join(); if (task.test(a,b,c) && !avoid.includes(k)) return [a,b,c]; } return [2,2,2]; }
 function startBuild(level){
-  const kinds=shuffle(BUILD[level]), qs=[], keys=new Set(); let i=0, tries=0;
+  const kinds=shuffle(bankFor(BUILD,level)), qs=[], keys=new Set(); let i=0, tries=0;
   while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
   R = {gid:'builder', level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
-  const tag=$('#buildLvl'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className='lvl'+(level==='adv'?' adv':'');
+  setTag($('#buildLvl'), level);
   $('#buildNiff').innerHTML = niffSVG(S.fur,S.wear);
   show('build'); setupBuild();
 }
@@ -1517,7 +1528,7 @@ function drawBuild(showV){
   $('#buildFig').innerHTML = isoScene([{x:0,y:0,z:0,l,w,h,color:'blue'}],{frame:{l:BMAX,w:BMAX,h:BMAX},labels:boxLabels(l,w,h,[String(l),String(w),String(h)]),width:380,height:360,maxU:30,maxW:460,aria:`box ${l} by ${w} by ${h}`});
   ['l','w','h'].forEach(d=>{ $('#dim-'+d).textContent=BS[d]; });
   $$('.sbtn').forEach(b=>{ const v=BS[b.dataset.dim]+Number(b.dataset.d); b.disabled = R.done || v<1 || v>BMAX; });
-  $('#buildRead').innerHTML = `${l} × ${w} × ${h} = ${showV?`<b>${l*w*h}</b>`:'?'} cubes`;
+  const sq=R&&R.qs&&R.qs[R.i]; $('#buildRead').innerHTML = `${l} × ${w} × ${h} = ${showV?`<b>${l*w*h}</b>`:'?'} cubes${sq&&sq.sa?` · surface ${showV?`<b>${2*(l*w+w*h+l*h)}</b>`:'?'}`:''}`;
 }
 function stepDim(d,delta){ if (!R || R.done) return; const v=BS[d]+delta; if (v<1||v>BMAX) return; BS[d]=v; tone(380+v*60,.06,0,'sine',.08); drawBuild(); }
 function checkBuild(){
@@ -1528,8 +1539,8 @@ function checkBuild(){
     BS.found.push(key);
     if (q.need && BS.found.length<q.need){ sDing(); anim($('#buildNiff'),'hop');
       $('#buildFound').innerHTML = BS.found.map(k=>`<span class="chip">${k.split(',').join(' × ')}</span>`).join('');
-      $('#buildFeedback').innerHTML=`<span class="good">One found!</span> ${l} × ${w} × ${h} = ${V}. Now build a <b>different</b> box.`; return; }
-    R.done=true; const clean=R.att===0, adv=R.level==='adv'; let c=clean?(adv?5:3):(adv?2:1); if (clean) R.first++;
+      $('#buildFeedback').innerHTML=`<span class="good">${BS.found.length===1?'One found!':'Two found!'}</span> ${l} × ${w} × ${h} = ${V}. Now build another <b>different</b> box.`; return; }
+    R.done=true; const clean=R.att===0; let c=lvlCoins(clean); if (clean) R.first++;
     let extra=''; if (R.i===R.mischief){ extra=` <span class="dim">Niffler hid inside your box and popped out with ${c*2} coins instead of ${c}!</span>`; c*=2; }
     S.coins+=c; R.earned+=c; save(); coinsUI(); flyCoins($('#buildNiff'),c); sDing(); anim($('#buildNiff'),'hop');
     $('#buildBubble').innerHTML=pick(CHEERS);
@@ -1540,7 +1551,7 @@ function checkBuild(){
     R.att++; sOops(); anim($('#buildNiff'),'tilt');
     if (R.att>=3){ const sol=solveBuild(q, BS.found); Object.assign(BS,{l:sol[0],w:sol[1],h:sol[2]}); R.done=true; drawBuild(true);
       $('#buildFeedback').innerHTML=`Tricky one! Here is a box that works: <b>${sol.join(' × ')} = ${sol[0]*sol[1]*sol[2]}</b>.`; $('#buildBubble').innerHTML='Every builder needs a peek sometimes.'; finishBuild(); return; }
-    $('#buildFeedback').innerHTML=`<span class="oops">Not quite.</span> Your box holds ${l} × ${w} × ${h} = ${V} cubes. ${q.hint}`;
+    $('#buildFeedback').innerHTML=`<span class="oops">Not quite.</span> Your box holds ${l} × ${w} × ${h} = ${V} cubes${q.sa?` and its surface area is 2 × (${l*w} + ${w*h} + ${l*h}) = ${2*(l*w+w*h+l*h)}`:''}. ${q.hint}`;
     $('#buildBubble').innerHTML = R.att===1 ? 'Close! Change a number and try again.' : 'Here is a hint below. You can do it!';
   }
 }
@@ -1578,11 +1589,11 @@ BAL.fballoon = { basic:[
 let IS = null;
 const IX = {};
 function startIx(gid, level){
-  const kinds=shuffle(IX[gid].bank[level]), qs=[], keys=new Set(); let i=0, tries=0;
+  const kinds=shuffle(bankFor(IX[gid].bank,level)), qs=[], keys=new Set(); let i=0, tries=0;
   while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key)) continue; keys.add(q.key); qs.push(q); }
   R = {gid, level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
   $('#ixTitle').textContent = ALL_GAMES.find(g=>g.id===gid).name;
-  const tag=$('#ixLvl'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className='lvl'+(level==='adv'?' adv':'');
+  setTag($('#ixLvl'), level);
   $('#ixNiff').innerHTML = niffSVG(S.fur,S.wear);
   show('ix'); setupIx();
 }
@@ -1598,7 +1609,7 @@ function ixAct(a,v){ if (!R || R.done || !IX[R.gid]) return; IX[R.gid].act(a,v,R
 function checkIx(){
   if (!R || R.done) return; const q=R.qs[R.i], X=IX[R.gid], res=X.test(q);
   if (res===true){
-    R.done=true; const clean=R.att===0, adv=R.level==='adv'; let c=clean?(adv?5:3):(adv?2:1); if (clean) R.first++;
+    R.done=true; const clean=R.att===0; let c=lvlCoins(clean); if (clean) R.first++;
     let extra=''; if (R.i===R.mischief){ extra=` <span class="dim">Niffler snatched your ${plural(c,'coin')} and came back with ${c*2}!</span>`; c*=2; }
     S.coins+=c; R.earned+=c; save(); coinsUI(); flyCoins($('#ixNiff'),c); sDing(); anim($('#ixNiff'),'hop');
     $('#ixBubble').innerHTML=pick(CHEERS);
@@ -1670,7 +1681,7 @@ IX.wall = { intro:'Tap a bar below to add it to the wall. Tap a bar on the wall 
     s+=`<text x="${o}" y="22" class="iso-lbl">1 whole</text><rect x="${o}" y="30" width="${W}" height="46" rx="8" class="wall-whole"/>`;
     s+=`<rect x="${o}" y="96" width="${W*T/120}" height="54" rx="8" class="wall-target"/><text x="${o+W*T/120}" y="172" text-anchor="${T>=110?'end':'middle'}" class="iso-lbl">target ${q.target[0]===q.target[1]?'1':q.target[0]+'/'+q.target[1]}</text>`;
     IS.p.forEach((d,i)=>{ const w=W*(120/d)/120, xx=o+W*x/120, over=x+120/d>120;
-      s+=`<g data-ix="rm" data-v="${i}" class="wpiece"><rect x="${xx+1}" y="99" width="${Math.max(2,w-2)}" height="48" rx="6" fill="${WALL_COL[d]}" ${over?'opacity=".45"':''}/><text x="${xx+w/2}" y="129" text-anchor="middle" class="wlbl">1/${d}</text></g>`; x+=120/d; });
+      s+=`<g data-ix="rm" data-v="${i}" class="wpiece"><rect x="${xx+1}" y="99" width="${Math.max(2,w-2)}" height="48" rx="6" fill="${WALL_COL[d]}" ${over?'opacity=".45"':''}/>${w>40?`<text x="${xx+w/2}" y="129" text-anchor="middle" class="wlbl">1/${d}</text>`:''}</g>`; x+=120/d; });
     $('#ixStage').innerHTML = `<svg class="fig" viewBox="0 0 ${W+2*o} 182" style="max-width:640px" role="img" aria-label="fraction wall">${s}</svg>`;
     const sumF = sum ? fh(sum,120) : '0';
     $('#ixRead').innerHTML = IS.p.length ? `${IS.p.map(d=>fr(1,d)).join(' + ')} = ${sumF}` : 'Tap a bar to start';
@@ -1747,14 +1758,14 @@ let BL = null;
 function stopBalloon(){ if (BL){ cancelAnimationFrame(BL.raf); clearTimeout(BL.timer); BL.balloons.forEach(b=>b.el.remove()); BL=null; } }
 function startBalloon(gid, level){
   stopBalloon();
-  const kinds=shuffle(BAL[gid][level]), qs=[], keys=new Set(); let i=0, tries=0;
+  const kinds=shuffle(bankFor(BAL[gid],level)), qs=[], keys=new Set(); let i=0, tries=0;
   while (qs.length<6 && tries<300){ tries++; const q=kinds[i%kinds.length](); i++; if (keys.has(q.key) || q.others.length<3) continue; keys.add(q.key); qs.push(q); }
   R = {gid, level, qs, i:0, first:0, earned:0, mischief:ri(1,4)};
-  const tag=$('#balLvl'); tag.textContent = level==='adv'?'Advanced':'Basic'; tag.className='lvl'+(level==='adv'?' adv':'');
+  setTag($('#balLvl'), level);
   $('#balNiff').innerHTML = niffSVG(S.fur,S.wear);
   show('balloon');
   const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  BL = {balloons:[], t:0, last:0, raf:0, timer:0, speed:(level==='adv'?58:46)*(reduce?.6:1)};
+  BL = {balloons:[], t:0, last:0, raf:0, timer:0, speed:({basic:46,adv:58,mm:64}[level]||46)*(reduce?.6:1)};
   measure(); setupTarget();
   BL.raf = requestAnimationFrame(loop);
 }
@@ -1807,7 +1818,7 @@ function tapBalloon(el){
   const q=R.qs[R.i], color=b.el.querySelector('path').getAttribute('fill');
   if (b.correct){
     R.done=true; b.dead=true; burst(b,color); b.el.remove(); sPop(); setTimeout(sDing,120);
-    const clean=R.att===0, adv=R.level==='adv'; let c = clean?(adv?5:3):(adv?2:1); if (clean) R.first++;
+    const clean=R.att===0; let c = lvlCoins(clean); if (clean) R.first++;
     let extra='';
     if (R.i===R.mischief){ extra=` <span class="dim">Niffler grabbed your ${plural(c,'coin')}… and brought back ${c*2}!</span>`; c*=2; $('#balBubble').innerHTML='Hee hee! Coins love me.'; }
     else $('#balBubble').innerHTML=pick(CHEERS);
@@ -2234,25 +2245,270 @@ function checkBonus(){
   else { sOops(); $('#bonusMsg').innerHTML=`<span class="oops">${r.txt}</span>`; }
 }
 
+/* ---------- Master Mind level: one step beyond Advanced ---------- */
+const hf = x => Number.isInteger(x) ? String(x) : `${Math.floor(x)||''}${fr(1,2)}`;
+
+/* Exponent Tunnel */
+G.double.mm = [
+  () => { const n=ri(5,10), t=2**n-1; return pad('m-d1'+n, `Niffler puts 1 coin on square 1 of a board, 2 on square 2, 4 on square 3, doubling each time. How many coins are on squares 1 to ${n} <b>altogether</b>?`, t,
+    ['Write the coins on each square: 1, 2, 4, 8 …', 'Add up the first few squares: 1, 3, 7, 15 … Do you see a pattern?', `Each total is one less than the next square. Square ${n+1} would have ${P(2,n)} = ${fmt(2**n)}.`],
+    `1 + 2 + 4 + … + ${P(2,n-1)} = ${P(2,n)} − 1 = ${fmt(t)}.`); },
+  () => { const s=pick([2,3,5]), T=pick([500,1000,2000]); let n=0; while (s*3**n<=T) n++; return pad('m-d2'+s+T, `A magic pouch starts with ${s} coins and <b>triples</b> every night. After how many nights does it first have more than ${fmt(T)} coins?`, n,
+    [`After 1 night: ${s*3}. After 2 nights: ${s*9}.`, 'Keep multiplying by 3 and count the nights.', `Check nights ${n-1} and ${n}.`],
+    `After ${n-1} nights: ${fmt(s*3**(n-1))}. After ${n} nights: ${s} × ${P(3,n)} = ${fmt(s*3**n)}, the first pile over ${fmt(T)}.`); },
+  () => { const step=pick([5,10,15]), k=ri(4,8), T=step*k, back=pick([1,2,3]), ans=T-back*step, part=['half','a quarter','an eighth'][back-1];
+    return pad('m-d3'+step+k+back, `Germs in a jar double every ${step} minutes. The jar is completely full after ${T} minutes. After how many minutes was it <b>${part} full</b>?`, ans,
+    ['Think backwards from the full jar.', `${step} minutes before it was full, it was half full.`, `Each step back of ${step} minutes halves it again.`],
+    `Going back ${plural(back,'doubling')} of ${step} minutes: ${T} − ${back*step} = ${ans} minutes.`); },
+  () => { const b0=pick([50,100]), inc=pick([50,100]); let n=1; while (2**n<=b0+inc*n) n++; return pad('m-d4'+b0+inc, `Pouch A starts with 1 coin and <b>doubles</b> every night. Pouch B starts with ${b0} coins and gets <b>${inc} more</b> every night. After how many nights does pouch A first have more?`, n,
+    [`Night 1: A has 2, B has ${b0+inc}.`, 'Make a table for A and B, night by night.', `Doubling starts slow but catches up fast. Check nights ${n-1} and ${n}.`],
+    `After ${n-1} nights: A ${fmt(2**(n-1))}, B ${fmt(b0+inc*(n-1))}. After ${n}: A ${fmt(2**n)}, B ${fmt(b0+inc*n)}. Doubling wins!`); },
+];
+G.code.mm = [
+  () => { const k=pick([2,4]), e=ri(3,9), m=Math.log2(k); return pad('m-c1'+k+e, `<span class="big">${Array(k).fill(P(2,e)).join(' + ')} = 2<sup>${SLOT}</sup></span>`, e+m,
+    [`Adding ${k} copies is the same as multiplying by ${k}.`, `${k} = ${P(2,m)}.`, `${P(2,m)} × ${P(2,e)}: add the exponents.`], `${k} × ${P(2,e)} = ${P(2,m)} × ${P(2,e)} = ${P(2,e+m)}.`); },
+  () => { const [b,s,k]=pick([[9,3,2],[27,3,3],[4,2,2],[8,2,3],[25,5,2]]), n=ri(2,4), m=ri(2,4); return pad('m-c2'+b+n+m, `<span class="big">${P(s,m)} × ${P(b,n)} = ${s}<sup>${SLOT}</sup></span>`, m+k*n,
+    [`Write ${b} as a power of ${s}: ${b} = ${P(s,k)}.`, `So ${P(b,n)} = ${P(s,k*n)}.`, `Now add the exponents: ${m} + ${k*n}.`], `${P(b,n)} = ${P(s,k*n)}, so the answer is ${P(s,m+k*n)}.`); },
+  () => { const a=pick([2,3,5]), m=ri(2,3), n=ri(2,3); return pad('m-c3'+a+m+n, `<span class="big">${a}<sup>${SLOT}</sup> = ${fmt(a**m)} × ${fmt(a**n)}</span>`, m+n,
+    [`${fmt(a**m)} = ${P(a,m)}.`, `${fmt(a**n)} = ${P(a,n)}.`, 'Multiplying powers of the same base: add the exponents.'], `${P(a,m)} × ${P(a,n)} = ${P(a,m+n)} = ${fmt(a**(m+n))}.`); },
+  () => { const [x,y,X,Y]=pick([[2,30,3,20],[2,50,5,20],[3,40,5,30],[2,60,3,40]]), g=gcd(y,Y), big=y*Math.log(x)>Y*Math.log(X);
+    return mcq('m-c4'+x+y+X+Y, `Which is bigger: <span class="big">${P(x,y)}</span> or <span class="big">${P(X,Y)}</span>?<br>They are far too big to work out!`, [big?P(x,y):P(X,Y), big?P(X,Y):P(x,y), 'They are equal'],
+      [`Both exponents are multiples of ${g}.`, `${P(x,y)} = (${P(x,y/g)})<sup>${g}</sup> and ${P(X,Y)} = (${P(X,Y/g)})<sup>${g}</sup>.`, `Compare ${P(x,y/g)} = ${x**(y/g)} with ${P(X,Y/g)} = ${X**(Y/g)}.`],
+      `${P(x,y/g)} = ${x**(y/g)} and ${P(X,Y/g)} = ${X**(Y/g)}. Raising both to the power ${g} keeps them in the same order, so ${big?P(x,y):P(X,Y)} is bigger.`); },
+  () => { const n=ri(5,15); return pad('m-c5'+n, `How many <b>digits</b> does ${P(2,n)} × ${P(5,n)} have?`, n+1,
+    ['Pair each 2 with a 5.', `2 × 5 = 10, so this is ${P(10,n)}.`, `${P(10,n)} is a 1 followed by ${n} zeros.`], `${P(2,n)} × ${P(5,n)} = ${P(10,n)}, which has ${n+1} digits.`); },
+];
+G.zero.mm = [
+  () => { const [a,b]=pick([[3,2],[4,2],[2,4],[5,4],[6,5],[2,3],[4,3]]), m=ri(2,5), n=ri(2,5), p=a*b, ex=m+n+(p>=10?1:0), lead=p>=10?p/10:p;
+    return pad('m-z1'+a+b+m+n, `<span class="big">(${a} × ${P(10,m)}) × (${b} × ${P(10,n)}) = ${lead} × 10<sup>${SLOT}</sup></span>`, ex,
+    [`Multiply the front numbers: ${a} × ${b} = ${p}.`, `Multiply the powers of ten: ${P(10,m)} × ${P(10,n)} = ${P(10,m+n)}.`, p>=10?`${p} = ${lead} × 10, so that adds one more power of ten.`:'Put them together.'],
+    `${p} × ${P(10,m+n)} = ${lead} × ${P(10,ex)}.`); },
+  () => { const [a,b]=pick([[6,3],[8,2],[9,3],[8,4]]), m=ri(6,9), n=ri(2,4), v=(a/b)*10**(m-n); return pad('m-z2'+a+b+m+n, `<span class="big">(${a} × ${P(10,m)}) ÷ (${b} × ${P(10,n)}) = ${SLOT}</span>`, v,
+    [`${a} ÷ ${b} = ${a/b}.`, `${P(10,m)} ÷ ${P(10,n)} = ${P(10,m-n)}.`, `${a/b} × ${fmt(10**(m-n))}.`], `${a/b} × ${P(10,m-n)} = ${fmt(v)}.`); },
+  () => { const n=ri(1,4), d=pick([2,3,4,5,7]), val=`0.${'0'.repeat(n-1)}${d}`;
+    return mcq('m-z3'+n+d, `Exponents can be negative! ${P(10,'−1')} = 0.1 and ${P(10,'−2')} = 0.01. Which equals <span class="big">${val}</span>?`, [`${d} × ${P(10,'−'+n)}`, `${d} × ${P(10,n)}`, `${d} × ${P(10,'−'+(n+1))}`, `${d} × ${P(10,'−'+(n>1?n-1:n+2))}`],
+      [`${P(10,'−1')} = 0.1, ${P(10,'−2')} = 0.01, ${P(10,'−3')} = 0.001.`, `Count how many places the ${d} is after the decimal point.`, `It is in place number ${n}.`], `${val} = ${d} × ${P(10,'−'+n)}. The ${d} is ${plural(n,'place')} after the point.`); },
+  () => { const [w,sp,ex,t,te]=pick([['Light','3',5,'1,000',3],['Light','3',5,'100',2],['A space probe','2',4,'10,000',4],['A space probe','2',4,'1,000',3]]);
+    return pad('m-z4'+w+t, `${w} travels about ${sp} × ${P(10,ex)} km every second. How far does it go in ${t} seconds?<br><span class="big">${sp} × 10<sup>${SLOT}</sup> km</span>`, ex+te,
+    [`${t} = ${P(10,te)}.`, `Multiply: ${sp} × ${P(10,ex)} × ${P(10,te)}.`, 'Add the exponents.'], `${sp} × ${P(10,ex)} × ${P(10,te)} = ${sp} × ${P(10,ex+te)} km.`); },
+];
+G.gems.mm = [
+  () => { const n=ri(8,15), last=2*n-1; return pad('m-g1'+n, `<span class="big">1 + 3 + 5 + … + ${last} = ${SLOT}</span>`, n*n,
+    ['Adding odd numbers from 1 always makes a square number.', `How many odd numbers are in the list? ${last} is odd number number ${n}.`, `${n} odd numbers add up to ${n} × ${n}.`], `There are ${n} odd numbers, so the sum is ${P(n,2)} = ${n*n}.`); },
+  () => { const n=ri(3,5); let t=0; for (let k=1;k<=n;k++) t+=k*k; return pad('m-g2'+n, `How many squares of <b>all sizes</b> can you find in this ${n} × ${n} grid of gems?`, t,
+    [`Count the 1 × 1 squares: ${n*n}.`, `2 × 2 squares: ${(n-1)**2}.${n>2?` 3 × 3 squares: ${(n-2)**2}.`:''}`, 'Add up the square numbers.'], `${Array.from({length:n},(_,i)=>(n-i)**2).join(' + ')} = ${t} squares.`, gemGrid(n)); },
+  () => { const n=pick([3,4,5]), k=pick([0,1,2,3]), cnt=[(n-2)**3, 6*(n-2)**2, 12*(n-2), 8][k];
+    return pad('m-g3'+n+k, `A ${n} × ${n} × ${n} cube is painted on the outside, then cut into little cubes. How many little cubes have <b>exactly ${k} painted face${k===1?'':'s'}</b>?`, cnt,
+    ['Corners have 3 painted faces, edge middles have 2, face middles have 1, and the inside has none.', `There are 8 corners, 12 edges and 6 faces. Each edge has ${plural(n-2,'middle cube')}.`, ['The hidden inside is a smaller cube.', `Each face has a middle square of ${n-2} × ${n-2}.`, `12 edges × ${n-2}.`, 'Count the corners.'][k]],
+    `${['The hidden inside cube: '+(n-2)+' × '+(n-2)+' × '+(n-2), '6 faces × '+(n-2)+' × '+(n-2), '12 edges × '+(n-2), '8 corners'][k]} = ${cnt}.`, isoScene([{x:0,y:0,z:0,l:n,w:n,h:n}],{aria:'cube cut into little cubes'})); },
+  () => { let lo; do { lo=ri(150,600); } while (Number.isInteger(Math.sqrt(lo))); const sq=Math.ceil(Math.sqrt(lo)), target=sq*sq, hi=target+ri(2,sq);
+    return pad('m-g4'+lo+hi, `Find the square number between ${lo} and ${hi}.`, target, ['Which whole number squared lands near there?', `${sq-1} × ${sq-1} = ${(sq-1)**2}.`, `Try ${sq} × ${sq}.`], `${sq} × ${sq} = ${target}.`); },
+  () => { const [a,b]=pick([[3,4],[5,12],[6,8],[8,15]]), c=Math.round(Math.hypot(a,b)); return pad('m-g5'+a+b, `<span class="big">${P(a,2)} + ${P(b,2)} = ${SLOT}<sup>2</sup></span>`, c,
+    [`${P(a,2)} = ${a*a} and ${P(b,2)} = ${b*b}.`, `Add them: ${a*a+b*b}.`, `Which number times itself is ${a*a+b*b}?`], `${a*a} + ${b*b} = ${c*c} = ${P(c,2)}. Numbers like ${a}, ${b} and ${c} are called Pythagorean triples!`); },
+];
+G.rules.mm = [
+  () => { const [b,k]=pick([[4,2],[8,3]]), x=ri(2,4), tot=x+k*x; return pad('m-r1'+b+x, `<span class="big">${P(2,'x')} × ${P(b,'x')} = ${P(2,tot)}</span><br>What is x?`, x,
+    [`${b} = ${P(2,k)}, so ${P(b,'x')} = ${P(2,k+'x')}.`, `${P(2,'x')} × ${P(2,k+'x')} = ${P(2,(k+1)+'x')}.`, `${k+1} × x = ${tot}.`], `${k+1}x = ${tot}, so x = ${x}.`); },
+  () => { const a=pick([2,3]), m=ri(2,4), n=ri(2,4), k=ri(1,m*n-1); return pad('m-r2'+a+m+n+k, `<span class="big">(${P(a,m)})<sup>${n}</sup> ÷ ${P(a,k)} = ${a}<sup>${SLOT}</sup></span>`, m*n-k,
+    [`First: (${P(a,m)})<sup>${n}</sup> = ${P(a,m*n)}.`, 'Dividing: subtract the exponents.', `${m*n} − ${k}.`], `${P(a,m*n)} ÷ ${P(a,k)} = ${P(a,m*n-k)}.`); },
+  () => { const [b,s,k]=pick([[9,3,2],[27,3,3],[8,2,3],[16,2,4]]), n=ri(3,5), m=ri(1,k*n-1); return pad('m-r3'+b+n+m, `<span class="big">${P(b,n)} ÷ ${P(s,m)} = ${s}<sup>${SLOT}</sup></span>`, k*n-m,
+    [`${b} = ${P(s,k)}.`, `So ${P(b,n)} = ${P(s,k*n)}.`, `${k*n} − ${m}.`], `${P(b,n)} = ${P(s,k*n)}, and ${P(s,k*n)} ÷ ${P(s,m)} = ${P(s,k*n-m)}.`); },
+  () => { const [a,b]=pick([[2,3],[2,5],[3,4],[4,5],[2,7]]), n=ri(3,9); return pad('m-r4'+a+b+n, `<span class="big">${P(a,n)} × ${P(b,n)} = ${SLOT}<sup>${n}</sup></span>`, a*b,
+    [`Write both out: ${n} ${a}s and ${n} ${b}s.`, `Pair each ${a} with a ${b}.`, `Each pair is ${a} × ${b}.`], `${n} pairs of (${a} × ${b}) make ${P(a*b,n)}.`); },
+];
+G.catch.mm = [
+  () => claim('m-t1', `(${P(2,3)})<sup>2</sup> = ${P(2,9)}`, false, P(2,6), [P(2,5)], `(${P(2,3)})<sup>2</sup> = ${P(2,3)} × ${P(2,3)} = ${P(2,6)} = 64. Niffler mixed it up with 2 to the power 3², which is ${P(2,9)} = 512.`),
+  () => { const n=ri(5,20); return claim('m-t2'+n, `${P(2,n)} + ${P(2,n)} = ${P(2,n+1)}`, true, null, [P(2,2*n), P(4,n)], `Right! Two lots of ${P(2,n)} is 2 × ${P(2,n)} = ${P(2,n+1)}.`); },
+  () => claim('m-t3', `${P(3,4)} = ${P(4,3)}`, false, {raw:`Wrong: ${P(3,4)} = 81 but ${P(4,3)} = 64`}, [{raw:'Wrong: both are 12'}], `${P(3,4)} = 81 and ${P(4,3)} = 64. Swapping the base and exponent usually changes the answer.`),
+  () => claim('m-t4', `${P(2,100)} is bigger than ${P(10,30)}`, true, null, [{raw:'Wrong: they are equal'},{raw:`Wrong: ${P(10,30)} is bigger`}], `Right! ${P(2,10)} = 1,024 is a bit more than ${P(10,3)} = 1,000. So ${P(2,100)} = (${P(2,10)})<sup>10</sup> is more than (${P(10,3)})<sup>10</sup> = ${P(10,30)}.`),
+  () => { const [a,b,c]=pick([[3,4,5],[5,12,13],[6,8,10]]); return claim('m-t5'+a, `${P(a,2)} + ${P(b,2)} = ${P(c,2)}`, true, null, [{raw:`Wrong: it should be ${P(a+b,2)}`},{raw:'Wrong: the two sides are never equal'}], `Right! ${a*a} + ${b*b} = ${c*c}.`); },
+  () => claim('m-t6', `${P(2,5)} × ${P(5,2)} = ${P(10,7)}`, false, '800', [P(10,10)], `You can only add exponents when the bases are the same. ${P(2,5)} × ${P(5,2)} = 32 × 25 = 800.`),
+];
+
+/* Box Burrow */
+G.cubes.mm = [
+  () => { const l=ri(4,6), w=ri(3,5), h=ri(3,5), inner=(l-2)*(w-2)*(h-2), out=l*w*h-inner; return pad('m-cc1'+l+w+h, `A solid ${l} × ${w} × ${h} box is built from little cubes. How many little cubes are on the <b>outside</b>, where you could touch them?`, out,
+    [`Total cubes: ${l*w*h}.`, `The hidden inside is a ${l-2} × ${w-2} × ${h-2} box.`, `${l*w*h} − ${inner}.`], `${l*w*h} − ${inner} hidden = ${out} on the outside.`, isoScene([{x:0,y:0,z:0,l,w,h}])); },
+  () => { const n=ri(3,5), bx=[]; let t=0; for (let k=1;k<=n;k++){ const off=(n-k)/2; bx.push({x:off,y:off,z:n-k,l:k,w:k,h:1}); t+=k*k; }
+    return pad('m-cc2'+n, `Niffler built a pyramid: 1 cube on top, then a 2 × 2 layer, then 3 × 3, and so on, with ${n} layers. How many cubes did it use?`, t,
+    ['Each layer is a square number.', `The layers have ${Array.from({length:n},(_,i)=>(i+1)**2).join(', ')} cubes.`, 'Add them all.'], `${Array.from({length:n},(_,i)=>(i+1)**2).join(' + ')} = ${t} cubes.`, isoScene(bx,{aria:'pyramid of cubes'})); },
+  () => { let l,w,h; do { l=ri(3,5); w=ri(2,l); h=ri(2,l); } while (l===w&&w===h); const e=Math.max(l,w,h);
+    return pad('m-cc3'+l+w+h, `How many more cubes does it take to turn a ${l} × ${w} × ${h} box into the smallest cube that can hold it?`, e**3-l*w*h,
+    [`The cube needs edges as long as the longest edge: ${e}.`, `That cube holds ${e**3}.`, `${e**3} − ${l*w*h}.`], `${P(e,3)} − ${l*w*h} = ${e**3-l*w*h} more cubes.`); },
+  () => { const n=ri(10,20); return pad('m-cc4'+n, `A staircase of cubes goes up to <b>${n} cubes</b> tall: 1, 2, 3, … ${n}. How many cubes in all?`, n*(n+1)/2,
+    [`Pair the first and last columns: 1 + ${n} = ${n+1}.`, `Then 2 + ${n-1} = ${n+1}, and so on.`, `Two staircases fit together into a ${n} × ${n+1} rectangle. Halve it.`], `${n} × ${n+1} ÷ 2 = ${n*(n+1)/2} cubes. Young Carl Gauss used this trick to add 1 to 100!`); },
+];
+G.formula.mm = [
+  () => { const s=ri(3,8), h=ri(2,6), V=s*s*h; return pad('m-f1'+s+h, `A box has a <b>square</b> base and is ${h} cm tall. Its volume is ${V} cm<sup>3</sup>. How long is each side of the base?`, s,
+    [`The base area is ${V} ÷ ${h}.`, `The base is ${s*s} cm².`, `Which number times itself is ${s*s}?`], `${V} ÷ ${h} = ${s*s}, and ${s} × ${s} = ${s*s}, so each side is ${s} cm.`); },
+  () => { const [L,W,e]=pick([[20,10,10],[25,20,10],[10,8,4],[20,20,10],[16,10,8]]), rise=e**3/(L*W); return pad('m-f2'+L+W+e, `A fish tank's base is ${L} cm × ${W} cm. Niffler drops in a solid cube with ${e} cm edges and it sinks. How many cm does the water rise?<br><span class="dim">Type a decimal if you need to.</span>`, rise,
+    [`The cube pushes away ${P(e,3)} = ${fmt(e**3)} cm³ of water.`, `That water spreads over the base: ${L} × ${W} = ${L*W} cm².`, `${fmt(e**3)} ÷ ${L*W}.`], `${fmt(e**3)} ÷ ${L*W} = ${fmt(rise)} cm.`); },
+  () => { const l=ri(2,6), w=ri(2,5), h=ri(2,6), Sa=2*(l*w+w*h+l*h); return pad('m-f3'+l+w+h, 'How much wrapping paper covers this box exactly? Find its <b>surface area</b> in square units.', Sa,
+    ['A box has 6 faces in 3 matching pairs.', `The pairs are ${l} × ${w}, ${w} × ${h} and ${l} × ${h}.`, `2 × (${l*w} + ${w*h} + ${l*h}).`], `2 × (${l*w} + ${w*h} + ${l*h}) = ${Sa} square units.`, isoScene([{x:0,y:0,z:0,l,w,h}],{grid:false,labels:boxLabels(l,w,h,[String(l),String(w),String(h)])})); },
+  () => { const V=pick([12,15,20,24,30]), f=pick([[2,2,1,4],[2,1,3,6],[3,1,1,3],[2,3,1,6],[2,2,2,8]]); return pad('m-f4'+V+f.join(''), `Box B holds ${V} cubes. Box A is ${f[0]} times as long, ${f[1]===1?'just as wide':f[1]+' times as wide'} and ${f[2]===1?'just as tall':f[2]+' times as tall'} as B. How many cubes does A hold?`, V*f[3],
+    ['Each "times" multiplies the volume.', `${f[0]} × ${f[1]} × ${f[2]} = ${f[3]}.`, `${V} × ${f[3]}.`], `The volume is multiplied by ${f[0]} × ${f[1]} × ${f[2]} = ${f[3]}: ${V} × ${f[3]} = ${V*f[3]}.`); },
+  () => { const [a,b,c]=pick([[4,6,8],[6,6,8],[4,9,8],[8,6,4]]), n=a*b*c/24; return pad('m-f5'+a+b+c, `How many 2 × 3 × 4 bricks fit inside a ${a} × ${b} × ${c} box with no gaps?`, n,
+    ['Compare the volumes.', `Box: ${a*b*c}. Brick: 2 × 3 × 4 = 24.`, 'Check the bricks can line up with every edge.'], `${a*b*c} ÷ 24 = ${n}. The bricks line up exactly, so ${n} fit.`); },
+];
+G.pile.mm = [
+  () => { const d=ri(2,3), L=[ri(2,3),ri(2,3),ri(2,3)], H=[ri(4,5),ri(2,3),1], vs=L.map((l,i)=>l*d*H[i]), V=vs.reduce((a,b)=>a+b,0);
+    return pad('m-p1'+d+L.join('')+H.join(''), `A three-step staircase is made of boxes, all ${d} deep. The steps are ${L.join(', ')} long and ${H.join(', ')} tall. What is the total volume?`, V,
+    ['Find each step on its own.', `The steps hold ${vs.join(', ')}.`, 'Add them.'], `${L.map((l,i)=>`${l} × ${d} × ${H[i]}`).join(' + ')} = ${V}.`,
+    isoScene([{x:0,y:0,z:0,l:L[0],w:d,h:H[0]},{x:L[0],y:0,z:0,l:L[1],w:d,h:H[1],color:'pink'},{x:L[0]+L[1],y:0,z:0,l:L[2],w:d,h:H[2],color:'blue'}],{grid:false,aria:'three boxes in a staircase'})); },
+  () => { const n=ri(4,6); return pad('m-p2'+n, `A closed box made of cubes is ${n} × ${n} × ${n} on the outside, with walls 1 cube thick and a hollow inside. How many cubes is it made of?`, n**3-(n-2)**3,
+    [`A solid box would use ${n**3} cubes.`, `The hollow part is ${n-2} × ${n-2} × ${n-2}.`, `${n**3} − ${(n-2)**3}.`], `${n**3} − ${(n-2)**3} = ${n**3-(n-2)**3} cubes.`); },
+  () => { const a1=ri(2,3), a2=ri(2,4), d=ri(2,4), h1=ri(3,5), h2=ri(1,2), VA=a1*d*h1, T=VA+a2*d*h2; return pad('m-p3'+a1+a2+d+h1+h2, `The whole shape has a volume of <b>${T}</b>. The pink box is ${a2} long and ${d} deep. How <b>tall</b> is it?`, h2,
+    [`Gold box: ${a1} × ${d} × ${h1} = ${VA}.`, `Pink box: ${T} − ${VA} = ${T-VA}.`, `Height = ${T-VA} ÷ (${a2} × ${d}).`], `${T-VA} ÷ ${a2*d} = ${h2}.`, pileFig(a1,a2,d,d,h1,h2,'cm',true)); },
+  () => { let A,B,C,cut,va,vc; do { A=[ri(3,5),ri(2,4),ri(2,3)]; B=[ri(2,4),2,ri(1,3)]; C=[ri(4,6),ri(3,4),ri(3,4)]; cut=[ri(1,2),C[1],ri(1,2)]; va=A[0]*A[1]*A[2]+B[0]*B[1]*B[2]; vc=C[0]*C[1]*C[2]-cut[0]*cut[1]*cut[2]; } while (va===vc);
+    const opts=['Shape 1','Shape 2','They are the same'], c=va>vc?0:1;
+    return mcq('m-p4'+A.join('')+B.join('')+C.join('')+cut.join(''), `Shape 1: a ${tri(A)} box glued to a ${tri(B)} box.<br>Shape 2: a ${tri(C)} box with a ${tri(cut)} piece cut off.<br>Which has more volume?`, [opts[c],opts[1-c],opts[2]],
+      ['Find Shape 1 by adding.', `Shape 1 = ${A[0]*A[1]*A[2]} + ${B[0]*B[1]*B[2]} = ${va}.`, `Shape 2 = ${C[0]*C[1]*C[2]} − ${cut[0]*cut[1]*cut[2]} = ${vc}.`], `Shape 1 holds ${va} and Shape 2 holds ${vc}.`, '', true); },
+];
+G.tiles.mm = [
+  () => { const n=pick([2,3,4]), l=ri(1,3), w=ri(1,3), h=ri(1,2), c=(l*n)*(w*n)*(h*n); return pad('m-u1'+n+l+w+h, `How many cubes with edges of ${fr(1,n)} inch fill a box ${l} in × ${w} in × ${h} in?`, c,
+    [`Each inch fits ${n} small cubes along an edge.`, `So the box is ${l*n} × ${w*n} × ${h*n} small cubes.`, 'Multiply.'], `${l*n} × ${w*n} × ${h*n} = ${c} small cubes.`); },
+  () => { const [a,b,c,V]=pick([[1.5,2.5,4,15],[2.5,2,3,15],[1.5,1.5,4,9],[3.5,2,2,14],[2.5,2.5,4,25]]); return pad('m-u2'+a+b+c, `Find the volume of a box ${hf(a)} ft × ${hf(b)} ft × ${hf(c)} ft.`, V,
+    ['Multiply the two whole numbers first if you can.', `Try ${hf(a)} × ${hf(b)} first, then × ${hf(c)}.`, 'Half of something, then add it on.'], `${hf(a)} × ${hf(b)} × ${hf(c)} = ${V} ft<sup>3</sup>.`); },
+  () => { const k=ri(1,4), s=k+.5, A=s*s; return pad('m-u3'+k, `Find the area of a square with sides of ${k}${fr(1,2)} m.<br><span class="dim">Type a decimal: ¼ is .25</span>`, A,
+    [`${k}½ × ${k}½.`, `Split it: ${k} × ${k}, plus ${k} × ½ twice, plus ½ × ½.`, `${k*k} + ${k/2} + ${k/2} + 0.25.`], `${k}½ × ${k}½ = ${fmt(A)} m<sup>2</sup>.`); },
+  () => { const n=pick([3,4]), e=pick([2,3]); return pad('m-u4'+n+e, `How many cubes with edges of ${fr(1,n)} inch fit in a big cube with ${e}-inch edges?`, (n*e)**3,
+    [`Along each edge: ${e} × ${n} = ${n*e} small cubes.`, `One layer: ${n*e} × ${n*e} = ${(n*e)**2}.`, `${n*e} layers.`], `${n*e} × ${n*e} × ${n*e} = ${fmt((n*e)**3)} small cubes.`); },
+];
+G.scatch.mm = [
+  () => claim('m-v1', 'If you double the height of a box and halve its length, the volume stays the same', true, null, [{raw:'Wrong: it doubles'},{raw:'Wrong: it halves'}], 'Right! Times 2 and then divided by 2 cancel out.'),
+  () => claim('m-v2', 'A 6 × 6 × 6 cube has more surface area than volume', false, {raw:'Wrong: they are equal, 216 and 216'}, [{raw:'Wrong: the volume is bigger'}], 'Volume: 6 × 6 × 6 = 216. Surface: 6 faces × 36 = 216. Exactly equal! Bigger cubes have more volume than surface.'),
+  () => claim('m-v3', 'Two boxes with the same volume always have the same surface area', false, {raw:'Wrong: 1 × 1 × 8 and 2 × 2 × 2 both hold 8 but have surface areas 34 and 24'}, [{raw:'Wrong: they always have the same height'}], 'Same volume does not mean same surface. A long thin box needs more wrapping paper than a cube.'),
+  () => claim('m-v4', 'A painted 4 × 4 × 4 cube, cut into little cubes, has 8 little cubes with no paint', true, null, ['27 cubes','0 cubes'], 'Right! The hidden inside is a 2 × 2 × 2 cube: 8 little cubes.'),
+  () => claim('m-v5', '12 ÷ 3 × 2 = 2', false, '8', ['6'], 'Multiply and divide from left to right: 12 ÷ 3 = 4, then 4 × 2 = 8. Niffler did 3 × 2 first.'),
+  () => claim('m-v6', 'Doubling every edge of a box doubles its surface area', false, {raw:'Wrong: the surface area gets 4 times bigger'}, [{raw:'Wrong: it gets 8 times bigger'}], 'Each face is twice as long and twice as wide, so its area is 2 × 2 = 4 times bigger.'),
+];
+
+/* Pie Pantry */
+G.fair.mm = [
+  () => { const [n,d,p]=pick([[3,4,6],[2,3,8],[3,4,9],[2,5,6],[5,6,10]]); return fpad('m-fa1'+n+d+p, `Each niffler eats exactly ${fr(n,d)} of a pie. How many nifflers can ${p} pies feed?`, [p*d,n],
+    [`How many ${fr(n,d)}s fit in ${p}?`, `${p} ÷ ${fr(n,d)} = ${p} × ${fr(d,n)}.`, `${p*d} ÷ ${n}.`], `${p} ÷ ${fr(n,d)} = ${fh(p*d,n)} nifflers.`); },
+  () => { const [t,k]=pick([[[3,4],2],[[2,3],3],[[5,6],4],[[1,2],3],[[3,5],2]]); return fpad('m-fa2'+t+k, `Niffler and Pip share ${fr(...t)} of a pie. Pip gets <b>${k} times</b> as much as Niffler. How much pie does Niffler get?`, [t[0],t[1]*(k+1)],
+    [`Think in shares: Niffler 1 share, Pip ${k} shares.`, `That makes ${k+1} equal shares.`, `${fr(...t)} ÷ ${k+1}.`], `${fr(...t)} ÷ ${k+1} = ${fh(t[0],t[1]*(k+1))}. Pip gets ${fh(t[0]*k,t[1]*(k+1))}.`); },
+  () => { const [a,b,left]=pick([[[2,5],[1,3],12],[[1,4],[1,3],10],[[1,3],[1,4],12],[[1,2],[2,5],9]]), rem=fmul(fsub([1,1],a),fsub([1,1],b)), Sx=left*rem[1]/rem[0], g1=Sx*a[0]/a[1], m1=Sx-g1, g2=m1*b[0]/b[1];
+    return fpad('m-fa3'+a+b+left, `Niffler gave away ${fr(...a)} of his coins, then ${fr(...b)} of the coins he had left. Now he has ${left} coins. How many did he start with?`, [Sx,1],
+    ['Work backwards from the end.', `Before the second gift, ${left} coins was ${fr(b[1]-b[0],b[1])} of what he had.`, `So he had ${m1} then, which was ${fr(a[1]-a[0],a[1])} of the start.`], `Check: ${Sx} → gives away ${g1} → ${m1} → gives away ${g2} → ${left} ✓`); },
+  () => { const [A,B]=pick([[[3,4],[5,7]],[[2,3],[3,5]],[[4,5],[5,7]],[[5,6],[3,4]]]), dl=fsub(A,B); return fpad('m-fa4'+A+B, `Group A shares ${A[0]} pies among ${A[1]} nifflers. Group B shares ${B[0]} pies among ${B[1]}. How much <b>more</b> pie does each niffler in group A get?`, dl,
+    [`A: ${fr(...A)} each. B: ${fr(...B)} each.`, `Use a common denominator: ${A[1]*B[1]/gcd(A[1],B[1])}.`, 'Subtract.'], `${fr(...A)} − ${fr(...B)} = ${fh(...dl)} of a pie.`); },
+];
+G.recipe.mm = [
+  () => { const [n,d,from,to]=pick([[3,4,6,10],[2,3,4,6],[1,2,3,8],[3,4,8,6],[2,3,6,9]]); return fpad('m-rr1'+n+d+from+to, `A recipe for ${from} nifflers needs ${fr(n,d)} cup of cocoa. How much cocoa for <b>${to} nifflers</b>?`, [n*to,d*from],
+    [`First find the cocoa for 1 niffler: ${fr(n,d)} ÷ ${from}.`, `That is ${fr(n,d*from)} cup.`, `Then multiply by ${to}.`], `${fr(n,d*from)} × ${to} = ${fh(n*to,d*from)} cup${n*to>=d*from?'s':''}.`); },
+  () => { const [s,T]=pick([[[2,3],[16,3]],[[3,4],[9,2]],[[3,8],[3,1]],[[2,5],[24,5]]]); return fpad('m-rr2'+s+T, `How many ${fr(...s)}-cup scoops does it take to fill a ${fh(...T)}-cup bowl?`, [T[0]*s[1],T[1]*s[0]],
+    [`Write ${fh(...T)} as ${fr(...T)}.`, `${fr(...T)} ÷ ${fr(...s)} = ${fr(...T)} × ${fr(s[1],s[0])}.`, 'Multiply tops and bottoms, then simplify.'], `${fr(...T)} ÷ ${fr(...s)} = ${fh(T[0]*s[1],T[1]*s[0])} scoops.`); },
+  () => { const [b,tot]=pick([[[3,2],7],[[5,4],6],[[2,3],5],[[7,4],9]]), k=Math.floor(tot*b[1]/b[0]), left=fsub([tot,1],[k*b[0],b[1]]); return fpad('m-rr3'+b+tot, `Each batch of cookies needs ${fh(...b)} cups of flour. Niffler has ${tot} cups and makes as many <b>full</b> batches as he can. How much flour is left over?`, left,
+    [`How many ${fh(...b)}s fit in ${tot}?`, `${k} batches use ${fh(k*b[0],b[1])} cups.`, `${tot} − ${fh(k*b[0],b[1])}.`], `${k} batches use ${fh(k*b[0],b[1])} cups, leaving ${fh(...left)} cup${left[0]===left[1]?'':'s'}.`); },
+  () => { const [a,b]=pick([[[3,8],[1,3]],[[2,5],[1,2]],[[3,4],[2,3]],[[5,6],[3,5]]]), p=fmul(a,b); return fpad('m-rr4'+a+b, `${fr(...a)} of Niffler's dough is chocolate. Niffler sneaks ${fr(...b)} of the chocolate part. What fraction of <b>all</b> the dough did he eat?`, p,
+    ['"Of" means multiply.', `${fr(...b)} × ${fr(...a)}.`, 'Multiply, then simplify.'], `${fr(...b)} × ${fr(...a)} = ${fh(...p)} of the dough.`); },
+];
+G.garden.mm = [
+  () => { const [a,b]=pick([[[8,3],[8,5]],[[5,2],[7,3]],[[7,4],[5,3]],[[9,4],[4,3]]]), p=fmul(a,b); return fpad('m-ga1'+a+b, `Find the area of a garden ${fh(...a)} m by ${fh(...b)} m.`, p,
+    [`Change to improper fractions: ${fr(...a)} and ${fr(...b)}.`, 'Multiply tops and bottoms.', 'Turn the answer back into a mixed number.'], `${fr(...a)} × ${fr(...b)} = ${fr(a[0]*b[0],a[1]*b[1])} = ${fh(...p)} m<sup>2</sup>.`); },
+  () => { const [a,b,t]=pick([[[3,4],[2,3],[1,12]],[[1,2],[3,4],[1,8]],[[2,3],[3,5],[1,15]],[[5,6],[2,5],[1,30]]]), ar=fmul(a,b), n=ar[0]*t[1]/(ar[1]*t[0]);
+    return fpad('m-ga2'+a+b, `A garden bed is ${fr(...a)} m by ${fr(...b)} m. How many square tiles, each ${fr(...t)} m<sup>2</sup>, cover it?`, [n,1],
+    ['Find the area first.', `Area = ${fr(...a)} × ${fr(...b)} = ${fh(...ar)} m².`, `How many ${fr(...t)}s fit in ${fh(...ar)}?`], `${fh(...ar)} ÷ ${fr(...t)} = ${n} tiles.`); },
+  () => { const [A,w]=pick([[6,[8,3]],[5,[5,2]],[10,[8,3]],[3,[3,2]]]); return fpad('m-ga3'+A+w, `A rectangle has an area of ${A} m<sup>2</sup> and is ${fh(...w)} m wide. How long is it?`, [A*w[1],w[0]],
+    ['Length × width = area.', `Length = ${A} ÷ ${fh(...w)}.`, `${A} ÷ ${fr(...w)} = ${A} × ${fr(w[1],w[0])}.`], `${A} ÷ ${fr(...w)} = ${fh(A*w[1],w[0])} m.`); },
+  () => { const [a,b]=pick([[[5,2],[4,3]],[[7,2],[5,3]],[[9,4],[2,3]]]), per=fmul([2,1],fadd(a,b)); return fpad('m-ga4'+a+b, `A garden is ${fh(...a)} m by ${fh(...b)} m. How many meters of fence go all the way around it?`, per,
+    ['Perimeter = 2 × (length + width).', `${fh(...a)} + ${fh(...b)} = ${fh(...fadd(a,b))}.`, 'Double it.'], `2 × (${fh(...a)} + ${fh(...b)}) = ${fh(...per)} m.`); },
+];
+G.fcatch.mm = [
+  () => claim('m-fc1', `${fr(1,2)} ÷ ${fr(1,4)} = ${fr(1,8)}`, false, '2', [fr(3,4)], `How many quarters fit in a half? Two! ${fr(1,2)} ÷ ${fr(1,4)} = ${fr(1,2)} × 4 = 2.`),
+  () => claim('m-fc2', `${fr(2,3)} is bigger than ${fr(3,5)}`, true, null, [{raw:'Wrong: they are equal'},{raw:`Wrong: ${fr(3,5)} is bigger`}], `Right! ${fr(2,3)} = ${fr(10,15)} and ${fr(3,5)} = ${fr(9,15)}.`),
+  () => claim('m-fc3', 'Adding the same number to the top and bottom of a fraction never changes it', false, {raw:`Wrong: ${fr(1,2)} becomes ${fr(2,3)} when you add 1`}, [{raw:'Wrong: it always makes it smaller'}], `${fr(1,2)} → ${fr(2,3)} got bigger. To keep a fraction the same you must <b>multiply</b> the top and bottom by the same number.`),
+  () => claim('m-fc4', `${fr(1,2)} + ${fr(1,3)} + ${fr(1,6)} = 1`, true, null, [fr(3,11), fr(5,6)], `Right! ${fr(3,6)} + ${fr(2,6)} + ${fr(1,6)} = ${fr(6,6)} = 1.`),
+  () => claim('m-fc5', `There is no fraction with 7 on the bottom between ${fr(1,3)} and ${fr(1,2)}`, false, {raw:`Wrong: ${fr(3,7)} is between them`}, [{raw:`Wrong: ${fr(1,7)} is between them`}], `${fr(1,3)} ≈ 0.33, ${fr(3,7)} ≈ 0.43 and ${fr(1,2)} = 0.5.`),
+  () => claim('m-fc6', `${fr(2,3)} of ${fr(3,4)} is the same as ${fr(3,4)} of ${fr(2,3)}`, true, null, [{raw:'Wrong: the first is bigger'},{raw:'Wrong: the second is bigger'}], `Right! Both are ${fr(2,3)} × ${fr(3,4)} = ${fr(1,2)}. Multiplying works in any order.`),
+];
+
+/* balloons */
+BAL.balloon.mm = [
+  () => { const [v,good,pool]=pick([[64,[[4,3],[8,2]],[[3,4],[6,2],[2,8],[4,4],[5,3],[2,5]]],[81,[[9,2],[3,4]],[[4,3],[2,6],[8,2],[3,5],[9,3]]],[16,[[2,4],[4,2]],[[3,3],[2,3],[2,5],[8,2],[5,2]]]]), g=pick(good);
+    return {key:'mb1'+v+g, ask:`Pop the power equal to ${fmt(v)}`, sub:'Work out each power.', answer:P(...g), others:others(P(...g), pool.map(z=>P(...z))), explain:`${P(...g)} = ${fmt(v)}.`}; },
+  () => { const m=ri(8,12), n=ri(2,m-2), v=2**(m-n); return {key:'mb2'+m+n, ask:`Pop ${P(2,m)} ÷ ${P(2,n)}`, sub:'Subtract the exponents, then work it out.', answer:fmt(v), others:others(fmt(v),[m-n,2*(m-n),v*2,v/2,m*n,v+1].map(fmt)), explain:`${P(2,m)} ÷ ${P(2,n)} = ${P(2,m-n)} = ${fmt(v)}.`}; },
+  () => { const n=ri(10,30), d=[1,3,9,7][n%4]; return {key:'mb3'+n, ask:`Pop the last digit of ${P(3,n)}`, sub:'Look for the repeating pattern.', answer:String(d), others:others(d,['1','3','7','9','0','5']), explain:`Last digits of powers of 3 repeat 3, 9, 7, 1. ${n} ÷ 4 leaves ${n%4}, so the last digit is ${d}.`}; },
+  () => { const [b,k]=pick([[4,2],[8,3],[16,4]]), e=ri(2,5), x=k*e; return {key:'mb4'+b+e, ask:`Pop x: ${P(2,'x')} = ${P(b,e)}`, sub:`Write ${b} as a power of 2.`, answer:String(x), others:others(x,[x+1,x-1,e,b*e,e+k,x*2].map(String)), explain:`${b} = ${P(2,k)}, so ${P(b,e)} = ${P(2,x)}.`}; },
+  () => ({key:'mb5', ask:'Pop the biggest power', sub:'Write them all as powers of 2.', answer:P(2,20), others:[P(4,9),P(8,5),P(16,4),P(32,3)], explain:`${P(4,9)} = ${P(2,18)}, ${P(8,5)} = ${P(2,15)}, ${P(16,4)} = ${P(2,16)}, ${P(32,3)} = ${P(2,15)}. So ${P(2,20)} is the biggest.`}),
+];
+BAL.sballoon.mm = [
+  () => { const l=ri(2,5), w=ri(2,4), h=ri(2,5), s=2*(l*w+w*h+l*h); return {key:'ms1'+l+w+h, ask:`Pop the surface area of a ${l} × ${w} × ${h} box`, sub:'Add the areas of all 6 faces.', answer:String(s), others:others(s,[l*w*h,l*w+w*h+l*h,2*l*w*h,s+2,s-4,6*l*w].map(String)), explain:`2 × (${l*w} + ${w*h} + ${l*h}) = ${s}.`}; },
+  () => { const V=pick([6,10,12,15,20]); return {key:'ms2'+V, ask:`A box holds ${V} cubes. Pop its volume after doubling <b>every</b> edge`, sub:'Try it with a 1 × 1 × 1 box first.', answer:String(8*V), others:others(8*V,[2*V,4*V,6*V,V+8,3*V].map(String)), explain:`Doubling all three edges multiplies the volume by 2 × 2 × 2 = 8: ${V} × 8 = ${8*V}.`}; },
+  () => { const n=pick([3,4,5,6]), k=pick([2,3]), c=k===3?8:12*(n-2); return {key:'ms3'+n+k, ask:`A painted ${n} × ${n} × ${n} cube is cut up. Pop how many little cubes have ${k} painted faces`, sub:k===3?'Think about the corners.':'Think about the edges.', answer:String(c), others:others(c,[6,8,12,24,6*(n-2),12*(n-2)+8,(n-2)**3,n*n].filter(x=>x>0).map(String)), explain:k===3?'Only the 8 corners have 3 painted faces, whatever the size.':`Each of the 12 edges has ${n-2} middle cubes: 12 × ${n-2} = ${c}.`}; },
+  () => { const e=ri(6,10); return {key:'ms4'+e, ask:`Pop the edge of a cube with volume ${fmt(e**3)}`, sub:'Which number, used three times, makes it?', answer:String(e), others:others(e,[e-1,e+1,e+2,e*e,e*3].map(String)), explain:`${e} × ${e} × ${e} = ${fmt(e**3)}.`}; },
+  () => { const [a,b,c]=pick([[50,20,30],[40,25,20],[20,20,50],[30,30,20]]), L=a*b*c/1000; return {key:'ms5'+a+b+c, ask:`Pop the liters in a ${a} × ${b} × ${c} cm tank`, sub:'1,000 cm³ = 1 liter.', answer:fmt(L), others:others(fmt(L),[L*10,L/10,L*100,L+10,a+b+c].map(fmt)), explain:`${fmt(a*b*c)} cm³ ÷ 1,000 = ${fmt(L)} liters.`}; },
+];
+BAL.fballoon.mm = [
+  () => { const [a,b,N]=pick([[[2,3],[3,4],24],[[1,2],[2,3],18],[[3,4],[2,5],40],[[2,5],[5,6],30]]), inner=N*b[0]/b[1], v=inner*a[0]/a[1];
+    return {key:'mf1'+N, ask:`Pop ${fr(...a)} of ${fr(...b)} of ${N}`, sub:'First find the inside part.', answer:String(v), others:others(v,[inner, N*a[0]/a[1], v*2, v+1, v-1, N-v].map(x=>fmt(x))), explain:`${fr(...b)} of ${N} is ${inner}, and ${fr(...a)} of ${inner} is ${v}.`}; },
+  () => { const [lo,hi]=pick([[[1,3],[1,2]],[[1,4],[1,3]],[[2,3],[3,4]],[[1,2],[2,3]]]), mid=fmul(fadd(lo,hi),[1,2]);
+    return {key:'mf2'+lo+hi, ask:`Pop the fraction exactly halfway between ${fr(...lo)} and ${fr(...hi)}`, sub:'Add them, then halve.', answer:fr(...mid), others:others(fr(...mid), notEq(mid,[[lo[0]+hi[0],lo[1]+hi[1]],fadd(lo,hi),[mid[0]+1,mid[1]],[mid[0],mid[1]+1],[mid[0]-1,mid[1]]]).filter(f=>f[0]>0).map(f=>fh(...f))), explain:`(${fr(...lo)} + ${fr(...hi)}) ÷ 2 = ${fr(...mid)}.`}; },
+  () => { const set=pick([[[1,2],[1,3],[1,6]],[[1,3],[1,4],[1,12]],[[1,2],[1,4],[1,8]],[[1,2],[1,5],[1,10]]]), s=set.reduce((x,y)=>fadd(x,y));
+    return {key:'mf3'+set.join('|'), ask:`Pop ${set.map(f=>fr(...f)).join(' + ')}`, sub:'Use one common denominator for all three.', answer:fh(...s), others:others(fh(...s), notEq(s,[[3,set.reduce((t,f)=>t+f[1],0)],[s[0]+1,s[1]],[s[0],s[1]+1],[1,2],[1,1],[2,3],[7,8],[5,6]]).map(f=>fh(...f))), explain:`${set.map(f=>fr(...f)).join(' + ')} = ${fh(...s)}.`}; },
+  () => { const [a,b]=pick([[[3,4],[1,8]],[[2,3],[1,6]],[[1,2],[1,6]],[[5,6],[1,12]],[[3,5],[1,10]]]), q=simp(a[0]*b[1],a[1]*b[0]);
+    return {key:'mf4'+a+b, ask:`Pop ${fr(...a)} ÷ ${fr(...b)}`, sub:`How many ${fr(...b)}s fit in ${fr(...a)}?`, answer:fh(...q), others:others(fh(...q), notEq(q,[fmul(a,b),[q[0]+1,q[1]],[q[0]-1,q[1]],[q[0]*2,q[1]],[a[0]*b[0],a[1]*b[1]]]).filter(f=>f[0]>0).map(f=>fh(...f))), explain:`${fr(...a)} ÷ ${fr(...b)} = ${fr(...a)} × ${fr(b[1],b[0])} = ${fh(...q)}.`}; },
+  () => { const [n,d]=pick([[17,5],[23,4],[29,6],[31,8],[22,7]]), w=Math.floor(n/d), r=n%d, rd=Math.round(n/d);
+    return {key:'mf5'+n+d, ask:`Pop the whole number closest to ${fr(n,d)}`, sub:'How many wholes, and is the rest more than half?', answer:String(rd), others:others(rd,[w,w+1,w-1,w+2,n-d,d].map(String)), explain:`${fr(n,d)} = ${w}${fr(r,d)}, which is closest to ${rd}.`}; },
+];
+
+/* Box Builder */
+BUILD.mm = [
+  () => { const N=pick([12,24,36]); return {key:'mm1'+N, ask:`Build <b>three different</b> boxes that each hold <b>${N} cubes</b>.`, sub:'Turning a box around does not count as different.', need:3, test:(l,w,h)=>l*w*h===N, hint:`List every way to write ${N} as three numbers multiplied, each 6 or less.`}; },
+  () => ({key:'mm2', ask:'Build a box whose <b>volume</b> (cubes inside) equals its <b>surface area</b> (squares on the outside).', sub:'Surface area = 2 × (l × w + w × h + l × h).', sa:true, test:(l,w,h)=>l*w*h===2*(l*w+w*h+l*h), hint:'Small boxes have much more outside than inside. Try making it as big as you can.'}),
+  () => { const [V,Sa]=pick([[30,62],[24,52],[36,72],[48,88]]); return {key:'mm3'+V, ask:`Build a box that holds <b>${V} cubes</b> and has a <b>surface area of ${Sa}</b>.`, sub:'Surface area = 2 × (l × w + w × h + l × h).', sa:true, test:(l,w,h)=>l*w*h===V&&2*(l*w+w*h+l*h)===Sa, hint:`List the boxes that hold ${V}, then work out each surface area.`}; },
+  () => { const N=pick([24,36,48]); let best=null; for (const t of triples(N,6)){ const s=2*(t[0]*t[1]+t[1]*t[2]+t[0]*t[2]); if (!best||s<best) best=s; }
+    return {key:'mm4'+N, ask:`Build the box that holds <b>${N} cubes</b> and needs the <b>least wrapping paper</b> (smallest surface area).`, sub:'Surface area = 2 × (l × w + w × h + l × h).', sa:true, test:(l,w,h)=>l*w*h===N&&2*(l*w+w*h+l*h)===best, hint:'Boxes that are close to a cube use the least paper.'}; },
+  () => { const [a,b,c,e]=pick([[1,3,3,3],[3,3,8,6],[1,1,9,3],[2,4,9,6]]); return {key:'mm5'+a+b+c, ask:`Build a <b>cube</b> with exactly <b>3 times</b> the volume of a ${a} × ${b} × ${c} box.`, sub:'First find the volume, then triple it.', test:(l,w,h)=>l===e&&w===e&&h===e, hint:`${a} × ${b} × ${c} = ${a*b*c}. Three times that is ${3*a*b*c}. Which number cubed makes it?`}; },
+];
+
+/* Pie Cutter, Fraction Wall, Number Line Leap */
+IX.pie.bank.mm = [
+  () => ({key:'pm1', ask:`Shade ${fr(1,2)} + ${fr(1,3)} − ${fr(1,4)}.`, sub:'Choose a number of slices that works for halves, thirds and quarters.', k0:1, lock:false, test:(k,s)=>s*12===7*k, sol:[12,7], hint:`With 12 slices: ${fr(6,12)} + ${fr(4,12)} − ${fr(3,12)}.`}),
+  () => { const [a,b]=pick([[[3,4],[2,3]],[[2,3],[3,8]],[[4,5],[5,8]]]), p=fmul(a,b); return {key:'pm2'+a+b, ask:`Shade ${fr(...a)} of ${fr(...b)} using as <b>few slices</b> as possible.`, sub:'Work it out and simplify first.', k0:1, lock:false, test:(k,s)=>k===p[1]&&s===p[0], sol:[p[1],p[0]], hint:`${fr(...a)} × ${fr(...b)} = ${fr(a[0]*b[0],a[1]*b[1])}. Simplify it.`}; },
+  () => { const [lo,hi,sol]=pick([[[1,3],[1,2],[12,5]],[[2,3],[4,5],[12,9]],[[1,5],[1,3],[12,3]]]); return {key:'pm3'+lo+hi, ask:`Shade any fraction <b>between</b> ${fr(...lo)} and ${fr(...hi)} (not equal to either).`, sub:'Lots of answers work! You can use up to 12 slices.', k0:1, lock:false, test:(k,s)=>s*lo[1]>lo[0]*k&&s*hi[1]<hi[0]*k, sol, hint:'Try 12 slices and write both fractions in twelfths.'}; },
+  () => ({key:'pm4', ask:`Shade 1 − ${fr(1,3)} − ${fr(1,4)}.`, sub:'Choose your slices carefully.', k0:1, lock:false, test:(k,s)=>s*12===5*k, sol:[12,5], hint:`In twelfths: ${fr(12,12)} − ${fr(4,12)} − ${fr(3,12)}.`}),
+  () => ({key:'pm5', ask:`Niffler ate ${fr(1,2)} of the pie, then ${fr(1,3)} of what was left. Shade what is <b>left now</b>.`, sub:'Work it out step by step.', k0:1, lock:false, test:(k,s)=>s*3===k, sol:[3,1], hint:`After the first bite, ${fr(1,2)} is left. ${fr(1,3)} of that is ${fr(1,6)}.`}),
+];
+Object.assign(WALL_COL, {15:'#ff9fd6', 20:'#b8e986', 24:'#ffd1a6'});
+const MM_PAL = [2,3,4,5,6,8,10,12,15,20,24];
+IX.wall.bank.mm = [
+  () => ({key:'wm1', ask:'Fill one whole with <b>5 different</b> bars and <b>no</b> ½ bar.', sub:'Tricky! Small bars help.', pal:MM_PAL.filter(d=>d!==2), target:[1,1], rule:p=>(p.length===5&&distinct(p))||'Use exactly 5 bars, all different.', sol:[3,4,5,6,20], hint:`Try ${fr(1,3)} + ${fr(1,4)} + ${fr(1,5)} + ${fr(1,6)}. What is left?`}),
+  () => ({key:'wm2', ask:`Build ${fr(2,3)} with exactly <b>3 different</b> bars.`, sub:'No size twice.', pal:MM_PAL, target:[2,3], rule:p=>(p.length===3&&distinct(p))||'Use exactly 3 bars, all different.', sol:[3,4,12], hint:`Start with ${fr(1,3)}. Which two different bars make the other ${fr(1,3)}?`}),
+  () => ({key:'wm3', ask:`Build ${fr(5,8)} with exactly <b>3 different</b> bars.`, sub:'No size twice.', pal:MM_PAL, target:[5,8], rule:p=>(p.length===3&&distinct(p))||'Use exactly 3 bars, all different.', sol:[3,4,24], hint:`${fr(5,8)} = ${fr(15,24)}. Try ${fr(1,3)} = ${fr(8,24)} first.`}),
+  () => ({key:'wm4', ask:`Build 1 − ${fr(1,12)} with exactly <b>3 different</b> bars.`, sub:'No size twice.', pal:MM_PAL, target:[11,12], rule:p=>(p.length===3&&distinct(p))||'Use exactly 3 bars, all different.', sol:[2,3,12], hint:`Try ${fr(1,2)} + ${fr(1,3)} first.`}),
+  () => ({key:'wm5', ask:`Build ${fr(9,10)} with exactly <b>3 different</b> bars.`, sub:'No size twice.', pal:MM_PAL, target:[9,10], rule:p=>(p.length===3&&distinct(p))||'Use exactly 3 bars, all different.', sol:[2,3,15], hint:`${fr(1,2)} + ${fr(1,3)} = ${fr(5,6)}. How much more makes ${fr(9,10)}?`}),
+];
+IX.line.bank.mm = [
+  () => ({key:'lm1', ask:`Land on ${fr(2,3)} of ${fr(3,4)}.`, sub:'The ticks are twelfths.', max:1, d:12, target:[1,2], hint:`${fr(2,3)} × ${fr(3,4)} = ${fr(6,12)}.`}),
+  () => ({key:'lm2', ask:`Land on 1${fr(1,3)} − ${fr(5,6)}.`, sub:'The ticks are sixths.', max:2, d:6, target:[1,2], hint:`1${fr(1,3)} = ${fr(8,6)}.`}),
+  () => ({key:'lm3', ask:`Land on the point ${fr(3,4)} of the way from ${fr(1,2)} to 2.`, sub:'The ticks are eighths.', max:2, d:8, target:[13,8], hint:`From ${fr(1,2)} to 2 is 1${fr(1,2)}. ${fr(3,4)} of that is ${fr(9,8)}.`}),
+  () => ({key:'lm4', ask:`Land exactly halfway between ${fr(2,3)} and ${fr(3,4)}.`, sub:'The ticks are 24ths. Look closely!', max:1, d:24, target:[17,24], hint:`${fr(2,3)} = ${fr(16,24)} and ${fr(3,4)} = ${fr(18,24)}.`}),
+  () => ({key:'lm5', ask:`Land on ${fr(1,2)} + ${fr(1,4)} + ${fr(1,8)} + ${fr(1,16)}.`, sub:'The ticks are sixteenths.', max:1, d:16, target:[15,16], hint:'Each step fills half of the gap that is left.'}),
+  () => ({key:'lm6', ask:`Land on 5 ÷ 4 − ${fr(1,3)}.`, sub:'The ticks are twelfths.', max:2, d:12, target:[11,12], hint:`5 ÷ 4 = ${fr(15,12)}.`}),
+];
+
 /* ---------- end of round ---------- */
 function endRound(){
   const {gid, level, first, earned} = R;
   S.stats[gid] = S.stats[gid] || {};
   const st = S.stats[gid][level] || {rounds:0, best:0, firstTotal:0};
   st.rounds++; st.best=Math.max(st.best,first); st.firstTotal=(st.firstTotal||0)+first; S.stats[gid][level]=st;
-  const rare = level==='adv' ? '1' : '0';
+  const rare = level!=='basic' ? '1' : '0';
   const left = ALL_SHINIES.filter(id => id.endsWith('-'+rare) && !S.shinies.includes(id));
   let shiny=null, bonus=0;
   if (left.length){ shiny=pick(left); S.shinies.push(shiny); } else { bonus=10; S.coins+=bonus; }
   let wonder=null;
-  if (level==='adv' && !S.wonders.includes(gid)){ S.wonders.push(gid); wonder=WONDERS[gid]; }
+  if (level!=='basic' && !S.wonders.includes(gid)){ S.wonders.push(gid); wonder=WONDERS[gid]; }
   save(); coinsUI(); sFan(); coinRain();
-  const g=ALL_GAMES.find(x=>x.id===gid), other = level==='adv'?'basic':'adv';
+  const g=ALL_GAMES.find(x=>x.id===gid), others3 = LEVELS.filter(l=>l!==level);
   $('#scr-end').innerHTML = `
   <div class="end">
     <div class="niff hop" id="endNiff">${niffSVG(S.fur,S.wear)}</div>
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-      <span class="kicker">${g.name} · ${level==='adv'?'Advanced':'Basic'}</span>
+      <span class="kicker">${g.name} · ${LVL[level].name}</span>
       <h1>${first>=5?'Treasure master!':first>=3?'What a haul!':'Round complete!'}</h1>
       <div class="stats"><div class="stat"><b>${first}/6</b>right first try</div><div class="stat"><b>+${earned+bonus}</b>coins</div></div>
       ${shiny ? `<div class="found">${shinySVG(shiny)}<div><span class="kicker">New shiny for the hoard</span><h3>${shinyName(shiny)}</h3><span class="dim">${S.shinies.length} of ${ALL_SHINIES.length} found</span></div></div>`
@@ -2260,7 +2516,7 @@ function endRound(){
       ${wonder ? `<div class="wonder"><span class="kicker">New Wonder Card</span><p>${wonder}</p></div>` : ''}
       <div class="end-actions">
         <button class="btn gold" data-play="${gid}" data-level="${level}">Play again</button>
-        <button class="btn ${other==='adv'?'deep':''}" data-play="${gid}" data-level="${other}">Try ${other==='adv'?'Advanced':'Basic'}</button>
+        ${others3.map(l=>`<button class="btn ${l==='adv'?'deep':l==='mm'?'mm':''}" data-play="${gid}" data-level="${l}">Try ${LVL[l].name}</button>`).join('')}
         <button class="btn" data-topic="${topicOf(gid)}">Back to the tunnel</button>
       </div>
     </div>
@@ -2287,7 +2543,7 @@ function renderHoard(){
       <p class="feedback" id="shopMsg" aria-live="polite"></p>
     </div>
   </div>
-  <div class="section-title"><h2>Shiny collection</h2><span class="dim">${S.shinies.length} of ${ALL_SHINIES.length} found. Basic rounds find shinies; Advanced rounds find glowing ones.</span></div>
+  <div class="section-title"><h2>Shiny collection</h2><span class="dim">${S.shinies.length} of ${ALL_SHINIES.length} found. Basic rounds find shinies; Advanced and Master Mind rounds find glowing ones.</span></div>
   <div class="shelf">${ALL_SHINIES.map(id => S.shinies.includes(id) ? `<div class="cell" title="${shinyName(id)}">${shinySVG(id)}</div>` : '<div class="cell empty"></div>').join('')}</div>
   <div class="section-title"><h2>Wonder Cards</h2><span class="dim">Finish an Advanced round in each game to collect them all.</span></div>
   <div class="wonders">${ALL_GAMES.map(g => S.wonders.includes(g.id)
@@ -2314,9 +2570,9 @@ function buyFur(id){
 /* ---------- grown-ups ---------- */
 let resetArmed=false;
 function renderGrown(){
-  const rows = ALL_GAMES.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv');
+  const rows = ALL_GAMES.map(g => { const b=stat(g.id,'basic'), a=stat(g.id,'adv'), m=stat(g.id,'mm');
     const pct = s => s.rounds ? Math.round(100*(s.firstTotal||0)/(6*s.rounds))+'%' : '–';
-    return `<tr><td>${TOPIC_META[topicOf(g.id)].title.replace('The ','')}: ${g.name}</td><td>${b.rounds}</td><td>${pct(b)}</td><td>${a.rounds}</td><td>${pct(a)}</td></tr>`; }).join('');
+    return `<tr><td>${TOPIC_META[topicOf(g.id)].title.replace('The ','')}: ${g.name}</td><td>${b.rounds}</td><td>${pct(b)}</td><td>${a.rounds}</td><td>${pct(a)}</td><td>${m.rounds}</td><td>${pct(m)}</td></tr>`; }).join('');
   $('#scr-grown').innerHTML = `
   <div class="topic-head"><span class="kicker">For grown-ups</span><h1>Settings and progress</h1><p class="dim">Progress is saved in this browser on this device only.</p></div>
   <div class="form">
@@ -2327,7 +2583,7 @@ function renderGrown(){
     <label class="toggle"><input type="checkbox" id="setHints" ${S.settings.hints?'checked':''}> Show the Hint button</label>
   </div>
   <div class="section-title"><h2>Progress by game</h2></div>
-  <div class="tablewrap"><table><thead><tr><th>Game</th><th>Basic rounds</th><th>Basic first-try</th><th>Advanced rounds</th><th>Advanced first-try</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="tablewrap"><table><thead><tr><th>Game</th><th>Basic rounds</th><th>Basic first-try</th><th>Advanced rounds</th><th>Advanced first-try</th><th>Master Mind rounds</th><th>Master Mind first-try</th></tr></thead><tbody>${rows}</tbody></table></div>
   <p class="dim" style="margin-top:12px">Coins: ${fmt(S.coins)} · Shinies: ${S.shinies.length} of ${ALL_SHINIES.length} · Wonder Cards: ${S.wonders.length} of ${ALL_GAMES.length}</p>
   <div id="photoMgr">${photoManagerHTML()}</div>
   <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center"><button class="btn" id="resetBtn">Reset all progress</button><span class="dim" id="resetMsg"></span></div>`;
@@ -2396,7 +2652,7 @@ document.addEventListener('input', e => {
 });
 
 coinsUI(); renderHome(); show('home'); loadPhotos();
-window.__NH = {G, GAMES, BAL, BUILD, solveBuild, ALL_GAMES, IX, wsum, niffSVG, ANIMALS, vaultSim, paintSVG, PDB, loadPhotos};
+window.__NH = {G, GAMES, BAL, BUILD, solveBuild, ALL_GAMES, IX, wsum, niffSVG, ANIMALS, vaultSim, paintSVG, PDB, loadPhotos, LVL};
 })();
 </script>
 </body>
